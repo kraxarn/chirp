@@ -1,0 +1,4 @@
+target_sources(${PROJECT_NAME} PRIVATE
+	${CMAKE_CURRENT_SOURCE_DIR}/color.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/game.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/monitor.cpp)
