@@ -1,5 +1,6 @@
 #include "game.hpp"
 #include "monitor.hpp"
+#include "logger.hpp"
 
 #include "raylib.h"
 
@@ -8,6 +9,7 @@ chirp::game::game()
 	target_fps(0),
 	clear_color(chirp::color::black())
 {
+	chirp::logger::init();
 	InitWindow(default_width, default_height, default_title);
 
 	const auto monitor_index = chirp::monitor::current();
