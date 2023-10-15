@@ -5,3 +5,6 @@ like [MonoGame](https://www.monogame.net) and [Löve](https://love2d.org), built
 of [raylib](https://www.raylib.com). *chirp!*
 
 Supported platforms include Linux, macOS, Windows, Android and Web.
+
+The engine source code is contained within the src/ directory, while a basic editor for creating levels, packing assets
+etc., is contained within the editor/ directory.
