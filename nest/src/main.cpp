@@ -1,6 +1,5 @@
 #include <cstring>
 #include <filesystem>
-#include <format>
 #include <fstream>
 #include <iostream>
 #include <vector>
@@ -89,23 +88,17 @@ auto output(const char *input) -> int
 	const auto data = read_file(path);
 	const auto json = nlohmann::json::from_msgpack(data);
 
-	nlohmann::json output;
-
 	for (const auto &[folder, content]: json.items())
 	{
-		if (!output.contains(folder))
-		{
-			output[folder] = nlohmann::json::object();
-		}
+		std::cout << folder << '\n';
 
 		for (const auto &[filename, data]: content.items())
 		{
 			const auto filesize = data.get<std::vector<char>>().size();
-			output[folder][filename] = std::format("<{} bytes>", filesize);
+			std::cout << "  " << filename << " (" << filesize << " bytes)\n";
 		}
 	}
 
-	std::cout << output.dump(4) << '\n';
 	return 0;
 }
 
