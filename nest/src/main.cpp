@@ -1,3 +1,4 @@
+#include <cstdlib>
 #include <cstring>
 #include <filesystem>
 #include <fstream>
@@ -75,18 +76,13 @@ auto pack(const char *input) -> int
 	return 0;
 }
 
-auto unpack(const char *path) -> int
-{
-	return 0;
-}
-
-auto output(const char *input) -> int
+auto unpack_file(const char *input) -> std::map<std::string, std::map<std::string, std::vector<char>>>
 {
 	const std::filesystem::path path(input);
 	if (!exists(path) || !is_regular_file(path))
 	{
 		std::cerr << "error: file does not exist!\n";
-		return 2;
+		std::exit(1);
 	}
 
 	const auto data = read_file(path);
@@ -95,8 +91,37 @@ auto output(const char *input) -> int
 
 	std::map<std::string, std::map<std::string, std::vector<char>>> map;
 	obj.convert(map);
+	return map;
+}
 
-	for (const auto &[folder, content]: map)
+auto unpack(const char *input) -> int
+{
+	const std::filesystem::path input_path(input);
+	std::cout << "< " << input_path.string() << '\n';
+
+	const auto base_path = input_path.parent_path() / input_path.stem();
+	create_directories(base_path);
+
+	for (const auto &[folder, content]: unpack_file(input))
+	{
+		for (const auto &[filename, data]: content)
+		{
+			const auto out_path = std::filesystem::path(folder) / filename;
+			std::cout << "> " << (base_path / out_path).string() << '\n';
+
+			create_directories(base_path / folder);
+			std::ofstream file(base_path / out_path, std::ios::binary);
+			file.write(data.data(), static_cast<std::streamsize>(data.size()));
+			file.close();
+		}
+	}
+
+	return 0;
+}
+
+auto output(const char *input) -> int
+{
+	for (const auto &[folder, content]: unpack_file(input))
 	{
 		std::cout << folder << '\n';
 
