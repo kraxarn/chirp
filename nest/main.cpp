@@ -107,7 +107,7 @@ auto unpack(const char *input) -> int
 		for (const auto &[filename, data]: content)
 		{
 			const auto out_path = std::filesystem::path(folder) / filename;
-			std::cout << "> " << (base_path / out_path).string() << '\n';
+			std::cout << "> " << (input_path.stem() / out_path).string() << '\n';
 
 			create_directories(base_path / folder);
 			std::ofstream file(base_path / out_path, std::ios::binary);
