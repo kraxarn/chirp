@@ -2,9 +2,10 @@
 #include <filesystem>
 #include <fstream>
 #include <iostream>
+#include <string>
 #include <vector>
 
-#include "nlohmann/json.hpp"
+#include "msgpack.hpp"
 
 void print_help(const char *path)
 {
@@ -34,10 +35,10 @@ auto pack(const char *input) -> int
 	if (!exists(path) || !is_directory(path))
 	{
 		std::cerr << "error: directory does not exist!\n";
-		return 2;
+		return 1;
 	}
 
-	nlohmann::json json;
+	std::map<std::string, std::map<std::string, std::vector<char>>> data;
 
 	for (const auto &entry: std::filesystem::recursive_directory_iterator(path))
 	{
@@ -51,22 +52,25 @@ auto pack(const char *input) -> int
 		const auto &folder = entry_path.parent_path().stem().string();
 		const auto &filename = entry_path.filename().string();
 
-		if (!json.contains(folder))
+		if (!data.contains(folder))
 		{
-			json[folder] = nlohmann::json::object();
+			data[folder] = std::map<std::string, std::vector<char>>();
 		}
 
-		json[folder][filename] = read_file(entry_path);
+		data[folder][filename] = read_file(entry_path);
 		std::cout << "< " << folder << '/' << filename << '\n';
 	}
+
+	std::stringstream stream;
+	msgpack::pack(stream, data);
 
 	std::filesystem::path output(path.parent_path() / path.stem());
 	output.replace_extension("nest");
 	std::cout << "> " << output << '\n';
 
-	const auto data = nlohmann::json::to_msgpack(json);
 	std::ofstream file(output);
-	file.write(reinterpret_cast<const char *>(data.data()), static_cast<std::streamsize>(data.size()));
+	file << stream.str();
+	file.close();
 
 	return 0;
 }
@@ -86,15 +90,19 @@ auto output(const char *input) -> int
 	}
 
 	const auto data = read_file(path);
-	const auto json = nlohmann::json::from_msgpack(data);
+	const auto handle = msgpack::unpack(data.data(), data.size());
+	const auto obj = handle.get();
 
-	for (const auto &[folder, content]: json.items())
+	std::map<std::string, std::map<std::string, std::vector<char>>> map;
+	obj.convert(map);
+
+	for (const auto &[folder, content]: map)
 	{
 		std::cout << folder << '\n';
 
-		for (const auto &[filename, data]: content.items())
+		for (const auto &[filename, data]: content)
 		{
-			const auto filesize = data.get<std::vector<char>>().size();
+			const auto filesize = data.size();
 			std::cout << "  " << filename << " (" << filesize << " bytes)\n";
 		}
 	}

@@ -10,4 +10,4 @@ add_subdirectory(src)
 target_include_directories(${PROJECT_NAME} PRIVATE
 	"${CMAKE_CURRENT_SOURCE_DIR}/include")
 
-include(deps/json.cmake)
+include(deps/msgpack.cmake)
