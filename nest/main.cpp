@@ -1,5 +1,5 @@
 #include <cstdlib>
-#include <cstring>
+#include <exception>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
@@ -7,15 +7,8 @@
 #include <vector>
 
 #include "msgpack.hpp"
-
-void print_help(const char *path)
-{
-	std::cout << "usage: " << path << " [options] assets\n\n"
-		<< "options:\n"
-		<< "  -p, --pack    pack assets\n"
-		<< "  -u, --unpack  unpack assets\n"
-		<< "  -o, --output  output content to stdout\n";
-}
+#include "argparse/argparse.hpp"
+#include "toml.hpp"
 
 auto read_file(const std::filesystem::path &path) -> std::vector<char>
 {
@@ -30,53 +23,44 @@ auto read_file(const std::filesystem::path &path) -> std::vector<char>
 	return buffer;
 }
 
-auto pack(const char *input) -> int
+auto pack(const std::string &input, const bool simulate) -> int
 {
-	const std::filesystem::path path(input);
-	if (!exists(path) || !is_directory(path))
-	{
-		std::cerr << "error: directory does not exist!\n";
-		return 1;
-	}
+	const auto base_path = std::filesystem::path(input).parent_path();
+	const auto toml = toml::parse(input);
+	const auto assets = toml::find<toml::table>(toml, "assets");
 
 	std::map<std::string, std::map<std::string, std::vector<char>>> data;
 
-	for (const auto &entry: std::filesystem::recursive_directory_iterator(path))
+	for (const auto &[asset_key, asset_value]: assets)
 	{
-		if (!entry.is_regular_file())
+		data[asset_key] = std::map<std::string, std::vector<char>>();
+
+		const auto files = toml::get<toml::table>(asset_value);
+		for (const auto &[file_key, file_value]: files)
 		{
-			continue;
+			const auto path = toml::get<std::string>(file_value);
+			std::cout << "< " << path << " < " << asset_key << '/' << file_key << '\n';
+			data[asset_key][file_key] = read_file(base_path / path);
 		}
-
-		const auto &entry_path = entry.path();
-
-		const auto &folder = entry_path.parent_path().stem().string();
-		const auto &filename = entry_path.filename().string();
-
-		if (!data.contains(folder))
-		{
-			data[folder] = std::map<std::string, std::vector<char>>();
-		}
-
-		data[folder][filename] = read_file(entry_path);
-		std::cout << "< " << folder << '/' << filename << '\n';
 	}
 
 	std::stringstream stream;
 	msgpack::pack(stream, data);
 
-	std::filesystem::path output(path.parent_path() / path.stem());
-	output.replace_extension("nest");
+	const std::filesystem::path output(base_path / "assets.nest");
 	std::cout << "> " << output << '\n';
 
-	std::ofstream file(output);
-	file << stream.str();
-	file.close();
+	if (!simulate)
+	{
+		std::ofstream file(output);
+		file << stream.str();
+		file.close();
+	}
 
 	return 0;
 }
 
-auto unpack_file(const char *input) -> std::map<std::string, std::map<std::string, std::vector<char>>>
+auto unpack_file(const std::string &input) -> std::map<std::string, std::map<std::string, std::vector<char>>>
 {
 	const std::filesystem::path path(input);
 	if (!exists(path) || !is_regular_file(path))
@@ -90,24 +74,41 @@ auto unpack_file(const char *input) -> std::map<std::string, std::map<std::strin
 	const auto obj = handle.get();
 
 	std::map<std::string, std::map<std::string, std::vector<char>>> map;
-	obj.convert(map);
+
+	try
+	{
+		obj.convert(map);
+	}
+	catch (std::exception &exc)
+	{
+		std::cerr << "error: file doesn't appear to be a valid nest file (" << exc.what() << ")\n";
+		std::exit(1);
+	}
+
 	return map;
 }
 
-auto unpack(const char *input) -> int
+auto unpack(const std::string &input, const bool simulate) -> int
 {
+	const auto file_map = unpack_file(input);
+
 	const std::filesystem::path input_path(input);
 	std::cout << "< " << input_path.string() << '\n';
 
 	const auto base_path = input_path.parent_path() / input_path.stem();
 	create_directories(base_path);
 
-	for (const auto &[folder, content]: unpack_file(input))
+	for (const auto &[folder, content]: file_map)
 	{
 		for (const auto &[filename, data]: content)
 		{
 			const auto out_path = std::filesystem::path(folder) / filename;
 			std::cout << "> " << (input_path.stem() / out_path).string() << '\n';
+
+			if (simulate)
+			{
+				continue;
+			}
 
 			create_directories(base_path / folder);
 			std::ofstream file(base_path / out_path, std::ios::binary);
@@ -119,45 +120,48 @@ auto unpack(const char *input) -> int
 	return 0;
 }
 
-auto output(const char *input) -> int
-{
-	for (const auto &[folder, content]: unpack_file(input))
-	{
-		std::cout << folder << '\n';
-
-		for (const auto &[filename, data]: content)
-		{
-			const auto filesize = data.size();
-			std::cout << "  " << filename << " (" << filesize << " bytes)\n";
-		}
-	}
-
-	return 0;
-}
-
 auto main(const int argc, const char **argv) -> int
 {
-	if (argc <= 2)
+	argparse::ArgumentParser parser(APP_NAME, APP_VERSION);
+
+	auto &mode_group = parser.add_mutually_exclusive_group();
+
+	mode_group.add_argument("-p", "--pack")
+		.help("pack assets")
+		.default_value(std::string("project.toml"));
+
+	mode_group.add_argument("-u", "--unpack")
+		.help("unpack assets")
+		.default_value(std::string("assets.nest"));
+
+	parser.add_argument("-s", "--simulate")
+		.help("don't create or modify any files")
+		.flag();
+
+	try
 	{
-		print_help(argv[0]);
+		parser.parse_args(argc, argv);
+	}
+	catch (const std::exception &exc)
+	{
+		std::cerr << exc.what() << '\n';
+		std::cerr << parser;
 		return 1;
 	}
 
-	if (std::strcmp(argv[1], "-p") == 0 || std::strcmp(argv[1], "--pack") == 0)
+	const auto simulate = parser["simulate"] == true;
+
+	if (parser.is_used("pack"))
 	{
-		return pack(argv[2]);
+		const auto project_file = parser.get<std::string>("pack");
+		return pack(project_file, simulate);
 	}
 
-	if (std::strcmp(argv[1], "-u") == 0 || std::strcmp(argv[1], "--unpack") == 0)
+	if (parser.is_used("unpack"))
 	{
-		return unpack(argv[2]);
+		const auto asset_file = parser.get<std::string>("unpack");
+		return unpack(asset_file, simulate);
 	}
 
-	if (std::strcmp(argv[1], "-o") == 0 || std::strcmp(argv[1], "--output") == 0)
-	{
-		return output(argv[2]);
-	}
-
-	print_help(argv[0]);
 	return 1;
 }
