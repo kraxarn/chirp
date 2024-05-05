@@ -15,6 +15,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 # Engine dependencies
 include(deps/raylib.cmake)
 include(deps/doctest.cmake)
+include(deps/msgpack.cmake)
 target_link_libraries(${PROJECT_NAME} PRIVATE
 	raylib)
 
