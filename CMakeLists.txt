@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.22)
-project(chirp LANGUAGES CXX)
+project(chirp LANGUAGES CXX VERSION 0.0.1)
 
 # C++20
 set(CMAKE_CXX_STANDARD 20)
@@ -11,6 +11,9 @@ add_subdirectory(src)
 
 target_include_directories(${PROJECT_NAME} PUBLIC
 	"${CMAKE_CURRENT_SOURCE_DIR}/include")
+
+# Definitions
+target_compile_definitions(${PROJECT_NAME} PUBLIC CHIRP_VERSION="${PROJECT_VERSION}")
 
 # Engine dependencies
 include(deps/raylib.cmake)
