@@ -59,21 +59,21 @@ namespace chirp
 		/**
 		 * Red component
 		 */
-		const unsigned char red_val;
+		unsigned char red_val;
 
 		/**
 		 * Green component
 		 */
-		const unsigned char green_val;
+		unsigned char green_val;
 
 		/**
 		 * Blue component
 		 */
-		const unsigned char blue_val;
+		unsigned char blue_val;
 
 		/**
 		 * Alpha component
 		 */
-		const unsigned char alpha_val;
+		unsigned char alpha_val;
 	};
 }
