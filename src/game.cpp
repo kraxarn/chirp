@@ -63,3 +63,13 @@ void chirp::game::set_target_fps(int fps)
 	target_fps = fps;
 	SetTargetFPS(fps);
 }
+
+auto chirp::game::get_clear_color() const -> color
+{
+	return clear_color;
+}
+
+void chirp::game::set_clear_color(const color &color)
+{
+	clear_color = color;
+}

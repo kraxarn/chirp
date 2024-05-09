@@ -62,6 +62,19 @@ namespace chirp
 		 */
 		void set_target_fps(int fps);
 
+		/**
+		 * \brief Get window clear color
+		 * \return Color
+		 */
+		[[nodiscard]]
+		auto get_clear_color() const -> color;
+
+		/**
+		 * \brief Set window clear color
+		 * \param color Color
+		 */
+		void set_clear_color(const color &color);
+
 	private:
 		/**
 		 * Default window width
