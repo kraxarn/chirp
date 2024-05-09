@@ -10,17 +10,13 @@
 #include "argparse/argparse.hpp"
 #include "toml.hpp"
 
-auto read_file(const std::filesystem::path &path) -> std::vector<char>
+auto read_file(const std::filesystem::path &path) -> std::vector<unsigned char>
 {
 	std::ifstream file(path, std::ios::binary);
-
-	file.seekg(0, std::ios::end);
-	const auto filesize = file.tellg();
-	file.seekg(0, std::ios::beg);
-
-	std::vector<char> buffer(filesize);
-	file.read(buffer.data(), filesize);
-	return buffer;
+	return {
+		std::istreambuf_iterator<char>(file),
+		std::istreambuf_iterator<char>()
+	};
 }
 
 auto pack(const std::string &input, const bool simulate) -> int
@@ -29,11 +25,11 @@ auto pack(const std::string &input, const bool simulate) -> int
 	const auto toml = toml::parse(input);
 	const auto assets = toml::find<toml::table>(toml, "assets");
 
-	std::map<std::string, std::map<std::string, std::vector<char>>> data;
+	std::map<std::string, std::map<std::string, std::vector<unsigned char>>> data;
 
 	for (const auto &[asset_key, asset_value]: assets)
 	{
-		data[asset_key] = std::map<std::string, std::vector<char>>();
+		data[asset_key] = std::map<std::string, std::vector<unsigned char>>();
 
 		const auto files = toml::get<toml::table>(asset_value);
 		for (const auto &[file_key, file_value]: files)
@@ -60,7 +56,7 @@ auto pack(const std::string &input, const bool simulate) -> int
 	return 0;
 }
 
-auto unpack_file(const std::string &input) -> std::map<std::string, std::map<std::string, std::vector<char>>>
+auto unpack_file(const std::string &input) -> std::map<std::string, std::map<std::string, std::vector<unsigned char>>>
 {
 	const std::filesystem::path path(input);
 	if (!exists(path) || !is_regular_file(path))
@@ -70,10 +66,10 @@ auto unpack_file(const std::string &input) -> std::map<std::string, std::map<std
 	}
 
 	const auto data = read_file(path);
-	const auto handle = msgpack::unpack(data.data(), data.size());
+	const auto handle = msgpack::unpack(reinterpret_cast<const char *>(data.data()), data.size());
 	const auto obj = handle.get();
 
-	std::map<std::string, std::map<std::string, std::vector<char>>> map;
+	std::map<std::string, std::map<std::string, std::vector<unsigned char>>> map;
 
 	try
 	{
@@ -112,7 +108,7 @@ auto unpack(const std::string &input, const bool simulate) -> int
 
 			create_directories(base_path / folder);
 			std::ofstream file(base_path / out_path, std::ios::binary);
-			file.write(data.data(), static_cast<std::streamsize>(data.size()));
+			file.write(reinterpret_cast<const char*>(data.data()), static_cast<std::streamsize>(data.size()));
 			file.close();
 		}
 	}
