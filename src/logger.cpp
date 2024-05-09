@@ -67,8 +67,8 @@ void log_callback(int msg_type, const char *text, va_list args)
 	va_copy(args_copy, args);
 	const auto len = vsnprintf(nullptr, 0, text, args_copy);
 	std::string message(len + 1, '\0');
-	vsnprintf(message.data(), len + 1, text, args);
-	message.resize(len);
+	const auto written = vsnprintf(message.data(), len + 1, text, args);
+	message.resize(written);
 
 	log(level, message);
 }
