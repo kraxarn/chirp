@@ -1,7 +1,8 @@
-#include "logger.hpp"
-#include "format.hpp"
+#include "chirp/logger.hpp"
+#include "chirp/format.hpp"
 
 #include "raylib.h"
+
 #include <iostream>
 
 chirp::logger *chirp::logger::instance = nullptr;

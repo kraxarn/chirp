@@ -1,6 +1,6 @@
-#include "game.hpp"
-#include "monitor.hpp"
-#include "logger.hpp"
+#include "chirp/game.hpp"
+#include "chirp/logger.hpp"
+#include "chirp/monitor.hpp"
 
 #include "raylib.h"
 
