@@ -19,27 +19,25 @@ void log(const chirp::log_level level, const std::string &message)
 	switch (level)
 	{
 		case chirp::log_level::info:
-			std::cout << "[inf] ";
+			std::cout << "[inf] " << message << '\n';
 			break;
 
 		case chirp::log_level::warning:
-			std::cerr << "[wrn] ";
+			std::cerr << "[wrn] " << message << '\n';
 			break;
 
 		case chirp::log_level::error:
-			std::cerr << "[err] ";
+			std::cerr << "[err] " << message << '\n';
 			break;
 
 		case chirp::log_level::fatal:
-			std::cerr << "[ftl] ";
+			std::cerr << "[ftl] " << message << '\n';
 			break;
 
 		default:
-			std::cout << "[msg] ";
+			std::cout << "[msg] " << message << '\n';
 			break;
 	}
-
-	std::cout << message << '\n';
 }
 
 void log_callback(int msg_type, const char *text, va_list args)
