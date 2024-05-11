@@ -11,9 +11,11 @@ namespace chirp
 	{
 	public:
 		/**
-		 * Construct a vector2 with default values
+		 * Construct a vector2 at 0,0
 		 */
-		vector2() = default;
+		vector2() : vector2(static_cast<T>(0), static_cast<T>(0))
+		{
+		}
 
 		/**
 		 * Construct a vector2 with specified values
@@ -21,7 +23,7 @@ namespace chirp
 		 * @param y Y
 		 */
 		vector2(const T x, const T y)
-			: x(x), y(y)
+			: x_val(x), y_val(y)
 		{
 		}
 
@@ -34,9 +36,21 @@ namespace chirp
 		auto to() const -> vector2<Target>
 		{
 			return {
-				static_cast<Target>(x),
-				static_cast<Target>(y),
+				static_cast<Target>(x()),
+				static_cast<Target>(y()),
 			};
+		}
+
+		[[nodiscard]]
+		auto x() const -> T
+		{
+			return x_val;
+		}
+
+		[[nodiscard]]
+		auto y() const -> T
+		{
+			return y_val;
 		}
 
 		/**
@@ -46,7 +60,7 @@ namespace chirp
 		 */
 		auto operator*(T value) const -> vector2<T>
 		{
-			return {x * value, y * value};
+			return {x() * value, y() * value};
 		}
 
 		/**
@@ -56,7 +70,7 @@ namespace chirp
 		 */
 		auto operator/(T value) const -> vector2<T>
 		{
-			return {x / value, y / value};
+			return {x() / value, y() / value};
 		}
 
 		/**
@@ -66,7 +80,7 @@ namespace chirp
 		 */
 		auto operator+(T value) const -> vector2<T>
 		{
-			return vector2<T>(x + value, y + value);
+			return vector2<T>(x() + value, y() + value);
 		}
 
 		/**
@@ -76,7 +90,7 @@ namespace chirp
 		 */
 		auto operator-(T value) const -> vector2<T>
 		{
-			return vector2<T>(x - value, y - value);
+			return vector2<T>(x() - value, y() - value);
 		}
 
 		/**
@@ -86,12 +100,37 @@ namespace chirp
 		 */
 		auto operator+(const vector2<T> &value) const -> vector2<T>
 		{
-			return {x + value.x, y + value.y};
+			return {x() + value.x(), y() + value.y()};
+		}
+
+		auto operator=(const vector2 &value) -> vector2 &
+		{
+			if (this != &value)
+			{
+				this->x_val = value.x();
+				this->y_val = value.y();
+			}
+
+			return *this;
+		}
+
+		auto operator+=(const vector2 &value) -> vector2 &
+		{
+			this->x_val += value.x();
+			this->y_val += value.y();
+			return *this;
+		}
+
+		auto operator-=(const vector2 &value) -> vector2 &
+		{
+			this->x_val -= value.x();
+			this->y_val -= value.y();
+			return *this;
 		}
 
 	private:
-		const T x;
-		const T y;
+		T x_val;
+		T y_val;
 	};
 
 	/**

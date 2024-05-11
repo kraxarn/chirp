@@ -1,7 +1,9 @@
 #pragma once
 
-#include <string>
+#include "chirp/vector2.hpp"
+
 #include <sstream>
+#include <string>
 
 namespace chirp
 {
@@ -76,6 +78,15 @@ namespace chirp
 		static auto to_string(const bool arg) -> const char *
 		{
 			return arg ? "true" : "false";
+		}
+
+		/**
+		 * Format vector2 as "X=<x> Y=<y>"
+		 */
+		template<typename T>
+		static auto to_string(const vector2<T> &arg) -> std::string
+		{
+			return fmt::format("X={} Y={}", arg.x(), arg.y());
 		}
 	};
 
