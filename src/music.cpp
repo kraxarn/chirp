@@ -6,7 +6,8 @@
 
 chirp::music::music(const std::vector<unsigned char> &data, std::string name)
 	: r_music(new Music()),
-	file_name(std::move(name))
+	file_name(std::move(name)),
+	volume(1.F)
 {
 	*r_music = LoadMusicStreamFromMemory(".xm",
 		data.data(), static_cast<int>(data.size()));
@@ -69,6 +70,17 @@ auto chirp::music::name() const -> const std::string &
 {
 	return file_name;
 }
+
+auto chirp::music::get_volume() const -> float
+{
+	return volume;
+}
+
+void chirp::music::set_volume(const float value) const
+{
+	SetMusicVolume(*r_music, value);
+}
+
 
 auto chirp::music::guess_file_type(const std::vector<unsigned char> &data) -> const char *
 {
