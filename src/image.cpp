@@ -1,7 +1,5 @@
 #include "chirp/image.hpp"
 
-#include <iostream>
-
 #include "raylib.h"
 
 chirp::image::image(const std::vector<unsigned char> &data)
@@ -35,6 +33,5 @@ auto chirp::image::guess_file_type(const std::vector<unsigned char> &data) -> co
 		return ".png";
 	}
 
-	std::cerr << "unknown file type\n";
 	return "";
 }
