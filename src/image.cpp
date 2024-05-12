@@ -9,11 +9,6 @@ chirp::image::image(const std::vector<unsigned char> &data)
 {
 	*r_image = LoadImageFromMemory(guess_file_type(data),
 		data.data(), static_cast<int>(data.size()));
-
-	if (r_image->width == 0 || r_image->height == 0)
-	{
-		std::cerr << "Invalid image dimensions\n";
-	}
 }
 
 void chirp::image::flip_horizontal() const
