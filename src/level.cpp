@@ -38,18 +38,9 @@ void chirp::level::set_tile(const int x_pos, const int y_pos, const char value)
 	map_data.at(x_pos).at(y_pos) = value;
 }
 
-void chirp::level::iterate(const std::function<bool(const map_tile &)> &iter) const
+auto chirp::level::tiles() const -> map_iterator
 {
-	for (size_t pos_x = 0; pos_x < map().size(); pos_x++)
-	{
-		for (size_t pos_y = 0; pos_y < map().at(pos_x).size(); pos_y++)
-		{
-			if (!iter({pos_x, pos_y, map().at(pos_x).at(pos_y)}))
-			{
-				return;
-			}
-		}
-	}
+	return map_iterator(map());
 }
 
 void chirp::level::parse(const std::vector<unsigned char> &level_data)

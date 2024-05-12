@@ -1,6 +1,7 @@
 #pragma once
 
 #include <chirp/map.hpp>
+#include <chirp/map_iterator.hpp>
 
 #include <functional>
 #include <vector>
@@ -30,9 +31,10 @@ namespace chirp
 		auto type() const -> const std::string &;
 
 		/**
-		 * Iterate through tiles in level, returning false to stop iterating
+		 * Iterate through tiles in level
 		 */
-		void iterate(const std::function<bool(const map_tile &)> &iter) const;
+		[[nodiscard]]
+		auto tiles() const -> map_iterator;
 
 	private:
 		std::string name_data;
