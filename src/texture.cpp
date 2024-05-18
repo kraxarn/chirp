@@ -3,8 +3,9 @@
 
 #include "raylib.h"
 
-chirp::texture::texture(const asset<image> &image)
-	: r_texture(new Texture2D())
+chirp::texture::texture(const asset<chirp::image> &image)
+	: image(image),
+	r_texture(new Texture2D())
 {
 	*r_texture = LoadTextureFromImage(*image->data());
 }
@@ -66,4 +67,16 @@ void chirp::texture::draw(const vector2f &position, const vector2i &size,
 auto chirp::texture::size() const -> vector2i
 {
 	return {r_texture->width, r_texture->height};
+}
+
+void chirp::texture::flip_horizontal() const
+{
+	ImageFlipHorizontal(image->data());
+	reload();
+}
+
+void chirp::texture::reload() const
+{
+	UnloadTexture(*r_texture);
+	*r_texture = LoadTextureFromImage(*image->data());
 }

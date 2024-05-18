@@ -44,7 +44,15 @@ namespace chirp
 		[[nodiscard]]
 		auto size() const -> vector2i;
 
+		/**
+		 * Flip the image and reload the texture
+		 */
+		void flip_horizontal() const;
+
 	private:
+		asset<image> image;
 		Texture *r_texture;
+
+		void reload() const;
 	};
 }

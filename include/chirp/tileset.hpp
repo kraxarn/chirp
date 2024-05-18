@@ -16,7 +16,7 @@ namespace chirp
 
 		void draw(const vector2f &position, int index, float rotation, float scale) const;
 
-		void flip_horizontal();
+		void flip_horizontal() const;
 
 		[[nodiscard]]
 		auto get_size() const -> int;

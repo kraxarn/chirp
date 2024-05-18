@@ -37,10 +37,9 @@ void chirp::tileset::draw(const vector2f &position, const int index,
 	texture.draw(position, size, size.x() * index, rotation, scale);
 }
 
-void chirp::tileset::flip_horizontal()
+void chirp::tileset::flip_horizontal() const
 {
-	image->flip_horizontal();
-	texture = chirp::texture(image);
+	texture.flip_horizontal();
 }
 
 auto chirp::tileset::get_size() const -> int
