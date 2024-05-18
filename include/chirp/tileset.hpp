@@ -27,7 +27,7 @@ namespace chirp
 		 */
 		vector2i size;
 
-		image image;
+		asset<image> image;
 		texture texture;
 	};
 }

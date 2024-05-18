@@ -1,5 +1,6 @@
 #pragma once
 
+#include <chirp/asset.hpp>
 #include <chirp/image.hpp>
 #include <chirp/vector2.hpp>
 
@@ -10,7 +11,7 @@ namespace chirp
 	class texture
 	{
 	public:
-		explicit texture(const image &image);
+		explicit texture(const asset<image> &image);
 		~texture();
 
 		/**

@@ -3,10 +3,10 @@
 
 #include "raylib.h"
 
-chirp::texture::texture(const chirp::image &image)
+chirp::texture::texture(const asset<image> &image)
 	: r_texture(new Texture2D())
 {
-	*r_texture = LoadTextureFromImage(*image.data());
+	*r_texture = LoadTextureFromImage(*image->data());
 }
 
 chirp::texture::~texture()

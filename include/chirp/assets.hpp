@@ -1,5 +1,13 @@
 #pragma once
 
+#include <chirp/asset.hpp>
+#include <chirp/font.hpp>
+#include <chirp/image.hpp>
+#include <chirp/level.hpp>
+#include <chirp/music.hpp>
+#include <chirp/sound.hpp>
+#include <chirp/tileset.hpp>
+
 #include <map>
 
 namespace chirp
@@ -9,9 +17,28 @@ namespace chirp
 	public:
 		assets();
 
-		auto load(const std::string &type, const std::string &name) const -> const std::vector<unsigned char> &;
+		[[nodiscard]]
+		auto music(const std::string &path) const -> asset<music>;
+
+		[[nodiscard]]
+		auto sound(const std::string &path) const -> asset<sound>;
+
+		[[nodiscard]]
+		auto font(const std::string &path, int font_size) const -> asset<font>;
+
+		[[nodiscard]]
+		auto image(const std::string &path) const -> asset<image>;
+
+		[[nodiscard]]
+		auto tileset(const std::string &path) const -> asset<tileset>;
+
+		[[nodiscard]]
+		auto level(const std::string &path) const -> asset<level>;
 
 	private:
 		std::map<std::string, std::map<std::string, std::vector<unsigned char>>> data;
+
+		[[nodiscard]]
+		auto load(const std::string &type, const std::string &name) const -> const std::vector<unsigned char> &;
 	};
 }

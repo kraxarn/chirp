@@ -3,7 +3,7 @@
 #include "raylib.h"
 
 chirp::tileset::tileset(const std::vector<unsigned char> &data)
-	: image(data),
+	: image(std::make_unique<chirp::image>(data)),
 	texture(image)
 {
 	const auto height = texture.size().y();
@@ -22,7 +22,7 @@ auto chirp::tileset::at(const int index) const -> chirp::image
 	};
 
 	int size;
-	const auto r_image = ImageFromImage(*image.data(), rect);
+	const auto r_image = ImageFromImage(*image->data(), rect);
 
 	auto *data = ExportImageToMemory(r_image, ".png", &size);
 	const std::vector buffer(data, data + size);
@@ -39,7 +39,7 @@ void chirp::tileset::draw(const vector2f &position, const int index,
 
 void chirp::tileset::flip_horizontal()
 {
-	image.flip_horizontal();
+	image->flip_horizontal();
 	texture = chirp::texture(image);
 }
 
