@@ -9,6 +9,12 @@ chirp::image::image(const std::vector<unsigned char> &data)
 		data.data(), static_cast<int>(data.size()));
 }
 
+chirp::image::~image()
+{
+	UnloadImage(*r_image);
+	delete r_image;
+}
+
 void chirp::image::flip_horizontal() const
 {
 	ImageFlipHorizontal(r_image);

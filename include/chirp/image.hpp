@@ -10,6 +10,7 @@ namespace chirp
 	{
 	public:
 		explicit image(const std::vector<unsigned char> &data);
+		~image();
 
 		void flip_horizontal() const;
 

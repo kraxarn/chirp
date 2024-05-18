@@ -11,8 +11,8 @@ chirp::texture::texture(const asset<image> &image)
 
 chirp::texture::~texture()
 {
-	// UnloadTexture(r_texture);
-	// delete r_texture;
+	UnloadTexture(*r_texture);
+	delete r_texture;
 }
 
 void chirp::texture::draw(const vector2f &position) const
