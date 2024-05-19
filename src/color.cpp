@@ -30,15 +30,3 @@ auto chirp::color::alpha() const -> unsigned char
 {
 	return alpha_val;
 }
-
-auto chirp::color::black() -> chirp::color
-{
-	const auto min = std::numeric_limits<unsigned char>::min();
-	return {min, min, min};
-}
-
-auto chirp::color::white() -> chirp::color
-{
-	const auto max = std::numeric_limits<unsigned char>::max();
-	return {max, max, max};
-}

@@ -43,18 +43,6 @@ namespace chirp
 		[[nodiscard]]
 		auto alpha() const -> unsigned char;
 
-		/**
-		 * Black (#000000)
-		 * @return Color
-		 */
-		static auto black() -> color;
-
-		/**
-		 * White (#ffffff)
-		 * @return Color
-		 */
-		static auto white() -> color;
-
 	private:
 		/**
 		 * Red component
