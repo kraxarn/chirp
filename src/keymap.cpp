@@ -39,7 +39,7 @@ auto chirp::keymap::is_pressed(const char *name) const -> bool
 		return false;
 	}
 
-	return std::ranges::any_of(map.at(name), [](const auto chirp::key &key) -> bool
+	return std::ranges::any_of(map.at(name), [](const key &key) -> bool
 	{
 		if (std::holds_alternative<keyboard_key>(key))
 		{
@@ -86,7 +86,7 @@ auto chirp::keymap::is_down(const char *name) const -> bool
 		return false;
 	}
 
-	return std::ranges::any_of(map.at(name), [](const auto chirp::key &key) -> bool
+	return std::ranges::any_of(map.at(name), [](const key &key) -> bool
 	{
 		if (std::holds_alternative<keyboard_key>(key))
 		{
