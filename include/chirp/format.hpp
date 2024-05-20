@@ -1,6 +1,7 @@
 #pragma once
 
-#include "chirp/vector2.hpp"
+#include <chirp/rectangle.hpp>
+#include <chirp/vector2.hpp>
 
 #include <sstream>
 #include <string>
@@ -87,6 +88,17 @@ namespace chirp
 		static auto to_string(const vector2<T> &arg) -> std::string
 		{
 			return fmt::format("X={} Y={}", arg.x(), arg.y());
+		}
+
+		/**
+		 * Format rectangle as "X=<x> Y=<y> W=<width> H=<height>"
+		 */
+		template<typename T>
+		static auto to_string(const rectangle<T> &arg) -> std::string
+		{
+			return fmt::format("X={} Y={} W={} H={}",
+				arg.x(), arg.y(),
+				arg.width(), arg.height());
 		}
 	};
 
