@@ -1,6 +1,7 @@
 add_subdirectory(internal)
 
 target_sources(${PROJECT_NAME} PRIVATE
+	${CMAKE_CURRENT_SOURCE_DIR}/animatedsprite.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/assets.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/color.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/collision.cpp
