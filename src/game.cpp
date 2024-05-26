@@ -1,4 +1,5 @@
 #include "chirp/game.hpp"
+#include "chirp/colors.hpp"
 #include "chirp/logger.hpp"
 #include "chirp/monitor.hpp"
 
@@ -7,7 +8,7 @@
 chirp::game::game()
 	: running(false),
 	target_fps(0),
-	clear_color(chirp::color::black())
+	clear_color(colors::black())
 {
 	chirp::logger::init();
 	InitWindow(default_width, default_height, default_title);
