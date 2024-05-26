@@ -5,6 +5,7 @@ target_sources(${PROJECT_NAME} PRIVATE
 	${CMAKE_CURRENT_SOURCE_DIR}/assets.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/audio.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/camera.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/clock.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/collision.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/color.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/colors.cpp
