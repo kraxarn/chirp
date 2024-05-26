@@ -103,6 +103,14 @@ namespace chirp
 			return {x() + value.x(), y() + value.y()};
 		}
 
+		auto operator-(const vector2 &value) const -> vector2
+		{
+			return {
+				x() - value.x(),
+				y() - value.y(),
+			};
+		}
+
 		auto operator=(const vector2 &value) -> vector2 &
 		{
 			if (this != &value)
