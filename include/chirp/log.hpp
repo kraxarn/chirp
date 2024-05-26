@@ -47,7 +47,7 @@ namespace chirp
 		template<typename Format, typename Arg, typename... Args>
 		static void fatal(const Format &fmt, const Arg &arg, Args &&... args)
 		{
-			debug(fmt::format(fmt, arg, args...));
+			fatal(fmt::format(fmt, arg, args...));
 		}
 
 		template<typename Format>

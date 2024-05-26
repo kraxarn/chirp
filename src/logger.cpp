@@ -57,6 +57,10 @@ void log_callback(int msg_type, const char *text, va_list args)
 			level = chirp::log_level::warning;
 			break;
 
+		case LOG_FATAL:
+			level = chirp::log_level::fatal;
+			break;
+
 		default:
 			log(chirp::log_level::warning, chirp::format("Unknown log level: {}", msg_type));
 			return;
@@ -70,6 +74,12 @@ void log_callback(int msg_type, const char *text, va_list args)
 	message.resize(written);
 
 	log(level, message);
+
+	if (level == chirp::log_level::fatal)
+	{
+		// We could show a crash dialog or something here at some point
+		std::exit(1);
+	}
 }
 
 void chirp::logger::init()
