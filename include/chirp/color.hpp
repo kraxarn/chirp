@@ -15,6 +15,8 @@ namespace chirp
 		color(const unsigned char red, const unsigned char green,
 			const unsigned char blue, const unsigned char alpha = 255);
 
+		color() = default;
+
 		/**
 		 * Red component
 		 * @return Amount of red
