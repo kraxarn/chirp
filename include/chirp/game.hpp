@@ -1,5 +1,6 @@
 #pragma once
 
+#include <chirp/audio.hpp>
 #include <chirp/color.hpp>
 #include <chirp/scenemanager.hpp>
 
@@ -126,5 +127,10 @@ namespace chirp
 		 * All scenes
 		 */
 		scene_manager scene_manager;
+
+		/**
+		 * Sound manager
+		 */
+		audio audio;
 	};
 }
