@@ -77,6 +77,16 @@ namespace chirp
 		void set_clear_color(const color &color);
 
 		/**
+		 * Set the title of the main window
+		 */
+		void set_window_title(const std::string &title);
+
+		/**
+		 * Set the window size, resizing it if needed
+		 */
+		void set_window_size(const chirp::vector2i &size);
+
+		/**
 		 * Get current scene manager
 		 */
 		auto scenes() -> scene_manager &;
