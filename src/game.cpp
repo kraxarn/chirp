@@ -74,3 +74,8 @@ void chirp::game::set_clear_color(const color &color)
 {
 	clear_color = color;
 }
+
+auto chirp::game::scenes() -> chirp::scene_manager &
+{
+	return scene_manager;
+}

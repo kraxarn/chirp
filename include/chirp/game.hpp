@@ -75,6 +75,11 @@ namespace chirp
 		 */
 		void set_clear_color(const color &color);
 
+		/**
+		 * Get current scene manager
+		 */
+		auto scenes() -> scene_manager &;
+
 	private:
 		/**
 		 * Default window width
@@ -105,5 +110,10 @@ namespace chirp
 		 * Clear color for each frame
 		 */
 		color clear_color;
+
+		/**
+		 * All scenes
+		 */
+		scene_manager scene_manager;
 	};
 }
