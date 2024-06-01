@@ -29,23 +29,6 @@ namespace chirp
 
 	protected:
 		/**
-		 * Load various game assets
-		 */
-		virtual void load_content() = 0;
-
-		/**
-		 * Update game logic
-		 * @param delta Time in seconds since the last frame
-		 * @note No guarantee how often it will be called
-		 */
-		virtual void update(float delta) = 0;
-
-		/**
-		 * Draw game content
-		 */
-		virtual void draw() = 0;
-
-		/**
 		 * Exit game and close window
 		 */
 		void exit();
