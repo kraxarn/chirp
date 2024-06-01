@@ -21,6 +21,7 @@ target_sources(${PROJECT_NAME} PRIVATE
 	${CMAKE_CURRENT_SOURCE_DIR}/random.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/sound.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/sprite.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/scene.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/text.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/texture.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/tileset.cpp
