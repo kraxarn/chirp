@@ -1,6 +1,7 @@
 #pragma once
 
-#include "color.hpp"
+#include <chirp/color.hpp>
+#include <chirp/scenemanager.hpp>
 
 namespace chirp
 {
@@ -10,6 +11,16 @@ namespace chirp
 	class game
 	{
 	public:
+		/**
+		 * Create a new window and context
+		 */
+		game();
+
+		/**
+		 * Close window and release resources
+		 */
+		virtual ~game();
+
 		/**
 		 * Run game
 		 */
@@ -32,16 +43,6 @@ namespace chirp
 		 * Draw game content
 		 */
 		virtual void draw() = 0;
-
-		/**
-		 * Create a new window and context
-		 */
-		game();
-
-		/**
-		 * Close window and release resources
-		 */
-		~game();
 
 		/**
 		 * Exit game and close window
