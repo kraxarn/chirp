@@ -27,7 +27,14 @@ void chirp::game::run()
 	running = true;
 	while (running)
 	{
-		update(GetFrameTime());
+		auto current_scene = scenes().peek();
+		if (!current_scene)
+		{
+			running = false;
+			break;
+		}
+
+		current_scene->update(GetFrameTime());
 
 		BeginDrawing();
 
@@ -38,7 +45,7 @@ void chirp::game::run()
 			clear_color.alpha(),
 		});
 
-		draw();
+		current_scene->draw();
 
 		EndDrawing();
 
