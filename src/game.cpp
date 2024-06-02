@@ -15,6 +15,8 @@ chirp::game::game()
 
 	const auto monitor_index = chirp::monitor::current();
 	set_target_fps(chirp::monitor::refresh_rate(monitor_index));
+
+	SetExitKey(KEY_NULL);
 }
 
 chirp::game::~game()
