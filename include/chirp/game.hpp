@@ -3,6 +3,7 @@
 #include <chirp/audio.hpp>
 #include <chirp/color.hpp>
 #include <chirp/scenemanager.hpp>
+#include <chirp/window.hpp>
 
 namespace chirp
 {
@@ -60,15 +61,8 @@ namespace chirp
 		 */
 		void set_clear_color(const color &color);
 
-		/**
-		 * Set the title of the main window
-		 */
-		void set_window_title(const std::string &title);
-
-		/**
-		 * Set the window size, resizing it if needed
-		 */
-		void set_window_size(const chirp::vector2i &size);
+		[[nodiscard]]
+		auto window() const -> chirp::window;
 
 		/**
 		 * Get current scene manager

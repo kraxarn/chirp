@@ -23,6 +23,11 @@ auto chirp::scene::scenes() const -> chirp::scene_manager &
 	return *scene_manager;
 }
 
+auto chirp::scene::window() const -> const chirp::window &
+{
+	return window_manager;
+}
+
 void chirp::scene::init(chirp::scene_manager &scene)
 {
 	scene_manager = &scene;

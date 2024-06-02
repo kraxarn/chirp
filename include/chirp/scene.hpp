@@ -1,6 +1,7 @@
 #pragma once
 
 #include <chirp/assets.hpp>
+#include <chirp/window.hpp>
 
 namespace chirp
 {
@@ -25,7 +26,11 @@ namespace chirp
 		[[nodiscard]]
 		auto scenes() const -> scene_manager &;
 
+		[[nodiscard]]
+		auto window() const -> const window &;
+
 	private:
 		scene_manager *scene_manager;
+		chirp::window window_manager;
 	};
 }

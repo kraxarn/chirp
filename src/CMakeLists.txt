@@ -27,4 +27,5 @@ target_sources(${PROJECT_NAME} PRIVATE
 	${CMAKE_CURRENT_SOURCE_DIR}/texture.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/tileset.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/os.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/window.cpp
 )

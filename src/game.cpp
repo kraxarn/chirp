@@ -84,14 +84,9 @@ void chirp::game::set_clear_color(const color &color)
 	clear_color = color;
 }
 
-void chirp::game::set_window_title(const std::string &title)
+auto chirp::game::window() const -> chirp::window
 {
-	SetWindowTitle(title.c_str());
-}
-
-void chirp::game::set_window_size(const chirp::vector2i &size)
-{
-	SetWindowSize(size.x(), size.y());
+	return chirp::window();
 }
 
 auto chirp::game::scenes() -> chirp::scene_manager &
