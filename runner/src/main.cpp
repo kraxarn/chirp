@@ -16,6 +16,7 @@ auto main(int argc, char **argv) -> int
 	auto *root_object = py_vm->new_module("chirp");
 
 	bind_game(py_vm, root_object);
+	bind_os(py_vm);
 
 	if (argc > 1)
 	{
