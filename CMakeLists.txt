@@ -22,7 +22,7 @@ target_compile_definitions(${PROJECT_NAME} PUBLIC CHIRP_VERSION="${PROJECT_VERSI
 
 # Engine dependencies
 include(deps/raylib.cmake)
-include(deps/doctest.cmake)
 include(deps/msgpack.cmake)
+
 target_link_libraries(${PROJECT_NAME} PRIVATE
 	raylib)
