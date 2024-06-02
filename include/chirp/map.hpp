@@ -1,6 +1,7 @@
 #pragma once
 
 #include <array>
+#include <cstddef>
 
 namespace chirp
 {
@@ -29,8 +30,8 @@ namespace chirp
 	 */
 	using map_tile = struct
 	{
-		unsigned char x;
-		unsigned char y;
+		std::size_t x;
+		std::size_t y;
 		char value;
 	};
 }

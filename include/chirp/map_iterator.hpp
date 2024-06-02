@@ -2,6 +2,8 @@
 
 #include <chirp/map.hpp>
 
+#include <cstddef>
+
 namespace chirp
 {
 	class map_iterator
@@ -58,7 +60,7 @@ namespace chirp
 
 	private:
 		const chirp::map &map;
-		unsigned char cur_x = 0;
-		unsigned char cur_y = 0;
+		std::size_t cur_x = 0;
+		std::size_t cur_y = 0;
 	};
 }
