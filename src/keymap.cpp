@@ -2,6 +2,8 @@
 
 #include "raylib.h"
 
+#include <algorithm>
+
 void chirp::keymap::add(const char *name, gamepad_axis key)
 {
 	add(name, chirp::key(key));
