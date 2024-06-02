@@ -28,7 +28,8 @@ namespace chirp
 		 */
 		void run();
 
-	protected:
+		// protected:
+
 		/**
 		 * Exit game and close window
 		 */
