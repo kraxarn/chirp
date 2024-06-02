@@ -5,6 +5,11 @@ project(chirp LANGUAGES CXX VERSION 0.0.1)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+# macOS config
+if (APPLE)
+	set(CMAKE_OSX_DEPLOYMENT_TARGET "10.13")
+endif ()
+
 # Engine
 add_library(${PROJECT_NAME})
 add_subdirectory(src)
