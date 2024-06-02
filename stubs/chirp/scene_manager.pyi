@@ -1,8 +1,10 @@
 import typing
 
+import chirp
+
 
 class SceneManager:
-	def push[T](self):
+	def push(self, scene: typing.Type[chirp.Scene]):
 		...
 
 	def pop(self) -> None:
