@@ -4,6 +4,7 @@
 #include <chirp/map_iterator.hpp>
 
 #include <functional>
+#include <string>
 #include <vector>
 
 namespace chirp
