@@ -29,11 +29,11 @@ namespace chirp
 		/**
 		 * Get current scene, or nullptr if no scene
 		 */
-		auto peek() const -> std::shared_ptr<scene>;
+		auto peek() const -> std::shared_ptr<chirp::scene>;
 
 	private:
-		std::stack<std::shared_ptr<scene>> scenes;
+		std::stack<std::shared_ptr<chirp::scene>> scenes;
 
-		assets assets;
+		chirp::assets assets;
 	};
 }

@@ -47,7 +47,7 @@ namespace chirp
 		static constexpr float default_frame_time = 1.F / 60.F * 10.F;
 		static constexpr auto default_scale = 1.F;
 		static constexpr auto default_rotation = 0.F;
-		static constexpr auto default_direction = direction::left;
+		static constexpr auto default_direction = chirp::direction::left;
 
 		float frame_time;
 		float current_time;
@@ -57,8 +57,8 @@ namespace chirp
 		bool playing;
 		int current_frame;
 
-		asset<tileset> tileset;
-		::chirp::direction direction;
+		asset<chirp::tileset> tileset;
+		chirp::direction direction;
 		vector2f position;
 	};
 }

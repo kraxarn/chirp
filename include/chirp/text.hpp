@@ -10,7 +10,7 @@ namespace chirp
 	class text
 	{
 	public:
-		text(std::string text, vector2i position, int font_size, color color);
+		text(std::string text, vector2i position, int font_size, chirp::color color);
 
 		void draw() const;
 
@@ -34,6 +34,6 @@ namespace chirp
 		std::string str;
 		vector2i position;
 		int font_size = 0;
-		color color;
+		chirp::color color;
 	};
 }

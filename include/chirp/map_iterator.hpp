@@ -57,7 +57,7 @@ namespace chirp
 		}
 
 	private:
-		const map &map;
+		const chirp::map &map;
 		size_t cur_x{0};
 		size_t cur_y{0};
 	};

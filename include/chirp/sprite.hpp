@@ -9,9 +9,9 @@ namespace chirp
 	class sprite
 	{
 	public:
-		explicit sprite(const asset<texture> &texture);
+		explicit sprite(const asset<chirp::texture> &texture);
 
-		explicit sprite(const asset<image> &image);
+		explicit sprite(const asset<chirp::image> &image);
 
 		void draw() const;
 
@@ -24,7 +24,7 @@ namespace chirp
 		void set_position(const vector2f &value);
 
 	private:
-		asset<texture> texture;
+		asset<chirp::texture> texture;
 		vector2f position;
 	};
 }

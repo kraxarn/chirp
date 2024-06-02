@@ -53,13 +53,13 @@ namespace chirp
 		 * \return Color
 		 */
 		[[nodiscard]]
-		auto get_clear_color() const -> color;
+		auto get_clear_color() const -> chirp::color;
 
 		/**
 		 * \brief Set window clear color
 		 * \param color Color
 		 */
-		void set_clear_color(const color &color);
+		void set_clear_color(const chirp::color &color);
 
 		[[nodiscard]]
 		auto window() const -> chirp::window;
@@ -67,7 +67,7 @@ namespace chirp
 		/**
 		 * Get current scene manager
 		 */
-		auto scenes() -> scene_manager &;
+		auto scenes() -> chirp::scene_manager &;
 
 	private:
 		/**
@@ -98,16 +98,16 @@ namespace chirp
 		/**
 		 * Clear color for each frame
 		 */
-		color clear_color;
+		chirp::color clear_color;
 
 		/**
 		 * All scenes
 		 */
-		scene_manager scene_manager;
+		chirp::scene_manager scene_manager;
 
 		/**
 		 * Sound manager
 		 */
-		audio audio;
+		chirp::audio audio;
 	};
 }

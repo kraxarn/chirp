@@ -12,7 +12,7 @@ namespace chirp
 	public:
 		explicit scene(const assets &assets);
 
-		void init(scene_manager &scene);
+		void init(chirp::scene_manager &scene);
 
 		virtual void load();
 
@@ -24,13 +24,13 @@ namespace chirp
 
 	protected:
 		[[nodiscard]]
-		auto scenes() const -> scene_manager &;
+		auto scenes() const -> chirp::scene_manager &;
 
 		[[nodiscard]]
 		auto window() const -> const window &;
 
 	private:
-		scene_manager *scene_manager;
+		chirp::scene_manager *scene_manager;
 		chirp::window window_manager;
 	};
 }

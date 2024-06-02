@@ -28,6 +28,6 @@ namespace chirp
 		vector2i size;
 
 		asset<chirp::image> image;
-		texture texture;
+		chirp::texture texture;
 	};
 }
