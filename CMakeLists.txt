@@ -26,8 +26,3 @@ include(deps/doctest.cmake)
 include(deps/msgpack.cmake)
 target_link_libraries(${PROJECT_NAME} PRIVATE
 	raylib)
-
-# Editor
-add_executable(${PROJECT_NAME}-editor)
-add_subdirectory(editor)
-target_link_libraries(${PROJECT_NAME}-editor PRIVATE ${PROJECT_NAME})
