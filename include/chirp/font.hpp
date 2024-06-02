@@ -2,6 +2,8 @@
 
 #include "chirp/text.hpp"
 
+#include <vector>
+
 struct Font;
 
 namespace chirp
