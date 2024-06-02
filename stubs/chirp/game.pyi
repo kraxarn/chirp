@@ -1,5 +1,7 @@
 import typing
 
+import chirp
+
 
 class Game:
 	def __init__(self):
@@ -23,7 +25,7 @@ class Game:
 	def set_clear_color(self, color: typing.Any) -> None:
 		...
 
-	def window(self) -> typing.Any:
+	def window(self) -> chirp.Window:
 		...
 
 	def scenes(self) -> typing.Any:
