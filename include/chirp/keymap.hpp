@@ -6,6 +6,8 @@
 #include <chirp/mousebutton.hpp>
 
 #include <map>
+#include <variant>
+#include <vector>
 
 namespace chirp
 {
