@@ -4,6 +4,8 @@
 #include <chirp/texture.hpp>
 #include <chirp/vector2.hpp>
 
+#include <vector>
+
 namespace chirp
 {
 	class tileset
