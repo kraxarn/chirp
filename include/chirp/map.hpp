@@ -29,8 +29,8 @@ namespace chirp
 	 */
 	using map_tile = struct
 	{
-		size_t x;
-		size_t y;
+		unsigned char x;
+		unsigned char y;
 		char value;
 	};
 }
