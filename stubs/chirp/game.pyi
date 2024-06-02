@@ -28,5 +28,5 @@ class Game:
 	def window(self) -> chirp.Window:
 		...
 
-	def scenes(self) -> typing.Any:
+	def scenes(self) -> chirp.SceneManager:
 		...
