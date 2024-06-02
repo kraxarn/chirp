@@ -12,7 +12,7 @@ namespace chirp
 		explicit tileset(const std::vector<unsigned char> &data);
 
 		[[nodiscard]]
-		auto at(int index) const -> image;
+		auto at(int index) const -> chirp::image;
 
 		void draw(const vector2f &position, int index, float rotation, float scale) const;
 
@@ -27,7 +27,7 @@ namespace chirp
 		 */
 		vector2i size;
 
-		asset<image> image;
+		asset<chirp::image> image;
 		texture texture;
 	};
 }

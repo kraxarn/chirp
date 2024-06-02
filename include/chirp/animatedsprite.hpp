@@ -58,7 +58,7 @@ namespace chirp
 		int current_frame;
 
 		asset<tileset> tileset;
-		direction direction;
+		chirp::direction direction;
 		vector2f position;
 	};
 }

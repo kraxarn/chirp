@@ -11,7 +11,7 @@ namespace chirp
 	class texture
 	{
 	public:
-		explicit texture(const asset<image> &image);
+		explicit texture(const asset<chirp::image> &image);
 		~texture();
 
 		/**
@@ -50,7 +50,7 @@ namespace chirp
 		void flip_horizontal() const;
 
 	private:
-		asset<image> image;
+		asset<chirp::image> image;
 		Texture *r_texture;
 
 		void reload() const;
