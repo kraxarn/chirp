@@ -15,7 +15,9 @@ namespace chirp
 		template<typename T>
 		void push()
 		{
-			scenes.push(std::make_shared<T>(assets));
+			auto scene = std::make_shared<T>(assets);
+			scene->init(*this);
+			scenes.push(scene);
 		}
 
 		/**
