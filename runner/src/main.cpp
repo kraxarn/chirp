@@ -17,6 +17,7 @@ auto main(int argc, char **argv) -> int
 
 	bind_game(py_vm, root_object);
 	bind_os(py_vm);
+	bind_scene(py_vm, root_object);
 
 	if (argc > 1)
 	{
