@@ -18,22 +18,22 @@ namespace chirp
 		assets();
 
 		[[nodiscard]]
-		auto music(const std::string &path) const -> asset<music>;
+		auto music(const std::string &path) const -> asset<chirp::music>;
 
 		[[nodiscard]]
-		auto sound(const std::string &path) const -> asset<sound>;
+		auto sound(const std::string &path) const -> asset<chirp::sound>;
 
 		[[nodiscard]]
-		auto font(const std::string &path, int font_size) const -> asset<font>;
+		auto font(const std::string &path, int font_size) const -> asset<chirp::font>;
 
 		[[nodiscard]]
-		auto image(const std::string &path) const -> asset<image>;
+		auto image(const std::string &path) const -> asset<chirp::image>;
 
 		[[nodiscard]]
-		auto tileset(const std::string &path) const -> asset<tileset>;
+		auto tileset(const std::string &path) const -> asset<chirp::tileset>;
 
 		[[nodiscard]]
-		auto level(const std::string &path) const -> asset<level>;
+		auto level(const std::string &path) const -> asset<chirp::level>;
 
 	private:
 		std::map<std::string, std::map<std::string, std::vector<unsigned char>>> data;
