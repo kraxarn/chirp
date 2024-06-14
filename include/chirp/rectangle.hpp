@@ -1,7 +1,5 @@
 #pragma once
 
-#include <chirp/vector2.hpp>
-
 namespace chirp
 {
 	template<typename T>
