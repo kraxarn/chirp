@@ -1,5 +1,7 @@
 #pragma once
 
+#include <chirp/color.hpp>
+
 namespace chirp
 {
 	template<typename T>
@@ -78,4 +80,8 @@ namespace chirp
 		T width_val;
 		T height_val;
 	};
+
+	void draw_filled(const chirp::rectangle<int> &rectangle, const chirp::color &color);
+
+	void draw_outline(const chirp::rectangle<int> &rectangle, const chirp::color &color);
 }
