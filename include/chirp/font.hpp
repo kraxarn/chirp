@@ -1,6 +1,6 @@
 #pragma once
 
-#include "chirp/text.hpp"
+#include <chirp/vector2.hpp>
 
 #include <vector>
 
@@ -8,19 +8,22 @@ struct Font;
 
 namespace chirp
 {
+	class text;
+
 	class font
 	{
 	public:
 		explicit font(const std::vector<unsigned char> &data, int font_size);
 		~font();
 
-		void draw_text(const chirp::text &text) const;
-
 		[[nodiscard]]
 		auto text_size(const chirp::text &text) const -> vector2f;
 
 		[[nodiscard]]
 		auto font_size() const -> int;
+
+		[[nodiscard]]
+		auto data() const -> Font *;
 
 	private:
 		Font *r_font;

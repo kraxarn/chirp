@@ -1,4 +1,5 @@
 #include "chirp/font.hpp"
+#include "chirp/text.hpp"
 #include "chirp/internal/utils.hpp"
 
 #include "raylib.h"
@@ -22,16 +23,6 @@ chirp::font::~font()
 	delete r_font;
 }
 
-void chirp::font::draw_text(const text &text) const
-{
-	const auto r_position = internal::utils::to_r_vector2(text.get_position());
-	const auto r_color = internal::utils::to_r_color(text.get_color());
-
-	DrawTextEx(*r_font, text.get_text().c_str(), r_position,
-		static_cast<float>(text.get_font_size()),
-		0.F, r_color);
-}
-
 auto chirp::font::font_size() const -> int
 {
 	return r_font->baseSize;
@@ -43,4 +34,9 @@ auto chirp::font::text_size(const text &text) const -> vector2f
 		static_cast<float>(text.get_font_size()), 0.F);
 
 	return internal::utils::from_r_vector2<float>(measurement);
+}
+
+auto chirp::font::data() const -> Font *
+{
+	return r_font;
 }

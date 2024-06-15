@@ -1,7 +1,9 @@
 #pragma once
 
+#include <chirp/asset.hpp>
 #include <chirp/color.hpp>
 #include <chirp/entity.hpp>
+#include <chirp/font.hpp>
 #include <chirp/vector2.hpp>
 
 #include <string>
@@ -11,7 +13,16 @@ namespace chirp
 	class text: public entity
 	{
 	public:
-		text(std::string text, vector2i position, int font_size, chirp::color color);
+		/**
+		 * Create text with default font
+		 */
+		explicit text(std::string text, const vector2i &position, int font_size, chirp::color color);
+
+		/**
+		 * Create text with specified font
+		 */
+		explicit text(const chirp::asset<chirp::font> &font, std::string text,
+			const vector2i &position, int font_size, chirp::color color);
 
 		void update(const chirp::scene &scene, float delta) override;
 
@@ -38,5 +49,6 @@ namespace chirp
 		vector2i position;
 		int font_size = 0;
 		chirp::color color;
+		chirp::asset<chirp::font> font;
 	};
 }
