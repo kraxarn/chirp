@@ -11,6 +11,6 @@ namespace chirp
 
 		virtual void update(const chirp::scene &scene, float delta) = 0;
 
-		virtual void draw() = 0;
+		virtual void draw() const = 0;
 	};
 }
