@@ -1,9 +1,9 @@
 #pragma once
 
-#include <chirp/scene.hpp>
-
 namespace chirp
 {
+	class scene;
+
 	class entity
 	{
 	public:
