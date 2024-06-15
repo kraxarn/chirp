@@ -1,9 +1,9 @@
 #include "chirp/entitycontainer.hpp"
 
-void chirp::entity_container::insert(const std::string &name, const chirp::asset<chirp::entity> &entity)
+void chirp::entity_container::insert_asset(const std::string &name, const chirp::asset<chirp::entity> &asset)
 {
-	entitites[name] = entity;
-	entity_order.push_back(entity);
+	entitites[name] = asset;
+	entity_order.push_back(asset);
 }
 
 auto chirp::entity_container::erase(const std::string &name) -> bool

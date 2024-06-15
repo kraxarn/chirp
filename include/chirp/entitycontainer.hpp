@@ -13,7 +13,18 @@ namespace chirp
 	public:
 		entity_container() = default;
 
-		void insert(const std::string &name, const chirp::asset<chirp::entity> &entity);
+		template<typename T>
+		void insert(const std::string &name, const T &entity)
+		{
+			const auto asset = std::make_shared<T>(entity);
+			insert_asset(name, asset);
+		}
+
+		template<>
+		void insert(const std::string &name, const chirp::asset<chirp::entity> &entity)
+		{
+			insert_asset(name, entity);
+		}
 
 		auto erase(const std::string &name) -> bool;
 
@@ -25,7 +36,8 @@ namespace chirp
 
 	private:
 		std::unordered_map<std::string, chirp::asset<chirp::entity>> entitites;
-
 		std::vector<chirp::asset<chirp::entity>> entity_order;
+
+		void insert_asset(const std::string &name, const chirp::asset<chirp::entity> &asset);
 	};
 }
