@@ -1,18 +1,21 @@
 #pragma once
 
-#include "chirp/color.hpp"
-#include "chirp/vector2.hpp"
+#include <chirp/color.hpp>
+#include <chirp/entity.hpp>
+#include <chirp/vector2.hpp>
 
 #include <string>
 
 namespace chirp
 {
-	class text
+	class text: public entity
 	{
 	public:
 		text(std::string text, vector2i position, int font_size, chirp::color color);
 
-		void draw() const;
+		void update(const chirp::scene &scene, float delta) override;
+
+		void draw() const override;
 
 		[[nodiscard]]
 		auto get_text() const -> const std::string &;

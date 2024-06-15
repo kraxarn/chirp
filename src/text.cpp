@@ -1,11 +1,14 @@
 #include "chirp/text.hpp"
-
-#include <chirp/internal/utils.hpp>
+#include "chirp/internal/utils.hpp"
 
 #include "raylib.h"
 
 chirp::text::text(std::string text, const vector2i position, const int font_size, const chirp::color color)
 	: str(std::move(text)), position(position), font_size(font_size), color(color)
+{
+}
+
+void chirp::text::update(const chirp::scene &/*scene*/, const float /*delta*/)
 {
 }
 
