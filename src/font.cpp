@@ -1,6 +1,4 @@
 #include "chirp/font.hpp"
-#include "chirp/text.hpp"
-#include "chirp/internal/utils.hpp"
 
 #include "raylib.h"
 
@@ -26,14 +24,6 @@ chirp::font::~font()
 auto chirp::font::font_size() const -> int
 {
 	return r_font->baseSize;
-}
-
-auto chirp::font::text_size(const text &text) const -> vector2f
-{
-	const auto measurement = MeasureTextEx(*r_font, text.get_text().c_str(),
-		static_cast<float>(text.get_font_size()), 0.F);
-
-	return internal::utils::from_r_vector2<float>(measurement);
 }
 
 auto chirp::font::data() const -> Font *

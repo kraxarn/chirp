@@ -44,6 +44,9 @@ namespace chirp
 		[[nodiscard]]
 		auto get_color() const -> color;
 
+		[[nodiscard]]
+		auto measure() const -> vector2f;
+
 	private:
 		std::string str;
 		vector2i position;

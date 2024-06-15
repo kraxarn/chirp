@@ -67,3 +67,17 @@ auto chirp::text::get_color() const -> chirp::color
 {
 	return color;
 }
+
+auto chirp::text::measure() const -> vector2f
+{
+	if (font)
+	{
+		const auto measurement = MeasureTextEx(*font->data(), str.c_str(),
+			static_cast<float>(font_size), 0.F);
+
+		return internal::utils::from_r_vector2<float>(measurement);
+	}
+
+	const auto width = MeasureText(str.c_str(), font_size);
+	return {static_cast<float>(width), 0};
+}
