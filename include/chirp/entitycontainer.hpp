@@ -20,10 +20,10 @@ namespace chirp
 			insert_asset(name, asset);
 		}
 
-		template<>
-		void insert(const std::string &name, const chirp::asset<chirp::entity> &entity)
+		template<typename T>
+		void insert(const std::string &name, const chirp::asset<T> &asset)
 		{
-			insert_asset(name, entity);
+			insert_asset(name, asset);
 		}
 
 		auto erase(const std::string &name) -> bool;
