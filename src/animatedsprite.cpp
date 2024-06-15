@@ -16,7 +16,7 @@ chirp::animated_sprite::animated_sprite(const asset<chirp::tileset> &tileset)
 {
 }
 
-void chirp::animated_sprite::update(const float delta)
+void chirp::animated_sprite::update(const chirp::scene &/*scene*/, const float delta)
 {
 	if (!playing)
 	{

@@ -3,19 +3,20 @@
 #include <chirp/asset.hpp>
 #include <chirp/color.hpp>
 #include <chirp/direction.hpp>
+#include <chirp/entity.hpp>
 #include <chirp/rectangle.hpp>
 #include <chirp/tileset.hpp>
 
 namespace chirp
 {
-	class animated_sprite
+	class animated_sprite: public entity
 	{
 	public:
 		explicit animated_sprite(const asset<tileset> &tileset);
 
-		void update(float delta);
+		void update(const chirp::scene &scene, float delta) override;
+		void draw() const override;
 
-		void draw() const;
 		void debug_draw(const color &color) const;
 
 		[[nodiscard]]
