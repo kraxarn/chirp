@@ -28,8 +28,12 @@ namespace chirp
 
 		auto erase(const std::string &name) -> bool;
 
+		template<typename T>
 		[[nodiscard]]
-		auto at(const std::string &name) -> const chirp::asset<chirp::entity> &;
+		auto at(const std::string &name) -> chirp::asset<T>
+		{
+			return std::dynamic_pointer_cast<T>(entitites.at(name));
+		}
 
 		[[nodiscard]]
 		auto items() const -> const std::vector<chirp::asset<chirp::entity>> &;

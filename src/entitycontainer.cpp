@@ -20,11 +20,6 @@ auto chirp::entity_container::erase(const std::string &name) -> bool
 	return entity_order.size() < old_size;
 }
 
-auto chirp::entity_container::at(const std::string &name) -> const chirp::asset<chirp::entity> &
-{
-	return entitites.at(name);
-}
-
 auto chirp::entity_container::items() const -> const std::vector<chirp::asset<chirp::entity>> &
 {
 	return entity_order;
