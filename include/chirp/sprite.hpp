@@ -1,19 +1,22 @@
 #pragma once
 
 #include <chirp/asset.hpp>
+#include <chirp/entity.hpp>
 #include <chirp/texture.hpp>
 #include <chirp/vector2.hpp>
 
 namespace chirp
 {
-	class sprite
+	class sprite: public entity
 	{
 	public:
 		explicit sprite(const asset<chirp::texture> &texture);
 
 		explicit sprite(const asset<chirp::image> &image);
 
-		void draw() const;
+		void update(const chirp::scene &scene, float delta) override;
+
+		void draw() const override;
 
 		[[nodiscard]]
 		auto get_size() const -> vector2i;

@@ -10,6 +10,10 @@ chirp::sprite::sprite(const asset<image> &image)
 {
 }
 
+void chirp::sprite::update(const chirp::scene &/*scene*/, const float /*delta*/)
+{
+}
+
 void chirp::sprite::draw() const
 {
 	texture->draw(get_position());
