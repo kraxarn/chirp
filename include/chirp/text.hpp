@@ -53,5 +53,7 @@ namespace chirp
 		int font_size = 0;
 		chirp::color color;
 		chirp::asset<chirp::font> font;
+
+		static auto get_default_font(int font_size) -> asset<chirp::font>;
 	};
 }
