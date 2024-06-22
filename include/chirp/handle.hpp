@@ -8,5 +8,5 @@ namespace chirp
 	 * Entity handle
 	 */
 	template<typename T>
-	using handle = std::unique_ptr<T>;
+	using handle = std::shared_ptr<T>;
 }
