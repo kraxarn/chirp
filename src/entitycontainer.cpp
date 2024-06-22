@@ -1,4 +1,5 @@
 #include "chirp/entitycontainer.hpp"
+#include "chirp/camera.hpp"
 
 void chirp::entity_container::insert_asset(const std::string &name, const chirp::asset<chirp::entity> &asset)
 {
@@ -34,4 +35,33 @@ auto chirp::entity_container::erase(const std::string &name) -> bool
 auto chirp::entity_container::items() const -> const std::vector<chirp::asset<chirp::entity>> &
 {
 	return entity_order;
+}
+
+auto chirp::entity_container::names() const -> std::vector<std::string>
+{
+	std::vector<std::string> names;
+	names.reserve(entitites.size());
+
+	for (const auto &[name, entity]: entitites)
+	{
+		names.push_back(name);
+
+		const auto camera = std::dynamic_pointer_cast<chirp::camera>(entity);
+		if (!camera)
+		{
+			continue;
+		}
+
+		for (const auto &camera_name: camera->entities().names())
+		{
+			names.push_back(camera_name);
+		}
+	}
+
+	return names;
+}
+
+auto chirp::entity_container::contains(const std::string &name) const -> bool
+{
+	return entitites.contains(name);
 }
