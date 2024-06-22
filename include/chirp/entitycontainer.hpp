@@ -15,13 +15,6 @@ namespace chirp
 		entity_container() = default;
 
 		template<typename T>
-		void insert(const std::string &name, const T &entity)
-		{
-			const auto asset = std::make_shared<T>(entity);
-			insert_asset(name, asset);
-		}
-
-		template<typename T>
 		void insert(const std::string &name, const chirp::asset<T> &asset)
 		{
 			insert_asset(name, asset);
