@@ -26,6 +26,11 @@ void chirp::jukebox::insert(const asset<music> &music)
 	current->set_volume(volume);
 }
 
+auto chirp::jukebox::empty() const -> bool
+{
+	return !current;
+}
+
 void chirp::jukebox::set_volume(const float value)
 {
 	volume = value;

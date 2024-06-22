@@ -16,6 +16,9 @@ namespace chirp
 
 		void insert(const asset<music> &music);
 
+		[[nodiscard]]
+		auto empty() const -> bool;
+
 		void set_volume(float value);
 
 		void play() const;
