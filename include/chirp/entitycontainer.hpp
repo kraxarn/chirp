@@ -1,7 +1,7 @@
 #pragma once
 
-#include <chirp/asset.hpp>
 #include <chirp/entity.hpp>
+#include <chirp/handle.hpp>
 #include <chirp/log.hpp>
 
 #include <unordered_map>
@@ -15,16 +15,16 @@ namespace chirp
 		entity_container() = default;
 
 		template<typename T>
-		void insert(const std::string &name, const chirp::asset<T> &asset)
+		void insert(const std::string &name, const chirp::handle<T> &entity)
 		{
-			insert_asset(name, asset);
+			insert_entity(name, entity);
 		}
 
 		auto erase(const std::string &name) -> bool;
 
 		template<typename T>
 		[[nodiscard]]
-		auto at(const std::string &name) -> chirp::asset<T>
+		auto at(const std::string &name) -> handle<T>
 		{
 			if (!contains(name))
 			{
@@ -41,7 +41,7 @@ namespace chirp
 		}
 
 		[[nodiscard]]
-		auto items() const -> const std::vector<chirp::asset<chirp::entity>> &;
+		auto items() const -> const std::vector<handle<entity>> &;
 
 		[[nodiscard]]
 		auto names() const -> std::vector<std::string>;
@@ -50,9 +50,9 @@ namespace chirp
 		auto contains(const std::string &name) const -> bool;
 
 	private:
-		std::unordered_map<std::string, chirp::asset<chirp::entity>> entitites;
-		std::vector<chirp::asset<chirp::entity>> entity_order;
+		std::unordered_map<std::string, handle<entity>> entitites;
+		std::vector<handle<entity>> entity_order;
 
-		void insert_asset(const std::string &name, const chirp::asset<chirp::entity> &asset);
+		void insert_entity(const std::string &name, const chirp::handle<chirp::entity> &asset);
 	};
 }
