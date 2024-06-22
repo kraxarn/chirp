@@ -43,7 +43,7 @@ void chirp::jukebox::set_volume(const float value)
 
 void chirp::jukebox::play() const
 {
-	if (!current)
+	if (empty())
 	{
 		chirp::log::error("Nothing in jukebox to play");
 		return;
@@ -54,7 +54,7 @@ void chirp::jukebox::play() const
 
 void chirp::jukebox::stop() const
 {
-	if (!current)
+	if (empty())
 	{
 		chirp::log::error("Nothing in jukebox to stop");
 		return;
