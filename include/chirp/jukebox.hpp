@@ -24,6 +24,9 @@ namespace chirp
 		void play() const;
 		void stop() const;
 
+		[[nodiscard]]
+		auto name() const -> const std::string &;
+
 	private:
 		float volume = 1.F;
 

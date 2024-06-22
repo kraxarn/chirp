@@ -62,3 +62,14 @@ void chirp::jukebox::stop() const
 
 	current->stop();
 }
+
+auto chirp::jukebox::name() const -> const std::string &
+{
+	if (empty())
+	{
+		chirp::log::warn("Jukebox is empty");
+		return {};
+	}
+
+	return current->name();
+}
