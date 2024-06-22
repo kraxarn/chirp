@@ -61,13 +61,9 @@ auto chirp::music::played() const -> float
 	return GetMusicTimePlayed(*r_music);
 }
 
-void chirp::music::update(const chirp::scene &/*scene*/, const float /*delta*/)
+void chirp::music::update() const
 {
 	UpdateMusicStream(*r_music);
-}
-
-void chirp::music::draw() const
-{
 }
 
 auto chirp::music::name() const -> const std::string &

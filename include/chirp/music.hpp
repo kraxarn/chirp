@@ -1,7 +1,5 @@
 #pragma once
 
-#include <chirp/entity.hpp>
-
 #include <string>
 #include <vector>
 
@@ -9,14 +7,13 @@ struct Music;
 
 namespace chirp
 {
-	class music: public entity
+	class music
 	{
 	public:
 		explicit music(const std::vector<unsigned char> &data, std::string name);
-		~music() override;
+		~music();
 
-		void update(const chirp::scene &scene, float delta) override;
-		void draw() const override;
+		void update() const;
 
 		void play() const;
 
