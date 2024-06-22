@@ -1,19 +1,21 @@
 #pragma once
 
+#include <chirp/entity.hpp>
+#include <chirp/entitycontainer.hpp>
 #include <chirp/vector2.hpp>
 
 struct Camera2D;
 
 namespace chirp
 {
-	class camera
+	class camera: public entity
 	{
 	public:
 		camera();
-		~camera();
+		~camera() override;
 
-		void begin() const;
-		void end() const;
+		void update(const chirp::scene &scene, float delta) override;
+		void draw() const override;
 
 		[[nodiscard]]
 		auto get_target() const -> vector2f;
@@ -30,7 +32,11 @@ namespace chirp
 
 		void set_zoom(float zoom) const;
 
+		[[nodiscard]]
+		auto entities() -> chirp::entity_container &;
+
 	private:
 		Camera2D *r_camera;
+		chirp::entity_container entity_container;
 	};
 }

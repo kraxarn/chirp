@@ -1,5 +1,4 @@
 #include "chirp/camera.hpp"
-
 #include "chirp/internal/utils.hpp"
 
 #include "raylib.h"
@@ -15,13 +14,25 @@ chirp::camera::~camera()
 	delete r_camera;
 }
 
-void chirp::camera::begin() const
+void chirp::camera::update(const chirp::scene &scene, const float delta)
 {
-	BeginMode2D(*r_camera);
+	// TODO: Temporary workaround for update modifying entities
+	const auto &items = entity_container.items();
+	for (size_t i = 0; i < items.size(); i++)
+	{
+		items.at(i)->update(scene, delta);
+	}
 }
 
-void chirp::camera::end() const
+void chirp::camera::draw() const
 {
+	BeginMode2D(*r_camera);
+
+	for (const auto &entity: entity_container.items())
+	{
+		entity->draw();
+	}
+
 	EndMode2D();
 }
 
@@ -53,4 +64,9 @@ auto chirp::camera::get_zoom() const -> float
 void chirp::camera::set_zoom(const float zoom) const
 {
 	r_camera->zoom = zoom;
+}
+
+auto chirp::camera::entities() -> chirp::entity_container &
+{
+	return entity_container;
 }
