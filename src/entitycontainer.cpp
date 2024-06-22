@@ -14,6 +14,11 @@ void chirp::entity_container::insert_asset(const std::string &name, const chirp:
 
 auto chirp::entity_container::erase(const std::string &name) -> bool
 {
+	if (!entitites.contains(name))
+	{
+		return false;
+	}
+
 	const auto entity = entitites.at(name);
 	if (entitites.erase(name) == 0)
 	{
