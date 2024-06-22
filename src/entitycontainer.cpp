@@ -2,6 +2,12 @@
 
 void chirp::entity_container::insert_asset(const std::string &name, const chirp::asset<chirp::entity> &asset)
 {
+	if (contains(name))
+	{
+		chirp::log::fatal("entity already exists: {}", name);
+		return;
+	}
+
 	entitites[name] = asset;
 	entity_order.push_back(asset);
 }
