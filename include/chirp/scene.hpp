@@ -23,15 +23,15 @@ namespace chirp
 
 		virtual void draw();
 
+		[[nodiscard]]
+		auto entities() const -> chirp::entity_container &;
+
 	protected:
 		[[nodiscard]]
 		auto scenes() const -> chirp::scene_manager &;
 
 		[[nodiscard]]
 		auto window() const -> const window &;
-
-		[[nodiscard]]
-		auto entitites() const -> chirp::entity_container &;
 
 	private:
 		chirp::scene_manager *scene_manager;

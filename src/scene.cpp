@@ -21,7 +21,7 @@ chirp::scene::~scene()
 
 void chirp::scene::update(const float delta)
 {
-	for (const auto &entity: entitites().items())
+	for (const auto &entity: entities().items())
 	{
 		entity->update(*this, delta);
 	}
@@ -29,7 +29,7 @@ void chirp::scene::update(const float delta)
 
 void chirp::scene::draw()
 {
-	for (const auto &entity: entitites().items())
+	for (const auto &entity: entities().items())
 	{
 		entity->draw();
 	}
@@ -51,7 +51,7 @@ auto chirp::scene::window() const -> const chirp::window &
 	return window_manager;
 }
 
-auto chirp::scene::entitites() const -> chirp::entity_container &
+auto chirp::scene::entities() const -> chirp::entity_container &
 {
 	return *entity_container;
 }
