@@ -13,12 +13,12 @@ namespace chirp
 		 * Push a new scene, making it the current active one
 		 */
 		template<typename T>
-		void push()
+		void push(T *scene)
 		{
-			auto scene = std::make_shared<T>();
-			scene->init(*this);
-			scene->load();
-			scenes.push(scene);
+			auto handle = std::shared_ptr<T>(scene);
+			handle->init(*this);
+			handle->load();
+			scenes.push(handle);
 		}
 
 		/**
