@@ -21,6 +21,8 @@ void chirp::scene::update(const float delta)
 	{
 		entity->update(*this, delta);
 	}
+
+	clear_queue();
 }
 
 void chirp::scene::draw()
