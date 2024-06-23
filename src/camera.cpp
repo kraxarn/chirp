@@ -17,11 +17,12 @@ chirp::camera::~camera()
 
 void chirp::camera::update(const chirp::scene &scene, const float delta)
 {
-	// TODO: Temporary workaround for update modifying entities
-	for (size_t i = 0; i < entities().size(); i++)
+	for (const auto &entity: entities())
 	{
-		entities().at(i)->update(scene, delta);
+		entity->update(scene, delta);
 	}
+
+	clear_queue();
 }
 
 void chirp::camera::draw() const

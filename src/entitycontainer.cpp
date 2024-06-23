@@ -13,13 +13,22 @@ void chirp::entity_container::append_entity(const std::string &name, const chirp
 	entity_order.push_back(handle);
 }
 
-auto chirp::entity_container::remove(const std::string &name) -> bool
+auto chirp::entity_container::queue_remove(const std::string &name) -> bool
 {
 	if (!entitites.contains(name))
 	{
 		return false;
 	}
 
+	entity_queue.emplace(internal::remove_action{
+		.name = name,
+	});
+
+	return true;
+}
+
+auto chirp::entity_container::remove_entity(const std::string &name) -> bool
+{
 	const auto entity = entitites.at(name);
 	if (entitites.erase(name) == 0)
 	{
@@ -30,6 +39,25 @@ auto chirp::entity_container::remove(const std::string &name) -> bool
 	const auto old_size = entity_order.size();
 	entity_order.erase(position, entity_order.end());
 	return entity_order.size() < old_size;
+}
+
+void chirp::entity_container::clear_queue()
+{
+	while (!entity_queue.empty())
+	{
+		const auto &action = entity_queue.front();
+
+		if (const auto *remove_action = std::get_if<internal::remove_action>(&action))
+		{
+			remove_entity(remove_action->name);
+		}
+		else if (const auto *append_action = std::get_if<internal::append_action>(&action))
+		{
+			append_entity(append_action->name, append_action->entity);
+		}
+
+		entity_queue.pop();
+	}
 }
 
 auto chirp::entity_container::entities() const -> const std::vector<chirp::handle<chirp::entity>> &

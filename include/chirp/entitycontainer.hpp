@@ -2,7 +2,9 @@
 
 #include <chirp/handle.hpp>
 #include <chirp/log.hpp>
+#include <chirp/internal/entityaction.hpp>
 
+#include <queue>
 #include <unordered_map>
 #include <vector>
 
@@ -21,7 +23,20 @@ namespace chirp
 			return handle;
 		}
 
-		auto remove(const std::string &name) -> bool;
+		template<typename T>
+		chirp::handle<T> queue_append(const std::string &name, T *entity)
+		{
+			auto handle = std::shared_ptr<T>(entity);
+
+			entity_queue.push(internal::append_action{
+				.name = name,
+				.entity = handle,
+			});
+
+			return handle;
+		}
+
+		auto queue_remove(const std::string &name) -> bool;
 
 		template<typename T>
 		[[nodiscard]]
@@ -53,10 +68,14 @@ namespace chirp
 	protected:
 		entity_container() = default;
 
+		void clear_queue();
+
 	private:
 		std::unordered_map<std::string, handle<entity>> entitites;
 		std::vector<handle<entity>> entity_order;
+		std::queue<internal::entity_action> entity_queue;
 
 		void append_entity(const std::string &name, const handle<entity> &handle);
+		auto remove_entity(const std::string &name) -> bool;
 	};
 }
