@@ -5,11 +5,16 @@ void chirp::scene_manager::pop()
 	scenes.pop();
 }
 
-auto chirp::scene_manager::peek() const -> std::shared_ptr<chirp::scene>
+auto chirp::scene_manager::empty() const -> bool
+{
+	return scenes.empty();
+}
+
+auto chirp::scene_manager::peek() const -> const std::shared_ptr<chirp::scene> &
 {
 	if (scenes.empty())
 	{
-		return {};
+		log::fatal("Unable to peek, no scenes loaded");
 	}
 
 	return scenes.top();

@@ -29,13 +29,13 @@ void chirp::game::run()
 	running = true;
 	while (running)
 	{
-		auto current_scene = scenes().peek();
-		if (!current_scene)
+		if (scenes().empty())
 		{
 			running = false;
 			break;
 		}
 
+		const auto &current_scene = scenes().peek();
 		current_scene->update(GetFrameTime());
 
 		BeginDrawing();

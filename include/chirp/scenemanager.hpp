@@ -28,9 +28,16 @@ namespace chirp
 		void pop();
 
 		/**
-		 * Get current scene, or nullptr if no scene
+		 * Check if there are no scenes
 		 */
-		auto peek() const -> std::shared_ptr<chirp::scene>;
+		[[nodiscard]]
+		auto empty() const -> bool;
+
+		/**
+		 * Get current scene
+		 */
+		[[nodiscard]]
+		auto peek() const -> const std::shared_ptr<chirp::scene> &;
 
 		auto get_assets() const -> const chirp::assets &;
 
