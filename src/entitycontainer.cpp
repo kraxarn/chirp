@@ -19,7 +19,7 @@ void chirp::entity_container::append_entity(const std::string &name, const chirp
 		}
 	}
 
-	entitites[name] = handle;
+	entity_map[name] = handle;
 	entity_order.push_back(handle);
 }
 
@@ -41,13 +41,13 @@ auto chirp::entity_container::remove_entity(const std::string &name) -> bool
 		}
 	}
 
-	if (!entitites.contains(name))
+	if (!entity_map.contains(name))
 	{
 		return false;
 	}
 
-	const auto entity = entitites.at(name);
-	if (entitites.erase(name) == 0)
+	const auto entity = entity_map.at(name);
+	if (entity_map.erase(name) == 0)
 	{
 		return false;
 	}
@@ -85,9 +85,9 @@ auto chirp::entity_container::entities() const -> const std::vector<chirp::handl
 auto chirp::entity_container::entity_keys() const -> std::vector<std::string>
 {
 	std::vector<std::string> names;
-	names.reserve(entitites.size());
+	names.reserve(entity_map.size());
 
-	for (const auto &[name, entity]: entitites)
+	for (const auto &[name, entity]: entity_map)
 	{
 		names.push_back(name);
 
@@ -108,5 +108,5 @@ auto chirp::entity_container::entity_keys() const -> std::vector<std::string>
 
 auto chirp::entity_container::contains(const std::string &name) const -> bool
 {
-	return entitites.contains(name);
+	return entity_map.contains(name);
 }

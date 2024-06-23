@@ -48,7 +48,7 @@ namespace chirp
 				return {};
 			}
 
-			auto entity = std::dynamic_pointer_cast<T>(entitites.at(name));
+			auto entity = std::dynamic_pointer_cast<T>(entity_map.at(name));
 			if (!entity)
 			{
 				log::warn("Wrong entity type: {}", name);
@@ -73,7 +73,7 @@ namespace chirp
 		void clear_queue();
 
 	private:
-		std::unordered_map<std::string, handle<entity>> entitites;
+		std::unordered_map<std::string, handle<entity>> entity_map;
 		std::vector<handle<entity>> entity_order;
 		std::queue<internal::entity_action> entity_queue;
 
