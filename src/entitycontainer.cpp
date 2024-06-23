@@ -1,7 +1,7 @@
 #include "chirp/entitycontainer.hpp"
 #include "chirp/camera.hpp"
 
-void chirp::entity_container::append(const std::string &name, const chirp::handle<chirp::entity> &handle)
+void chirp::entity_container::append_entity(const std::string &name, const chirp::handle<chirp::entity> &handle)
 {
 	if (contains(name))
 	{

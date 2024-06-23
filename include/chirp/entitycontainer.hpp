@@ -14,10 +14,10 @@ namespace chirp
 	{
 	public:
 		template<typename T>
-		chirp::handle<T> append_entity(const std::string &name, T *entity)
+		chirp::handle<T> append(const std::string &name, T *entity)
 		{
 			auto handle = std::shared_ptr<T>(entity);
-			append(name, handle);
+			append_entity(name, handle);
 			return handle;
 		}
 
@@ -57,6 +57,6 @@ namespace chirp
 		std::unordered_map<std::string, handle<entity>> entitites;
 		std::vector<handle<entity>> entity_order;
 
-		void append(const std::string &name, const handle<entity> &handle);
+		void append_entity(const std::string &name, const handle<entity> &handle);
 	};
 }
