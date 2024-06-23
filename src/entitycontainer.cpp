@@ -23,18 +23,11 @@ void chirp::entity_container::append_entity(const std::string &name, const chirp
 	entity_order.push_back(handle);
 }
 
-auto chirp::entity_container::queue_remove(const std::string &name) -> bool
+void chirp::entity_container::queue_remove(const std::string &name)
 {
-	if (!entitites.contains(name))
-	{
-		return false;
-	}
-
 	entity_queue.emplace(internal::remove_action{
 		.name = name,
 	});
-
-	return true;
 }
 
 auto chirp::entity_container::remove_entity(const std::string &name) -> bool
@@ -46,6 +39,11 @@ auto chirp::entity_container::remove_entity(const std::string &name) -> bool
 		{
 			return parent->remove_entity(name.substr(index + 1));
 		}
+	}
+
+	if (!entitites.contains(name))
+	{
+		return false;
 	}
 
 	const auto entity = entitites.at(name);

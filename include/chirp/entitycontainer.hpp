@@ -36,7 +36,7 @@ namespace chirp
 			return handle;
 		}
 
-		auto queue_remove(const std::string &name) -> bool;
+		void queue_remove(const std::string &name);
 
 		template<typename T>
 		[[nodiscard]]
