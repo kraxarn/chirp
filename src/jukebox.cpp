@@ -68,7 +68,7 @@ auto chirp::jukebox::name() const -> const std::string &
 	if (empty())
 	{
 		chirp::log::warn("Jukebox is empty");
-		return {};
+		return default_name;
 	}
 
 	return current->name();

@@ -29,7 +29,7 @@ namespace chirp
 
 	private:
 		float volume = 1.F;
-
 		asset<music> current;
+		std::string default_name;
 	};
 }
