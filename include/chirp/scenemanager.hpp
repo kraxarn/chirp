@@ -28,6 +28,11 @@ namespace chirp
 		void pop();
 
 		/**
+		 * Pop current scene at the end of the current frame
+		 */
+		void queue_pop();
+
+		/**
 		 * Check if there are no scenes
 		 */
 		[[nodiscard]]
@@ -41,9 +46,11 @@ namespace chirp
 
 		auto get_assets() const -> const chirp::assets &;
 
+		void clear_queue();
+
 	private:
 		std::stack<std::shared_ptr<chirp::scene>> scenes;
-
 		chirp::assets assets;
+		int pop_queue_count = 0;
 	};
 }

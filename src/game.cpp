@@ -55,6 +55,8 @@ void chirp::game::run()
 		{
 			running = false;
 		}
+
+		scenes().clear_queue();
 	}
 }
 
