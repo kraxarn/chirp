@@ -1,6 +1,5 @@
 #pragma once
 
-#include <chirp/entity.hpp>
 #include <chirp/handle.hpp>
 #include <chirp/log.hpp>
 
@@ -9,11 +8,11 @@
 
 namespace chirp
 {
+	class entity;
+
 	class entity_container
 	{
 	public:
-		entity_container() = default;
-
 		template<typename T>
 		chirp::handle<T> append_entity(const std::string &name, T *entity)
 		{
@@ -26,7 +25,7 @@ namespace chirp
 
 		template<typename T>
 		[[nodiscard]]
-		auto find(const std::string &name) -> handle<T>
+		auto find(const std::string &name) const -> handle<T>
 		{
 			if (!contains(name))
 			{
@@ -50,6 +49,9 @@ namespace chirp
 
 		[[nodiscard]]
 		auto contains(const std::string &name) const -> bool;
+
+	protected:
+		entity_container() = default;
 
 	private:
 		std::unordered_map<std::string, handle<entity>> entitites;

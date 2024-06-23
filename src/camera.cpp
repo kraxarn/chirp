@@ -4,7 +4,8 @@
 #include "raylib.h"
 
 chirp::camera::camera()
-	: r_camera(new Camera2D())
+	: entity_container(),
+	r_camera(new Camera2D())
 {
 	r_camera->zoom = 1.F;
 }
@@ -17,10 +18,9 @@ chirp::camera::~camera()
 void chirp::camera::update(const chirp::scene &scene, const float delta)
 {
 	// TODO: Temporary workaround for update modifying entities
-	const auto &items = entity_container.entities();
-	for (size_t i = 0; i < items.size(); i++)
+	for (size_t i = 0; i < entities().size(); i++)
 	{
-		items.at(i)->update(scene, delta);
+		entities().at(i)->update(scene, delta);
 	}
 }
 
@@ -28,7 +28,7 @@ void chirp::camera::draw() const
 {
 	BeginMode2D(*r_camera);
 
-	for (const auto &entity: entity_container.entities())
+	for (const auto &entity: entities())
 	{
 		entity->draw();
 	}
@@ -64,9 +64,4 @@ auto chirp::camera::get_zoom() const -> float
 void chirp::camera::set_zoom(const float zoom) const
 {
 	r_camera->zoom = zoom;
-}
-
-auto chirp::camera::entities() -> chirp::entity_container &
-{
-	return entity_container;
 }

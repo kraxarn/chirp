@@ -1,5 +1,6 @@
 #include "chirp/scene.hpp"
 
+#include <chirp/entity.hpp>
 #include <chirp/entitycontainer.hpp>
 #include <chirp/log.hpp>
 
@@ -9,19 +10,14 @@
  * 2. Maybe it will load something in the future, who knows.
  */
 chirp::scene::scene(const assets &/*assets*/)
-	: scene_manager(nullptr),
-	entity_container(new chirp::entity_container())
+	: chirp::entity_container(),
+	scene_manager(nullptr)
 {
-}
-
-chirp::scene::~scene()
-{
-	delete entity_container;
 }
 
 void chirp::scene::update(const float delta)
 {
-	for (const auto &entity: entities().entities())
+	for (const auto &entity: entities())
 	{
 		entity->update(*this, delta);
 	}
@@ -29,7 +25,7 @@ void chirp::scene::update(const float delta)
 
 void chirp::scene::draw()
 {
-	for (const auto &entity: entities().entities())
+	for (const auto &entity: entities())
 	{
 		entity->draw();
 	}
@@ -49,11 +45,6 @@ auto chirp::scene::scenes() const -> chirp::scene_manager &
 auto chirp::scene::window() const -> const chirp::window &
 {
 	return window_manager;
-}
-
-auto chirp::scene::entities() const -> chirp::entity_container &
-{
-	return *entity_container;
 }
 
 void chirp::scene::init(chirp::scene_manager &scene)

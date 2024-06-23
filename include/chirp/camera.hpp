@@ -8,7 +8,7 @@ struct Camera2D;
 
 namespace chirp
 {
-	class camera: public entity
+	class camera: public entity, public entity_container
 	{
 	public:
 		camera();
@@ -32,11 +32,7 @@ namespace chirp
 
 		void set_zoom(float zoom) const;
 
-		[[nodiscard]]
-		auto entities() -> chirp::entity_container &;
-
 	private:
 		Camera2D *r_camera;
-		chirp::entity_container entity_container;
 	};
 }
