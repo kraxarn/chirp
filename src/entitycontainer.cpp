@@ -9,6 +9,16 @@ void chirp::entity_container::append_entity(const std::string &name, const chirp
 		return;
 	}
 
+	if (const auto index = name.find('/'); index != std::string::npos)
+	{
+		const auto parent_name = name.substr(0, index);
+		if (const auto &parent = find<chirp::entity_container>(parent_name))
+		{
+			parent->append_entity(name.substr(index + 1), handle);
+			return;
+		}
+	}
+
 	entitites[name] = handle;
 	entity_order.push_back(handle);
 }
