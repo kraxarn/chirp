@@ -26,7 +26,7 @@ namespace chirp
 
 		template<typename T>
 		[[nodiscard]]
-		auto at(const std::string &name) -> handle<T>
+		auto find(const std::string &name) -> handle<T>
 		{
 			if (!contains(name))
 			{
