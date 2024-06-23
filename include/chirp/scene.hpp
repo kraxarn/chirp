@@ -11,13 +11,13 @@ namespace chirp
 	class scene: public entity_container
 	{
 	public:
-		explicit scene(const assets &assets);
+		explicit scene();
 
 		virtual ~scene() = default;
 
 		void init(chirp::scene_manager &scene);
 
-		virtual void load();
+		virtual void load() = 0;
 
 		virtual void update(float delta);
 
@@ -29,6 +29,9 @@ namespace chirp
 
 		[[nodiscard]]
 		auto window() const -> const window &;
+
+		[[nodiscard]]
+		auto assets() const -> const assets &;
 
 	private:
 		chirp::scene_manager *scene_manager;

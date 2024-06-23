@@ -15,8 +15,9 @@ namespace chirp
 		template<typename T>
 		void push()
 		{
-			auto scene = std::make_shared<T>(assets);
+			auto scene = std::make_shared<T>();
 			scene->init(*this);
+			scene->load();
 			scenes.push(scene);
 		}
 
@@ -30,6 +31,8 @@ namespace chirp
 		 * Get current scene, or nullptr if no scene
 		 */
 		auto peek() const -> std::shared_ptr<chirp::scene>;
+
+		auto get_assets() const -> const chirp::assets &;
 
 	private:
 		std::stack<std::shared_ptr<chirp::scene>> scenes;

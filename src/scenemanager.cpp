@@ -14,3 +14,8 @@ auto chirp::scene_manager::peek() const -> std::shared_ptr<chirp::scene>
 
 	return scenes.top();
 }
+
+auto chirp::scene_manager::get_assets() const -> const chirp::assets &
+{
+	return assets;
+}
