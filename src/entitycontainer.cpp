@@ -1,7 +1,7 @@
 #include "chirp/entitycontainer.hpp"
 #include "chirp/camera.hpp"
 
-void chirp::entity_container::insert_entity(const std::string &name, const chirp::handle<chirp::entity> &asset)
+void chirp::entity_container::insert_entity(const std::string &name, const chirp::handle<chirp::entity> &handle)
 {
 	if (contains(name))
 	{
@@ -9,8 +9,8 @@ void chirp::entity_container::insert_entity(const std::string &name, const chirp
 		return;
 	}
 
-	entitites[name] = asset;
-	entity_order.push_back(asset);
+	entitites[name] = handle;
+	entity_order.push_back(handle);
 }
 
 auto chirp::entity_container::erase(const std::string &name) -> bool
