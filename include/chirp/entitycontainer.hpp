@@ -44,13 +44,15 @@ namespace chirp
 		{
 			if (!contains(name))
 			{
-				log::fatal("No such entity: {}", name);
+				log::warn("No such entity: {}", name);
+				return {};
 			}
 
 			auto entity = std::dynamic_pointer_cast<T>(entitites.at(name));
 			if (!entity)
 			{
-				log::fatal("Wrong entity type: {}", name);
+				log::warn("Wrong entity type: {}", name);
+				return {};
 			}
 
 			return entity;
