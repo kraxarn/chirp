@@ -54,7 +54,7 @@ auto chirp::entity_container::names() const -> std::vector<std::string>
 
 		for (const auto &camera_name: camera->entities().names())
 		{
-			names.push_back(camera_name);
+			names.push_back(chirp::format("{}/{}", name, camera_name));
 		}
 	}
 
