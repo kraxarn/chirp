@@ -17,7 +17,7 @@ chirp::camera::~camera()
 void chirp::camera::update(const chirp::scene &scene, const float delta)
 {
 	// TODO: Temporary workaround for update modifying entities
-	const auto &items = entity_container.items();
+	const auto &items = entity_container.entities();
 	for (size_t i = 0; i < items.size(); i++)
 	{
 		items.at(i)->update(scene, delta);
@@ -28,7 +28,7 @@ void chirp::camera::draw() const
 {
 	BeginMode2D(*r_camera);
 
-	for (const auto &entity: entity_container.items())
+	for (const auto &entity: entity_container.entities())
 	{
 		entity->draw();
 	}

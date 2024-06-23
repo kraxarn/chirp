@@ -15,14 +15,14 @@ namespace chirp
 		entity_container() = default;
 
 		template<typename T>
-		chirp::handle<T> insert(const std::string &name, T *entity)
+		chirp::handle<T> append_entity(const std::string &name, T *entity)
 		{
 			auto handle = std::shared_ptr<T>(entity);
-			insert_entity(name, handle);
+			append(name, handle);
 			return handle;
 		}
 
-		auto erase(const std::string &name) -> bool;
+		auto remove(const std::string &name) -> bool;
 
 		template<typename T>
 		[[nodiscard]]
@@ -43,10 +43,10 @@ namespace chirp
 		}
 
 		[[nodiscard]]
-		auto items() const -> const std::vector<handle<entity>> &;
+		auto entities() const -> const std::vector<handle<entity>> &;
 
 		[[nodiscard]]
-		auto names() const -> std::vector<std::string>;
+		auto entity_keys() const -> std::vector<std::string>;
 
 		[[nodiscard]]
 		auto contains(const std::string &name) const -> bool;
@@ -55,6 +55,6 @@ namespace chirp
 		std::unordered_map<std::string, handle<entity>> entitites;
 		std::vector<handle<entity>> entity_order;
 
-		void insert_entity(const std::string &name, const handle<entity> &handle);
+		void append(const std::string &name, const handle<entity> &handle);
 	};
 }

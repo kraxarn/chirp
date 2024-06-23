@@ -1,7 +1,7 @@
 #include "chirp/entitycontainer.hpp"
 #include "chirp/camera.hpp"
 
-void chirp::entity_container::insert_entity(const std::string &name, const chirp::handle<chirp::entity> &handle)
+void chirp::entity_container::append(const std::string &name, const chirp::handle<chirp::entity> &handle)
 {
 	if (contains(name))
 	{
@@ -13,7 +13,7 @@ void chirp::entity_container::insert_entity(const std::string &name, const chirp
 	entity_order.push_back(handle);
 }
 
-auto chirp::entity_container::erase(const std::string &name) -> bool
+auto chirp::entity_container::remove(const std::string &name) -> bool
 {
 	if (!entitites.contains(name))
 	{
@@ -32,12 +32,12 @@ auto chirp::entity_container::erase(const std::string &name) -> bool
 	return entity_order.size() < old_size;
 }
 
-auto chirp::entity_container::items() const -> const std::vector<chirp::handle<chirp::entity>> &
+auto chirp::entity_container::entities() const -> const std::vector<chirp::handle<chirp::entity>> &
 {
 	return entity_order;
 }
 
-auto chirp::entity_container::names() const -> std::vector<std::string>
+auto chirp::entity_container::entity_keys() const -> std::vector<std::string>
 {
 	std::vector<std::string> names;
 	names.reserve(entitites.size());
@@ -52,7 +52,7 @@ auto chirp::entity_container::names() const -> std::vector<std::string>
 			continue;
 		}
 
-		for (const auto &camera_name: camera->entities().names())
+		for (const auto &camera_name: camera->entities().entity_keys())
 		{
 			names.push_back(chirp::format("{}/{}", name, camera_name));
 		}

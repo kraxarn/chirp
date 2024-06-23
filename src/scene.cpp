@@ -21,7 +21,7 @@ chirp::scene::~scene()
 
 void chirp::scene::update(const float delta)
 {
-	for (const auto &entity: entities().items())
+	for (const auto &entity: entities().entities())
 	{
 		entity->update(*this, delta);
 	}
@@ -29,7 +29,7 @@ void chirp::scene::update(const float delta)
 
 void chirp::scene::draw()
 {
-	for (const auto &entity: entities().items())
+	for (const auto &entity: entities().entities())
 	{
 		entity->draw();
 	}
