@@ -5,7 +5,7 @@ void chirp::entity_container::append_entity(const std::string &name, const chirp
 {
 	if (contains(name))
 	{
-		chirp::log::fatal("entity already exists: {}", name);
+		chirp::log::fatal("Entity already exists: {}", name);
 		return;
 	}
 
