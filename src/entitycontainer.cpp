@@ -39,6 +39,15 @@ auto chirp::entity_container::queue_remove(const std::string &name) -> bool
 
 auto chirp::entity_container::remove_entity(const std::string &name) -> bool
 {
+	if (const auto index = name.find('/'); index != std::string::npos)
+	{
+		const auto parent_name = name.substr(0, index);
+		if (const auto &parent = find<chirp::entity_container>(parent_name))
+		{
+			return parent->remove_entity(name.substr(index + 1));
+		}
+	}
+
 	const auto entity = entitites.at(name);
 	if (entitites.erase(name) == 0)
 	{
