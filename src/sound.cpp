@@ -25,3 +25,8 @@ void chirp::sound::play() const
 {
 	PlaySound(*r_sound);
 }
+
+auto chirp::sound::is_playing() const -> bool
+{
+	return IsSoundPlaying(*r_sound);
+}

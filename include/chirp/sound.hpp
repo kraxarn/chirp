@@ -15,6 +15,9 @@ namespace chirp
 
 		void play() const;
 
+		[[nodiscard]]
+		auto is_playing() const -> bool;
+
 	private:
 		Wave *r_wave;
 		Sound *r_sound;
