@@ -24,3 +24,8 @@ void chirp::window::set_size(const chirp::vector2i &size) const
 {
 	SetWindowSize(size.x(), size.y());
 }
+
+auto chirp::window::is_resized() const -> bool
+{
+	return IsWindowResized();
+}

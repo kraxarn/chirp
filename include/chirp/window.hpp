@@ -26,5 +26,11 @@ namespace chirp
 		 * Set the window size, resizing it if needed
 		 */
 		void set_size(const chirp::vector2i &size) const;
+
+		/**
+		 * Window got resized during the previous frame
+		 */
+		[[nodiscard]]
+		auto is_resized() const -> bool;
 	};
 }
