@@ -23,7 +23,6 @@ namespace chirp
 
 		virtual void draw();
 
-	protected:
 		[[nodiscard]]
 		auto scenes() const -> chirp::scene_manager &;
 
