@@ -12,6 +12,7 @@ chirp::game::game()
 {
 	chirp::logger::init();
 	InitWindow(default_width, default_height, default_title);
+	SetWindowState(FLAG_WINDOW_RESIZABLE);
 
 	// TODO: Use vsync instead by default
 	const auto monitor_index = chirp::monitor::current();
