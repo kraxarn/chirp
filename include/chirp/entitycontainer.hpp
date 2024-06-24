@@ -42,6 +42,15 @@ namespace chirp
 		[[nodiscard]]
 		auto find(const std::string &name) const -> handle<T>
 		{
+			if (const auto index = name.find('/'); index != std::string::npos)
+			{
+				const auto parent_name = name.substr(0, index);
+				if (const auto &parent = find<chirp::entity_container>(parent_name))
+				{
+					return parent->find<T>(name.substr(index + 1));
+				}
+			}
+
 			if (!contains(name))
 			{
 				log::warn("No such entity: {}", name);
