@@ -1,13 +1,15 @@
 #include "chirp/scenemanager.hpp"
 
-void chirp::scene_manager::pop()
+void chirp::scene_manager::queue_push(chirp::scene *scene)
 {
-	scenes.pop();
+	queue.emplace(internal::push_action{
+		.scene = scene,
+	});
 }
 
 void chirp::scene_manager::queue_pop()
 {
-	pop_queue_count++;
+	queue.emplace(internal::pop_action{});
 }
 
 auto chirp::scene_manager::empty() const -> bool
@@ -32,9 +34,19 @@ auto chirp::scene_manager::get_assets() const -> const chirp::assets &
 
 void chirp::scene_manager::clear_queue()
 {
-	while (pop_queue_count > 0)
+	while (!queue.empty())
 	{
-		pop();
-		pop_queue_count--;
+		const auto &action = queue.front();
+
+		if (std::holds_alternative<internal::pop_action>(action))
+		{
+			scenes.pop();
+		}
+		else if (const auto *push_action = std::get_if<internal::push_action>(&action))
+		{
+			push(push_action->scene);
+		}
+
+		queue.pop();
 	}
 }

@@ -1,7 +1,9 @@
 #pragma once
 
 #include <chirp/scene.hpp>
+#include <chirp/internal/sceneaction.hpp>
 
+#include <queue>
 #include <stack>
 
 namespace chirp
@@ -20,6 +22,11 @@ namespace chirp
 			handle->load();
 			scenes.push(handle);
 		}
+
+		/**
+		 * Push a new scene at the end of the frame, making it the current active one
+		 */
+		void queue_push(chirp::scene *scene);
 
 		/**
 		 * Pop current scene at the end of the frame, going back to the previous one,
@@ -45,7 +52,7 @@ namespace chirp
 
 	private:
 		std::stack<std::shared_ptr<chirp::scene>> scenes;
+		std::queue<internal::scene_action> queue;
 		chirp::assets assets;
-		int pop_queue_count = 0;
 	};
 }
