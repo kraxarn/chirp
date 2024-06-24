@@ -22,13 +22,8 @@ namespace chirp
 		}
 
 		/**
-		 * Pop current scene, going back to the previous one,
+		 * Pop current scene at the end of the frame, going back to the previous one,
 		 * or closing the window if no previous scene
-		 */
-		void pop();
-
-		/**
-		 * Pop current scene at the end of the current frame
 		 */
 		void queue_pop();
 
