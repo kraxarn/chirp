@@ -1,2 +1,3 @@
-def is_debug() -> bool:
+@property
+def debug() -> bool:
 	...

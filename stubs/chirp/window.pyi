@@ -2,11 +2,18 @@ import typing
 
 
 class Window:
-	def set_title(self, title: str) -> None:
+	@property
+	def title(self) -> str:
 		...
 
-	def get_size(self) -> typing.Any:
+	@title.setter
+	def title(self, title: str) -> None:
 		...
 
-	def set_size(self, size: typing.Any) -> None:
+	@property
+	def size(self) -> typing.Any:
+		...
+
+	@size.setter
+	def size(self, size: typing.Any) -> None:
 		...

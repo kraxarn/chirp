@@ -16,8 +16,10 @@ class Scene(abc.ABC):
 	def draw(self) -> None:
 		...
 
+	@property
 	def scenes(self) -> chirp.SceneManager:
 		...
 
+	@property
 	def window(self) -> chirp.Window:
 		...
