@@ -12,9 +12,15 @@ namespace chirp
 		explicit window() = default;
 
 		/**
-		 * Set the title of the main window, if avaialble
+		 * Get the title of the main window, if available
 		 */
-		void set_title(const std::string &title) const;
+		[[nodiscard]]
+		auto get_title() const -> const std::string &;
+
+		/**
+		 * Set the title of the main window, if available
+		 */
+		void set_title(const std::string &title);
 
 		/**
 		 * Get the current size of the main window
@@ -32,5 +38,8 @@ namespace chirp
 		 */
 		[[nodiscard]]
 		auto is_resized() const -> bool;
+
+	private:
+		std::string title;
 	};
 }

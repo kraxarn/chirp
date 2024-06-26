@@ -2,13 +2,14 @@
 
 #include "raylib.h"
 
-/*
- * this could be a static class, but passing around
- * an instance feels better and is more consistent
- */
-
-void chirp::window::set_title(const std::string &title) const
+auto chirp::window::get_title() const -> const std::string &
 {
+	return title;
+}
+
+void chirp::window::set_title(const std::string &title)
+{
+	this->title = title;
 	SetWindowTitle(title.c_str());
 }
 
