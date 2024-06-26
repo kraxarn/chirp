@@ -8,7 +8,7 @@ void bind_scene(pkpy::VM *py_vm, pkpy::PyVar mod)
 		[](pkpy::VM *pkpy_vm, pkpy::PyVar /*mod*/, const pkpy::PyVar type)
 		{
 			pkpy_vm->bind(type, "load(self)",
-				[](pkpy::VM *py_vm, const pkpy::ArgsView args) -> pkpy::PyVar
+				[](pkpy::VM *py_vm, const pkpy::ArgsView /*args*/) -> pkpy::PyVar
 				{
 					return py_vm->None;
 				});
