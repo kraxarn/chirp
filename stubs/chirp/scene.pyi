@@ -1,4 +1,5 @@
 import abc
+import typing
 
 import chirp
 
@@ -22,4 +23,8 @@ class Scene(abc.ABC):
 
 	@property
 	def window(self) -> chirp.Window:
+		...
+
+	@property
+	def assets(self) -> typing.Any:
 		...
