@@ -17,10 +17,9 @@ namespace chirp
 		template<typename T>
 		void push(T *scene)
 		{
-			auto handle = std::shared_ptr<T>(scene);
-			handle->init(*this);
-			handle->load();
-			scenes.push(handle);
+			scene->init(*this);
+			scene->load();
+			scenes.push(scene);
 		}
 
 		/**
@@ -51,7 +50,7 @@ namespace chirp
 		void clear_queue();
 
 	private:
-		std::stack<std::shared_ptr<chirp::scene>> scenes;
+		std::stack<chirp::scene *> scenes;
 		std::queue<internal::scene_action> queue;
 		chirp::assets assets;
 	};
