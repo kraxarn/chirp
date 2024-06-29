@@ -44,7 +44,7 @@ namespace chirp
 		 * Get current scene
 		 */
 		[[nodiscard]]
-		auto peek() const -> const std::shared_ptr<chirp::scene> &;
+		auto peek() const -> chirp::scene &;
 
 		auto get_assets() const -> const chirp::assets &;
 

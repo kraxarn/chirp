@@ -17,14 +17,14 @@ auto chirp::scene_manager::empty() const -> bool
 	return scenes.empty();
 }
 
-auto chirp::scene_manager::peek() const -> const std::shared_ptr<chirp::scene> &
+auto chirp::scene_manager::peek() const -> chirp::scene &
 {
 	if (scenes.empty())
 	{
 		log::fatal("Unable to peek, no scenes loaded");
 	}
 
-	return scenes.top();
+	return *scenes.top();
 }
 
 auto chirp::scene_manager::get_assets() const -> const chirp::assets &
