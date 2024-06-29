@@ -22,11 +22,11 @@ class Game:
 		...
 
 	@property
-	def clear_color(self) -> typing.Any:
+	def clear_color(self) -> chirp.Color:
 		...
 
 	@clear_color.setter
-	def clear_color(self, color: typing.Any) -> None:
+	def clear_color(self, color: chirp.Color) -> None:
 		...
 
 	@property
