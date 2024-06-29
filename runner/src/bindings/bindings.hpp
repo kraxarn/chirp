@@ -21,6 +21,7 @@ void bind_level(const pybind11::module &module);
 void bind_music(const pybind11::module &module);
 void bind_scene(const pybind11::module &module);
 void bind_scene_manager(const pybind11::module &module);
+void bind_sound(const pybind11::module &module);
 void bind_vector2(const pybind11::module &module);
 void bind_window(const pybind11::module &module);
 
