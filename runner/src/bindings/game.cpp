@@ -2,7 +2,7 @@
 
 #include <chirp/game.hpp>
 
-void bind_game(const pybind11::module_ &module)
+void bind_game(const pybind11::module &module)
 {
 	pybind11::class_<chirp::game>(module, "Game")
 		.def(pybind11::init<>())
