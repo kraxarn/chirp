@@ -23,10 +23,21 @@ namespace chirp
 			return handle;
 		}
 
+#ifdef NO_MANAGE_MEMORY
+		void append_unmanaged(const std::string &name, chirp::entity *entity)
+		{
+			append_entity(name, entity);
+		}
+#endif
+
 		template<typename T>
 		chirp::handle<T> queue_append(const std::string &name, T *entity)
 		{
+#ifdef NO_MANAGE_MEMORY
+			auto *handle = entity;
+#else
 			auto handle = std::shared_ptr<T>(entity);
+#endif
 
 			entity_queue.emplace(internal::append_action{
 				.name = name,
@@ -57,7 +68,12 @@ namespace chirp
 				return {};
 			}
 
+#ifdef NO_MANAGE_MEMORY
+			auto *entity = dynamic_cast<T *>(entity_map.at(name));
+#else
 			auto entity = std::dynamic_pointer_cast<T>(entity_map.at(name));
+#endif
+
 			if (!entity)
 			{
 				log::warn("Wrong entity type: {}", name);
@@ -86,7 +102,7 @@ namespace chirp
 		std::vector<handle<entity>> entity_order;
 		std::queue<internal::entity_action> entity_queue;
 
-		void append_entity(const std::string &name, const handle<entity> &handle);
+		void append_entity(const std::string &name, handle<entity> &handle);
 		auto remove_entity(const std::string &name) -> bool;
 	};
 }
