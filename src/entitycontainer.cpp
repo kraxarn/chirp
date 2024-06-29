@@ -1,7 +1,7 @@
 #include "chirp/entitycontainer.hpp"
 #include "chirp/camera.hpp"
 
-void chirp::entity_container::append_entity(const std::string &name, const chirp::handle<chirp::entity> &handle)
+void chirp::entity_container::append_entity(const std::string &name, chirp::handle<chirp::entity> &handle)
 {
 	if (contains(name))
 	{
@@ -62,13 +62,13 @@ void chirp::entity_container::clear_queue()
 {
 	while (!entity_queue.empty())
 	{
-		const auto &action = entity_queue.front();
+		auto &action = entity_queue.front();
 
 		if (const auto *remove_action = std::get_if<internal::remove_action>(&action))
 		{
 			remove_entity(remove_action->name);
 		}
-		else if (const auto *append_action = std::get_if<internal::append_action>(&action))
+		else if (auto *append_action = std::get_if<internal::append_action>(&action))
 		{
 			append_entity(append_action->name, append_action->entity);
 		}
