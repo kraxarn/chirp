@@ -26,3 +26,8 @@ include(deps/msgpack.cmake)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE
 	raylib)
+
+# For use with Python bindings, as the GC manages memory
+if (NO_MANAGE_MEMORY)
+	target_compile_definitions(${PROJECT_NAME} PUBLIC NO_MANAGE_MEMORY)
+endif ()
