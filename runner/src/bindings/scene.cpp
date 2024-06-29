@@ -2,27 +2,14 @@
 
 #include <chirp/scene.hpp>
 
-void bind_scene(pkpy::VM *py_vm, pkpy::PyVar mod)
+void bind_scene(const pybind11::module &module)
 {
-	py_vm->register_user_class<chirp::scene>(mod, "Scene",
-		[](pkpy::VM *pkpy_vm, pkpy::PyVar /*mod*/, const pkpy::PyVar type)
-		{
-			pkpy_vm->bind(type, "load(self)",
-				[](pkpy::VM *py_vm, const pkpy::ArgsView /*args*/) -> pkpy::PyVar
-				{
-					return py_vm->None;
-				});
-
-			pkpy_vm->bind(type, "update(self, delta)",
-				[](pkpy::VM *py_vm, const pkpy::ArgsView /*args*/) -> pkpy::PyVar
-				{
-					return py_vm->None;
-				});
-
-			pkpy_vm->bind(type, "draw(self)",
-				[](pkpy::VM *py_vm, const pkpy::ArgsView /*args*/) -> pkpy::PyVar
-				{
-					return py_vm->None;
-				});
-		}, pkpy::VM::tp_object, true);
+	pybind11::class_<chirp::scene>(module, "Scene")
+		.def(pybind11::init<>())
+		.def("load", &chirp::scene::load)
+		.def("update", &chirp::scene::update)
+		.def("draw", &chirp::scene::draw)
+		.def_property_readonly("scenes", &chirp::scene::scenes)
+		.def_property_readonly("window", &chirp::scene::window)
+		.def_property_readonly("assets", &chirp::scene::assets);
 }
