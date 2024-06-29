@@ -19,6 +19,7 @@ PYBIND11_EMBEDDED_MODULE(chirp, module)
 		bind_image(module);
 		bind_jukebox(module);
 		bind_level(module);
+		bind_music(module);
 		bind_os(module);
 		bind_scene(module);
 		bind_scene_manager(module);
