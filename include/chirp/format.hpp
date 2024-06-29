@@ -74,6 +74,7 @@ namespace chirp
 			return arg;
 		}
 
+	public:
 		/**
 		 * Format bool as "true" or "false"
 		 */
