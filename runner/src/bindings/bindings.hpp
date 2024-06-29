@@ -18,6 +18,7 @@ void bind_game(const pybind11::module &module);
 void bind_image(const pybind11::module &module);
 void bind_jukebox(const pybind11::module &module);
 void bind_level(const pybind11::module &module);
+void bind_music(const pybind11::module &module);
 void bind_scene(const pybind11::module &module);
 void bind_scene_manager(const pybind11::module &module);
 void bind_vector2(const pybind11::module &module);
