@@ -1,7 +1,7 @@
 #pragma once
 
-#include <pocketpy.h>
+#include <pybind11/pybind11.h>
 
-void bind_game(pkpy::VM *py_vm, pkpy::PyVar mod);
-void bind_os(pkpy::VM *py_vm);
-void bind_scene(pkpy::VM *py_vm, pkpy::PyVar mod);
+void bind_game(const pybind11::module_ &module);
+void bind_os(pybind11::module_ &module);
+void bind_scene(const pybind11::module_ &module);
