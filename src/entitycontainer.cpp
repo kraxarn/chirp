@@ -91,7 +91,12 @@ auto chirp::entity_container::entity_keys() const -> std::vector<std::string>
 	{
 		names.push_back(name);
 
+#ifdef NO_MANAGE_MEMORY
+		const auto *camera = dynamic_cast<chirp::camera *>(entity);
+#else
 		const auto camera = std::dynamic_pointer_cast<chirp::camera>(entity);
+#endif
+
 		if (!camera)
 		{
 			continue;
