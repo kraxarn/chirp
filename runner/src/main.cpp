@@ -16,6 +16,7 @@ PYBIND11_EMBEDDED_MODULE(chirp, module)
 		bind_color(module);
 		bind_font(module);
 		bind_game(module);
+		bind_image(module);
 		bind_jukebox(module);
 		bind_os(module);
 		bind_scene(module);
