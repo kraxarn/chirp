@@ -1,5 +1,7 @@
 import typing
 
+import chirp
+
 
 class Window:
 	@property
@@ -11,9 +13,9 @@ class Window:
 		...
 
 	@property
-	def size(self) -> typing.Any:
+	def size(self) -> chirp.Vector2i:
 		...
 
 	@size.setter
-	def size(self, size: typing.Any) -> None:
+	def size(self, size: chirp.Vector2i) -> None:
 		...
