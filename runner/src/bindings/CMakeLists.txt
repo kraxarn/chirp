@@ -5,6 +5,8 @@ target_sources(${PROJECT_NAME} PRIVATE
 	${CMAKE_CURRENT_SOURCE_DIR}/game.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/image.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/jukebox.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/level.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/music.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/os.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/scene.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/scenemanager.cpp
