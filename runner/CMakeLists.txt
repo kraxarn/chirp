@@ -12,3 +12,4 @@ add_subdirectory(.. chirp)
 target_link_libraries(${PROJECT_NAME} PRIVATE chirp)
 
 include(../deps/pocketpy.cmake)
+include(../deps/pybind11.cmake)
