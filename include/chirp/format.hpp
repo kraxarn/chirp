@@ -1,5 +1,6 @@
 #pragma once
 
+#include <chirp/color.hpp>
 #include <chirp/rectangle.hpp>
 #include <chirp/vector2.hpp>
 
@@ -99,6 +100,12 @@ namespace chirp
 			return fmt::format("X={} Y={} W={} H={}",
 				arg.x(), arg.y(),
 				arg.width(), arg.height());
+		}
+
+		static auto to_string(const color &arg) -> std::string
+		{
+			return fmt::format("R={} G={} B={} A={}",
+				arg.red(), arg.green(), arg.blue(), arg.alpha());
 		}
 	};
 
