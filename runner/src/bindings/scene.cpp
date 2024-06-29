@@ -1,6 +1,7 @@
 #include "bindings.hpp"
 
 #include <chirp/scene.hpp>
+#include <chirp/scenemanager.hpp>
 
 void bind_scene(const pybind11::module &module)
 {
