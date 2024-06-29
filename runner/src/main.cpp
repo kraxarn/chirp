@@ -13,9 +13,13 @@ PYBIND11_EMBEDDED_MODULE(chirp, module)
 {
 	try
 	{
+		bind_color(module);
 		bind_game(module);
 		bind_os(module);
 		bind_scene(module);
+		bind_scene_manager(module);
+		bind_vector2(module);
+		bind_window(module);
 	}
 	catch (const pkpy::Exception &e)
 	{
