@@ -28,7 +28,7 @@ namespace chirp
 		{
 			auto handle = std::shared_ptr<T>(entity);
 
-			entity_queue.push(internal::append_action{
+			entity_queue.emplace(internal::append_action{
 				.name = name,
 				.entity = handle,
 			});
