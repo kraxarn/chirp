@@ -3,30 +3,49 @@
 #include <chirp/logger.hpp>
 
 #include <pocketpy.h>
+#include <pybind11/embed.h>
 
 #include <fstream>
 #include <sstream>
+#include <chirp/log.hpp>
+
+PYBIND11_EMBEDDED_MODULE(chirp, module)
+{
+	try
+	{
+		bind_game(module);
+		bind_os(module);
+		bind_scene(module);
+	}
+	catch (const pkpy::Exception &e)
+	{
+		chirp::log::fatal("Binding failed: {}", e.msg.str());
+	}
+}
 
 auto main(int argc, char **argv) -> int
 {
 	chirp::logger::init();
 
-	auto *py_vm = new pkpy::VM();
+	pybind11::scoped_interpreter guard{};
 
-	auto *root_object = py_vm->new_module("chirp");
-
-	bind_game(py_vm, root_object);
-	bind_os(py_vm);
-	bind_scene(py_vm, root_object);
+	pybind11::module_::import("chirp");
 
 	if (argc > 1)
 	{
 		std::ifstream file(argv[1]);
 		std::stringstream buffer;
 		buffer << file.rdbuf();
-		py_vm->exec(buffer.str());
+
+		try
+		{
+			pybind11::exec(buffer.str());
+		}
+		catch (const pkpy::Exception &e)
+		{
+			chirp::log::fatal("Interpreter error: {}", e.msg.str());
+		}
 	}
 
-	delete py_vm;
 	return 0;
 }
