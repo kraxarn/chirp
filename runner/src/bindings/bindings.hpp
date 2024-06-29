@@ -6,6 +6,9 @@
 namespace pybind11
 {
 	using module = module_;
+
+	template<typename T>
+	using pyclass = class_<T>;
 }
 
 void bind_game(const pybind11::module &module);
