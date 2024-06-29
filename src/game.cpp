@@ -37,8 +37,8 @@ void chirp::game::run()
 			break;
 		}
 
-		const auto &current_scene = scenes().peek();
-		current_scene->update(GetFrameTime());
+		auto &current_scene = scenes().peek();
+		current_scene.update(GetFrameTime());
 
 		BeginDrawing();
 
@@ -49,7 +49,7 @@ void chirp::game::run()
 			clear_color.alpha(),
 		});
 
-		current_scene->draw();
+		current_scene.draw();
 
 		EndDrawing();
 
