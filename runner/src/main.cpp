@@ -24,6 +24,7 @@ PYBIND11_EMBEDDED_MODULE(chirp, module)
 		bind_scene(module);
 		bind_scene_manager(module);
 		bind_sound(module);
+		bind_tileset(module);
 		bind_vector2(module);
 		bind_window(module);
 	}
