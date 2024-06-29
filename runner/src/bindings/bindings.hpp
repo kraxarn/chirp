@@ -12,6 +12,7 @@ namespace pybind11
 }
 
 // chirp
+void bind_assets(const pybind11::module &module);
 void bind_color(const pybind11::module &module);
 void bind_font(const pybind11::module &module);
 void bind_game(const pybind11::module &module);
