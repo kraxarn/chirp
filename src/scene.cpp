@@ -54,3 +54,7 @@ void chirp::scene::init(chirp::scene_manager &scene)
 {
 	scene_manager = &scene;
 }
+
+void chirp::scene::load()
+{
+}

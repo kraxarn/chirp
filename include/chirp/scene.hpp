@@ -17,7 +17,7 @@ namespace chirp
 
 		void init(chirp::scene_manager &scene);
 
-		virtual void load() = 0;
+		virtual void load();
 
 		virtual void update(float delta);
 
