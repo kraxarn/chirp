@@ -31,6 +31,11 @@ auto chirp::jukebox::empty() const -> bool
 	return !current;
 }
 
+auto chirp::jukebox::get_volume() const -> float
+{
+	return volume;
+}
+
 void chirp::jukebox::set_volume(const float value)
 {
 	volume = value;

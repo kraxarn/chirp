@@ -19,6 +19,9 @@ namespace chirp
 		[[nodiscard]]
 		auto empty() const -> bool;
 
+		[[nodiscard]]
+		auto get_volume() const -> float;
+
 		void set_volume(float value);
 
 		void play() const;
