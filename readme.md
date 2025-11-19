@@ -8,7 +8,7 @@ A chirp is a small sound from a small bird, but also (soon) a small game engine 
 
 ## Goals/plans (incomplete, non-final and in no particular order)
 
-* [-] Supporting all platforms supported by SDL3 (that makes some sense)
+* [ ] Supporting all platforms supported by SDL3 (that makes some sense)
   * [x] Android
   * [ ] Emscripten (Web)
   * [ ] FreeBSD / NetBSD / OpenBSD
@@ -22,9 +22,9 @@ A chirp is a small sound from a small bird, but also (soon) a small game engine 
   * [ ] PlayStation Portable
   * [ ] PlayStation Vita
   * [ ] RISC OS
-  * [-] Windows
+  * [ ] Windows
   * [ ] Xbox
-* [-] 2D support ([SDL Renderer](https://wiki.libsdl.org/SDL3/CategoryRender)) with 2D physics ([box2d](https://github.com/erincatto/box2d))
+* [ ] 2D support ([SDL Renderer](https://wiki.libsdl.org/SDL3/CategoryRender)) with 2D physics ([box2d](https://github.com/erincatto/box2d))
 * [ ] Basic 3D support ([SDL Renderer](https://wiki.libsdl.org/SDL3/CategoryRender)) with 3D physics ([jolt](https://github.com/amerkoleci/joltc))
-* [-] Custom UI library ([shiny](https://github.com/kraxarn/shiny))
+* [ ] Custom UI library ([shiny](https://github.com/kraxarn/shiny))
 * [ ] Python scripting ([pocketpy](https://github.com/pocketpy/pocketpy))
