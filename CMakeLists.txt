@@ -7,7 +7,7 @@ set(CMAKE_C_STANDARD_REQUIRED ON)
 
 # macOS config
 if (APPLE)
-	set(CMAKE_OSX_DEPLOYMENT_TARGET "13")
+	set(CMAKE_OSX_DEPLOYMENT_TARGET "10.13")
 endif ()
 
 # Engine
