@@ -20,9 +20,9 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 
 # Don't link stdlib
 # (force more consistent API from SDL)
-set_target_properties(${PROJECT_NAME} PROPERTIES
-	LINK_FLAGS "-nostdlib"
-)
+#set_target_properties(${PROJECT_NAME} PROPERTIES
+#	LINK_FLAGS "-nostdlib"
+#)
 
 # Definitions
 target_compile_definitions(${PROJECT_NAME} PUBLIC
