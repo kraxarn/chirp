@@ -11,7 +11,7 @@ if (APPLE)
 endif ()
 
 # Engine
-add_library(${PROJECT_NAME} SHARED)
+add_executable(${PROJECT_NAME})
 add_subdirectory(src)
 
 target_include_directories(${PROJECT_NAME} PUBLIC
