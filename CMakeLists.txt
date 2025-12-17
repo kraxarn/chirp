@@ -30,3 +30,5 @@ target_compile_definitions(${PROJECT_NAME} PUBLIC
 )
 
 # Engine dependencies
+include(deps/sdl3.cmake)
+include(deps/pocketpy.cmake)
