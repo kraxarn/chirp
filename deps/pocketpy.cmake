@@ -5,7 +5,7 @@ FetchContent_Declare(pocketpy
 	GIT_TAG v2.1.3
 )
 
-set(PK_ENABLE_OS ON)
+set(PK_ENABLE_OS OFF)
 set(PK_ENABLE_THREADS ON)
 set(PK_ENABLE_DETERMINISM OFF)
 set(PK_ENABLE_WATCHDOG OFF)
