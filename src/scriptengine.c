@@ -1,5 +1,6 @@
 #include "chirp/scriptengine.h"
 #include "chirp/logcategory.h"
+#include "chirp/modules.h"
 
 #include <pocketpy/pocketpy.h>
 
@@ -17,6 +18,8 @@ void script_engine_create()
 
 	py_Callbacks *callbacks = py_callbacks();
 	callbacks->print = &pk_write_fn;
+
+	add_module_chirp();
 }
 
 void script_engine_destroy()
