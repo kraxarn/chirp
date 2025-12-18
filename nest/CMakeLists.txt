@@ -12,7 +12,3 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 
 target_compile_definitions(${PROJECT_NAME} PRIVATE APP_NAME="${PROJECT_NAME}")
 target_compile_definitions(${PROJECT_NAME} PRIVATE APP_VERSION="${PROJECT_VERSION}")
-
-include(../deps/libcbor.cmake)
-include(../deps/argparse.cmake)
-include(../deps/tomlc17.cmake)
