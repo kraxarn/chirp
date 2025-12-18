@@ -13,7 +13,6 @@
 #include <SDL3/SDL_events.h>
 #include <SDL3/SDL_init.h>
 #include <SDL3/SDL_log.h>
-#include <SDL3/SDL_render.h>
 #include <SDL3/SDL_stdinc.h>
 #include <SDL3/SDL_video.h>
 
@@ -61,35 +60,6 @@ SDL_AppResult SDL_AppInit([[maybe_unused]] void **appstate, [[maybe_unused]]
 		return fatal_error(nullptr, "Failed to load script");
 	}
 	SDL_free(main_py);
-
-	constexpr SDL_InitFlags init_flags =
-		SDL_INIT_AUDIO
-		| SDL_INIT_VIDEO
-		| SDL_INIT_HAPTIC
-		| SDL_INIT_GAMEPAD
-		| SDL_INIT_EVENTS;
-
-	if (!SDL_Init(init_flags))
-	{
-		return fatal_error(nullptr, "Failed to initialise");
-	}
-
-	const char *window_title = "chirp";
-	constexpr auto window_w = 1280;
-	constexpr auto window_h = 720;
-	constexpr auto window_flags = SDL_WINDOW_RESIZABLE;
-
-	app_state->window = SDL_CreateWindow(window_title, window_w, window_h, window_flags);
-	if (app_state->window == nullptr)
-	{
-		return fatal_error(nullptr, "Failed to create window");
-	}
-
-	app_state->renderer = SDL_CreateRenderer(app_state->window, nullptr);
-	if (app_state->renderer == nullptr)
-	{
-		return fatal_error(app_state->window, "Failed to create renderer");
-	}
 
 	return SDL_APP_CONTINUE;
 }

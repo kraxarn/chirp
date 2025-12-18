@@ -3,26 +3,51 @@
 #define PK_IS_PUBLIC_INCLUDE
 #include "pocketpy/pocketpy.h"
 
+#include <SDL3/SDL_error.h>
 #include <SDL3/SDL_init.h>
+#include <SDL3/SDL_render.h>
+#include <SDL3/SDL_video.h>
 
 typedef struct game_t
 {
+	SDL_Window *window;
+	SDL_Renderer *renderer;
 } game_t;
 
-static bool game_new([[maybe_unused]] int argc, py_TValue *argv)
+static bool game_new(const int argc, py_TValue *argv)
 {
+	PY_CHECK_ARGC(1);
+
 	const py_Type type = py_totype(argv);
 	py_newobject(py_retval(), type, 0, sizeof(game_t));
 	return true;
 }
 
-static bool game_init(int argc, py_TValue *argv)
+static bool create_window(SDL_Window **window, const char *title)
+{
+	constexpr auto width = 1280;
+	constexpr auto height = 720;
+	constexpr auto flags = SDL_WINDOW_RESIZABLE;
+
+	*window = SDL_CreateWindow(title, width, height, flags);
+	return *window != nullptr;
+}
+
+static bool create_renderer(SDL_Window *window, SDL_Renderer **renderer)
+{
+	*renderer = SDL_CreateRenderer(window, nullptr);
+	return *renderer != nullptr;
+}
+
+static bool game_init(const int argc, py_TValue *argv)
 {
 	PY_CHECK_ARGC(5);
 	PY_CHECK_ARG_TYPE(1, tp_str);
 	PY_CHECK_ARG_TYPE(2, tp_str);
 	PY_CHECK_ARG_TYPE(3, tp_str);
 	PY_CHECK_ARG_TYPE(4, tp_str);
+
+	game_t *game = py_touserdata(py_arg(0));
 
 	SDL_SetAppMetadataProperty(SDL_PROP_APP_METADATA_NAME_STRING, py_tostr(py_arg(1)));
 	SDL_SetAppMetadataProperty(SDL_PROP_APP_METADATA_VERSION_STRING, py_tostr(py_arg(2)));
@@ -31,12 +56,29 @@ static bool game_init(int argc, py_TValue *argv)
 	// TODO: This is technically an argument, only defaulting to "game", but maybe we want to force it?
 	SDL_SetAppMetadataProperty(SDL_PROP_APP_METADATA_TYPE_STRING, "game");
 
+	constexpr SDL_InitFlags init_flags =
+		SDL_INIT_AUDIO
+		| SDL_INIT_VIDEO
+		| SDL_INIT_HAPTIC
+		| SDL_INIT_GAMEPAD
+		| SDL_INIT_EVENTS;
+
+	if (!SDL_Init(init_flags)
+		|| !create_window(&game->window, py_tostr(py_arg(1)))
+		|| !create_renderer(game->window, &game->renderer))
+	{
+		return py_exception(tp_RuntimeError, "%s", SDL_GetError());
+	}
+
 	py_newnone(py_retval());
 	return true;
 }
 
 static void game_dtor(void *data)
 {
+	const game_t *game = data;
+	SDL_DestroyRenderer(game->renderer);
+	SDL_DestroyWindow(game->window);
 }
 
 void add_module_chirp()
