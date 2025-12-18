@@ -5,18 +5,23 @@
 #define SDL_MAIN_USE_CALLBACKS
 #include <SDL3/SDL_main.h>
 
+#ifdef NDEBUG
+#include <SDL3/SDL_messagebox.h>
+#endif
+
 #include <SDL3/SDL_error.h>
 #include <SDL3/SDL_events.h>
 #include <SDL3/SDL_init.h>
 #include <SDL3/SDL_log.h>
-#include <SDL3/SDL_messagebox.h>
 #include <SDL3/SDL_stdinc.h>
 #include <SDL3/SDL_video.h>
 
-static SDL_AppResult fatal_error(SDL_Window *window, const char *message)
+static SDL_AppResult fatal_error([[maybe_unused]] SDL_Window *window, const char *message)
 {
 	SDL_LogCritical(SDL_LOG_CATEGORY_ERROR, "%s: %s", message, SDL_GetError());
+#ifdef NDEBUG
 	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, message, SDL_GetError(), window);
+#endif
 	return SDL_APP_FAILURE;
 }
 
