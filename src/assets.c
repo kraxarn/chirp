@@ -147,7 +147,10 @@ void *assets_load(const assets_t *assets, const char *filename, size_t *size)
 
 		SDL_LogVerbose(LOG_CATEGORY_ASSETS, "Resolved asset '%s' from '%s'", matches[0], filename);
 
-		void *data = SDL_LoadFile(matches[0], size);
+		char *absolute_path = nullptr;
+		SDL_asprintf(&absolute_path, "%s/%s", assets->path, matches[0]);
+		void *data = SDL_LoadFile(absolute_path, size);
+		SDL_free(absolute_path);
 
 		SDL_free(pattern);
 		SDL_free((void *) matches);
