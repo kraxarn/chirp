@@ -3,8 +3,8 @@
 A chirp is a small sound from a small bird, but also (soon) a small game engine for small games. *chirp!*
 
 > [!WARNING]
-> The main branch currently contains the old raylib/C++20 version of the engine.
-> A rewrite of the engine in SDL3/C23 is currently in progress but still far from usable.
+> The engine is currently being re-written in SDL/C23 from the old raylib/C++20 version.
+> Therefore, the codebase currently consists of both new C code and old C++ code.
 
 ## Goals/plans (incomplete, non-final and in no particular order)
 
