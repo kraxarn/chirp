@@ -6,6 +6,7 @@
 #include <SDL3/SDL_error.h>
 #include <SDL3/SDL_init.h>
 #include <SDL3/SDL_render.h>
+#include <SDL3/SDL_stdinc.h>
 #include <SDL3/SDL_video.h>
 
 typedef struct game_t
@@ -49,10 +50,15 @@ static bool game_init(const int argc, py_TValue *argv)
 
 	game_t *game = py_touserdata(py_arg(0));
 
-	SDL_SetAppMetadataProperty(SDL_PROP_APP_METADATA_NAME_STRING, py_tostr(py_arg(1)));
-	SDL_SetAppMetadataProperty(SDL_PROP_APP_METADATA_VERSION_STRING, py_tostr(py_arg(2)));
-	SDL_SetAppMetadataProperty(SDL_PROP_APP_METADATA_IDENTIFIER_STRING, py_tostr(py_arg(3)));
-	SDL_SetAppMetadataProperty(SDL_PROP_APP_METADATA_CREATOR_STRING, py_tostr(py_arg(4)));
+	const char *name = py_tostr(py_arg(1));
+	const char *version = py_tostr(py_arg(2));
+	const char *identifier = py_tostr(py_arg(3));
+	const char *creator = py_tostr(py_arg(4));
+
+	SDL_SetAppMetadataProperty(SDL_PROP_APP_METADATA_NAME_STRING, name);
+	SDL_SetAppMetadataProperty(SDL_PROP_APP_METADATA_VERSION_STRING, version);
+	SDL_SetAppMetadataProperty(SDL_PROP_APP_METADATA_IDENTIFIER_STRING, identifier);
+	SDL_SetAppMetadataProperty(SDL_PROP_APP_METADATA_CREATOR_STRING, creator);
 	// TODO: This is technically an argument, only defaulting to "game", but maybe we want to force it?
 	SDL_SetAppMetadataProperty(SDL_PROP_APP_METADATA_TYPE_STRING, "game");
 
@@ -64,11 +70,16 @@ static bool game_init(const int argc, py_TValue *argv)
 		| SDL_INIT_EVENTS;
 
 	if (!SDL_Init(init_flags)
-		|| !create_window(&game->window, py_tostr(py_arg(1)))
+		|| !create_window(&game->window, name)
 		|| !create_renderer(game->window, &game->renderer))
 	{
 		return py_exception(tp_RuntimeError, "%s", SDL_GetError());
 	}
+
+	char *title = nullptr;
+	SDL_asprintf(&title, "%s %s (%s)", name, version, SDL_GetRendererName(game->renderer));
+	SDL_SetWindowTitle(game->window, title);
+	SDL_free(title);
 
 	py_newnone(py_retval());
 	return true;
