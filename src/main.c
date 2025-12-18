@@ -13,6 +13,7 @@
 #include <SDL3/SDL_events.h>
 #include <SDL3/SDL_init.h>
 #include <SDL3/SDL_log.h>
+#include <SDL3/SDL_render.h>
 #include <SDL3/SDL_stdinc.h>
 #include <SDL3/SDL_video.h>
 
@@ -37,27 +38,27 @@ SDL_AppResult SDL_AppInit([[maybe_unused]] void **appstate, [[maybe_unused]]
 	app_state_t *app_state = SDL_malloc(sizeof(app_state_t));
 	if (app_state == nullptr)
 	{
-		return fatal_error(nullptr, "Memory allocation failed");
+		return fatal_error(nullptr, "Failed to allocate memory");
 	}
 	*appstate = app_state;
 
 	app_state->assets = assets_create();
 	if (app_state->assets == nullptr)
 	{
-		return fatal_error(nullptr, "Assets loading failed");
+		return fatal_error(nullptr, "Failed to load assets");
 	}
 
 	script_engine_create();
 	char *main_py = assets_load(app_state->assets, "scripts/main", nullptr);
 	if (main_py == nullptr)
 	{
-		return fatal_error(nullptr, "Script engine failed");
+		return fatal_error(nullptr, "Failed to load scripting engine");
 	}
 
 	if (!script_engine_exec(main_py, "main.py"))
 	{
 		SDL_free(main_py);
-		return fatal_error(nullptr, "Script failed");
+		return fatal_error(nullptr, "Failed to load script");
 	}
 	SDL_free(main_py);
 
@@ -70,20 +71,42 @@ SDL_AppResult SDL_AppInit([[maybe_unused]] void **appstate, [[maybe_unused]]
 
 	if (!SDL_Init(init_flags))
 	{
-		return fatal_error(nullptr, "Initialisation failed");
+		return fatal_error(nullptr, "Failed to initialise");
 	}
 
-	return SDL_APP_SUCCESS;
+	const char *window_title = "chirp";
+	constexpr auto window_w = 1280;
+	constexpr auto window_h = 720;
+	constexpr auto window_flags = SDL_WINDOW_RESIZABLE;
+
+	app_state->window = SDL_CreateWindow(window_title, window_w, window_h, window_flags);
+	if (app_state->window == nullptr)
+	{
+		return fatal_error(nullptr, "Failed to create window");
+	}
+
+	app_state->renderer = SDL_CreateRenderer(app_state->window, nullptr);
+	if (app_state->renderer == nullptr)
+	{
+		return fatal_error(app_state->window, "Failed to create renderer");
+	}
+
+	return SDL_APP_CONTINUE;
 }
 
 SDL_AppResult SDL_AppIterate([[maybe_unused]] void *appstate)
 {
-	return SDL_APP_SUCCESS;
+	return SDL_APP_CONTINUE;
 }
 
 SDL_AppResult SDL_AppEvent([[maybe_unused]] void *appstate, [[maybe_unused]] SDL_Event *event)
 {
-	return SDL_APP_SUCCESS;
+	if (event->type == SDL_EVENT_QUIT)
+	{
+		return SDL_APP_SUCCESS;
+	}
+
+	return SDL_APP_CONTINUE;
 }
 
 void SDL_AppQuit([[maybe_unused]] void *appstate, [[maybe_unused]] SDL_AppResult result)
