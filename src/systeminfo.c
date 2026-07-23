@@ -36,9 +36,9 @@ const char *system_info_cpu_name()
 bool system_info_cpu_supported()
 {
 #if CPUINFO_ARCH_X86_64 == 1 || CPUINFO_ARCH_X86 == 1
-	if (!SDL_HasAVX2() || !SDL_HasSSE42())
+	if (!SDL_HasSSE2())
 	{
-		return SDL_SetError("CPU doesn't support required AVX2 and SSE4.2 features");
+		return SDL_SetError("CPU doesn't support required SSE2 features");
 	}
 #elif CPUINFO_ARCH_ARM64 == 1 || CPUINFO_ARCH_ARM == 1
 	if (!SDL_HasNEON())
