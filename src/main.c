@@ -544,9 +544,8 @@ SDL_AppResult SDL_AppIterate(void *appstate)
 	time_stats_t *time_stats = ecs_get_mut_id(ecs_world(),
 		ecs_singleton(EcsTimeStats));
 
-	constexpr auto ns_s = 1'000'000'000.F;
 	const Uint64 current_update = SDL_GetTicksNS();
-	time_stats->dt = (float) (current_update - time_stats->last_update) / ns_s;
+	time_stats->dt = (float) (current_update - time_stats->last_update) / SDL_NS_PER_SECOND;
 	time_stats->last_update = current_update;
 
 	if (time_stats->fps == 0)
