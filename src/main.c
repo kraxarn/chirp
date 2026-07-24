@@ -478,7 +478,7 @@ SDL_AppResult SDL_AppInit(void **appstate, const int argc, char **argv)
 		sizeof(SDL_InitFlags), &init_flags);
 
 	const time_stats_t time_stats = {
-		.last_update = SDL_GetTicks(),
+		.last_update = SDL_GetTicksNS(),
 	};
 
 	ecs_set_id(ecs_world(), ecs_singleton(EcsTimeStats),
