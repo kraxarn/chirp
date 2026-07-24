@@ -129,7 +129,7 @@ static void instance_model(ecs_iter_t *iter)
 
 	SDL_assert(iter->count >= 1);
 
-	char *name = ecs_field(iter, model_instance_t, 0)->name;
+	const char *name = ecs_field(iter, model_instance_t, 0)->name;
 
 	const ecs_entity_t entity = iter->entities[0];
 	SDL_assert(entity != 0);
@@ -140,14 +140,12 @@ static void instance_model(ecs_iter_t *iter)
 		if (load_model(name) == 0)
 		{
 			// Don't try to load indefinitely
-			SDL_free(name); // TODO: Maybe do this somewhere else
 			ecs_remove_id(ecs_world(), entity, EcsModelInstance);
 		}
 		return; // Deferred, I don't really like this, but it works
 	}
 
 	create_instance(entity, model);
-	SDL_free(name); // TODO: Maybe do this somewhere else
 	ecs_remove_id(ecs_world(), entity, EcsModelInstance);
 }
 
