@@ -370,6 +370,14 @@ static void module([[maybe_unused]] ecs_world_t *unused)
 			(ecs_member_t){.name = "flags", .type = ecs_id(ecs_u32_t)},
 		);
 
+		reflect(EcsTimeStats,
+			(ecs_member_t){.name = "last_update", .type = ecs_id(ecs_u64_t)},
+			(ecs_member_t){.name = "fps", .type = ecs_id(ecs_u16_t)},
+			(ecs_member_t){.name = "count", .type = ecs_id(ecs_u16_t)},
+			(ecs_member_t){.name = "duration", .type = ecs_id(ecs_f32_t)},
+			(ecs_member_t){.name = "dt", .type = ecs_id(ecs_f32_t)},
+		);
+
 		reflect(EcsWindowConfig,
 			(ecs_member_t){.name = "title", .type = ecs_id(ecs_string_t)},
 			(ecs_member_t){.name = "size", .type = ecs_id(ecs_i32_t), .count = 2},
