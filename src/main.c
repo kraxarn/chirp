@@ -101,24 +101,6 @@ static bool sdl_supported()
 	return true;
 }
 
-static bool query_cleanup(ecs_query_t *query)
-{
-	ecs_query_fini(query);
-	return false;
-}
-
-#define _query_name__(x, y) x##y
-#define _query_name_(x, y) _query_name__(x, y)
-#define _query_name(x) _query_name_(x, __COUNTER__)
-
-#define _query(e, d, q)										\
-	const ecs_query_desc_t d = {.expr = e};					\
-	ecs_query_t *q = ecs_query_init(ecs_world(), &d); 		\
-	for (ecs_iter_t iter = ecs_query_iter(ecs_world(), q);	\
-	ecs_query_next(&iter) || query_cleanup(q);)
-
-#define query(expr) _query(expr, _query_name(_d), _query_name(_q))
-
 [[deprecated]]
 static Uint16 fix_entity_name(const char *name)
 {
