@@ -5,6 +5,7 @@
 #include "gpudevicedriver.h"
 #include "nkui.h"
 #include "systeminfo.h"
+#include "timestats.h"
 #include "videodriver.h"
 
 #include "flecs.h"
@@ -75,6 +76,7 @@ void draw_debug_overlay(ecs_iter_t *iter)
 	const b3BodyId player_body_id = *ecs_field(iter, b3BodyId, 2);
 	SDL_Window *window = *ecs_field(iter, SDL_Window*, 3);
 	SDL_GPUDevice *device = *ecs_field(iter, SDL_GPUDevice*, 4);
+	const time_stats_t *time_stats = ecs_field(iter, time_stats_t, 5);
 
 #ifdef FLECS_STATS
 	const EcsWorldSummary *world_summary = ecs_get_id(ecs_world(),
@@ -94,18 +96,6 @@ void draw_debug_overlay(ecs_iter_t *iter)
 
 	constexpr nk_panel_flags_t window_flags =
 		NK_WINDOW_BORDER;
-
-	static double fps = 0.0;
-	static Uint32 fps_timestamp = 0;
-
-	// TODO: Use app_state_t fps
-#ifdef FLECS_STATS
-	if (fps == 0.0 || world_summary->uptime != fps_timestamp)
-	{
-		fps = world_summary->fps;
-		fps_timestamp = world_summary->uptime;
-	}
-#endif
 
 	nk_style_t *style = &ctx->style;
 	nk_style_item_t *window_style = &style->window.fixed_background;
@@ -129,8 +119,8 @@ void draw_debug_overlay(ecs_iter_t *iter)
 		nk_layout_row(ctx, NK_DYNAMIC, row_height, 2, (float[]){0.3F, 0.7F});
 
 		nk_label(ctx, "FPS", NK_TEXT_LEFT);
-		nk_labelf(ctx, NK_TEXT_LEFT, "%3.0f (%5.2f ms)",
-			fps, iter->delta_time * ms_s);
+		nk_labelf(ctx, NK_TEXT_LEFT, "%u (%5.2f ms)",
+			time_stats->fps, iter->delta_time * ms_s);
 
 		draw_camera_info(ctx, camera);
 		draw_physics_info(ctx, player_body_id);
