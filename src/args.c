@@ -1,6 +1,7 @@
 #include "args.h"
 #include "logcategory.h"
 
+#include <SDL3/SDL_audio.h>
 #include <SDL3/SDL_cpuinfo.h>
 #include <SDL3/SDL_log.h>
 #include <SDL3/SDL_stdinc.h>
@@ -29,6 +30,16 @@ static void print_help()
 		SDL_strlcat(video_drivers, SDL_GetVideoDriver(i), video_drivers_len);
 	}
 	SDL_strlcat(video_drivers, "]", video_drivers_len);
+
+	constexpr size_t audio_drivers_len = 256;
+	char audio_drivers[audio_drivers_len];
+	audio_drivers[0] = '\0';
+	for (int i = 0; i < SDL_GetNumAudioDrivers(); i++)
+	{
+		SDL_strlcat(audio_drivers, i == 0 ? "--audio-driver [" : "/", audio_drivers_len);
+		SDL_strlcat(audio_drivers, SDL_GetAudioDriver(i), audio_drivers_len);
+	}
+	SDL_strlcat(audio_drivers, "]", audio_drivers_len);
 
 	const int cpu_cores = SDL_GetNumLogicalCPUCores();
 
@@ -60,6 +71,10 @@ static void print_help()
 		(arg_command_t){
 			.command = video_drivers,
 			.description = "Force specific video driver",
+		},
+		(arg_command_t){
+			.command = audio_drivers,
+			.description = "Force specific audio driver",
 		},
 		(arg_command_t){
 			.command = "--(no-)allow-screensaver",
@@ -178,6 +193,11 @@ bool args_parse(const int argc, char **argv, args_t *args)
 		else if (SDL_strcmp(arg, "--video-driver") == 0 && i + 1 < argc)
 		{
 			args->video_driver = argv[++i];
+		}
+
+		else if (SDL_strcmp(arg, "--audio-driver") == 0 && i + 1 < argc)
+		{
+			args->audio_driver = argv[++i];
 		}
 
 		else if (SDL_strcmp(arg, "--allow-screensaver") == 0)

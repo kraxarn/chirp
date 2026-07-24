@@ -449,6 +449,12 @@ SDL_AppResult SDL_AppInit(void **appstate, const int argc, char **argv)
 		SDL_LogError(LOG_CATEGORY_CORE, "Failed to set hint: %s", SDL_GetError());
 	}
 
+	if (args.audio_driver != nullptr
+		&& !SDL_SetHint(SDL_HINT_AUDIO_DRIVER, args.audio_driver))
+	{
+		SDL_LogError(LOG_CATEGORY_CORE, "Failed to set hint: %s", SDL_GetError());
+	}
+
 	if (args.allow_screensaver != OPT_NOT_SET
 		&& !SDL_SetHint(SDL_HINT_VIDEO_ALLOW_SCREENSAVER,
 			arg_option_str(args.allow_screensaver)))

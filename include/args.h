@@ -41,6 +41,13 @@ typedef struct
 	const char *video_driver;
 
 	/**
+	 * --audio-driver pipewire/pulseaudio/...
+	 *
+	 * Override the default audio driver with the specified one
+	 */
+	const char *audio_driver;
+
+	/**
 	 * --allow-screensaver / --no-allow-screensaver
 	 *
 	 * Set the "allow screensaver" hint
