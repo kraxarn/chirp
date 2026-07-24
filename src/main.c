@@ -352,32 +352,29 @@ static void set_default_metadata()
 	SDL_SetAppMetadataProperty(SDL_PROP_APP_METADATA_IDENTIFIER_STRING, ENGINE_IDENTIFIER);
 }
 
-[[nodiscard]]
-static const char *log_category_name(const int category)
+static void set_log_priorities(const SDL_LogPriority *priorities)
 {
-	switch (category)
+	const SDL_LogPriority priority_all = priorities[LOG_CATEGORY_COUNT];
+	if (priority_all == SDL_LOG_PRIORITY_INVALID)
 	{
-		case SDL_LOG_CATEGORY_APPLICATION: return "app";
-		case SDL_LOG_CATEGORY_ERROR: return "error";
-		case SDL_LOG_CATEGORY_ASSERT: return "assert";
-		case SDL_LOG_CATEGORY_SYSTEM: return "system";
-		case SDL_LOG_CATEGORY_AUDIO: return "audio";
-		case SDL_LOG_CATEGORY_VIDEO: return "video";
-		case SDL_LOG_CATEGORY_RENDER: return "render";
-		case SDL_LOG_CATEGORY_INPUT: return "input";
-		case SDL_LOG_CATEGORY_TEST: return "test";
-		case SDL_LOG_CATEGORY_GPU: return "gpu";
-		case LOG_CATEGORY_CORE: return "core";
-		case LOG_CATEGORY_RENDER: return "render"; // Same name as built-in render logging
-		case LOG_CATEGORY_FONT: return "font";
-		case LOG_CATEGORY_ASSETS: return "assets";
-		case LOG_CATEGORY_INPUT: return "input";
-		case LOG_CATEGORY_PHYSICS: return "physics";
-		case LOG_CATEGORY_MODEL: return "model";
-		case LOG_CATEGORY_ECS: return "ecs";
-		case LOG_CATEGORY_SCRIPT: return "script";
-		case LOG_CATEGORY_UI: return "ui";
-		default: return "unknown";
+#ifdef NDEBUG
+		SDL_SetLogPriorities(SDL_LOG_PRIORITY_INFO);
+#else
+		SDL_SetLogPriorities(SDL_LOG_PRIORITY_VERBOSE);
+#endif
+	}
+	else
+	{
+		SDL_SetLogPriorities(priority_all);
+	}
+
+	for (int i = 0; i < LOG_CATEGORY_COUNT; i++)
+	{
+		const SDL_LogPriority priority = priorities[i];
+		if (priority != SDL_LOG_PRIORITY_INVALID)
+		{
+			SDL_SetLogPriority(i, priority);
+		}
 	}
 }
 
@@ -418,18 +415,7 @@ SDL_AppResult SDL_AppInit(void **appstate, const int argc, char **argv)
 		return SDL_APP_SUCCESS;
 	}
 
-	if (args.log_priority == SDL_LOG_PRIORITY_INVALID)
-	{
-#ifdef NDEBUG
-		SDL_SetLogPriorities(SDL_LOG_PRIORITY_INFO);
-#else
-		SDL_SetLogPriorities(SDL_LOG_PRIORITY_VERBOSE);
-#endif
-	}
-	else
-	{
-		SDL_SetLogPriorities(args.log_priority);
-	}
+	set_log_priorities(args.log_priorities);
 
 	SDL_LogDebug(LOG_CATEGORY_CORE, "Assertion level: %s",
 #if SDL_ASSERT_LEVEL == 0

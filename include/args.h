@@ -1,5 +1,7 @@
 #pragma once
 
+#include "logcategory.h"
+
 #include <SDL3/SDL_log.h>
 #include <SDL3/SDL_stdinc.h>
 
@@ -29,9 +31,11 @@ typedef struct
 	/**
 	 * --log-priority debug/info/warn/error
 	 *
-	 * Sets to global log priority to the specified level
+	 * --log-priority category=debug/info/warn/error
+	 *
+	 * Set level of all log categories or within a specific log category only
 	 */
-	SDL_LogPriority log_priority;
+	SDL_LogPriority log_priorities[LOG_CATEGORY_COUNT + 1];
 
 	/**
 	 * --video-driver wayland/x11/...

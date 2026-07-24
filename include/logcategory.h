@@ -5,7 +5,6 @@
 typedef enum: int
 {
 	LOG_CATEGORY_CORE = SDL_LOG_CATEGORY_CUSTOM,
-	LOG_CATEGORY_RENDER,
 	LOG_CATEGORY_FONT,
 	LOG_CATEGORY_ASSETS,
 	LOG_CATEGORY_INPUT,
@@ -14,4 +13,12 @@ typedef enum: int
 	LOG_CATEGORY_ECS,
 	LOG_CATEGORY_SCRIPT,
 	LOG_CATEGORY_UI,
+
+	LOG_CATEGORY_COUNT,
 } log_category_t;
+
+[[nodiscard]]
+int log_category_parse(const char *name);
+
+[[nodiscard]]
+const char *log_category_name(int category);

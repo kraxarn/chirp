@@ -147,7 +147,7 @@ bool args_parse(const int argc, char **argv, args_t *args)
 	*args = (args_t){
 		.prefer_low_power = OPT_NOT_SET,
 		.gpu_debug_mode = OPT_NOT_SET,
-		.log_priority = SDL_LOG_PRIORITY_INVALID,
+		.log_priorities = {0},
 		.video_driver = nullptr,
 		.threads = 0,
 		.task_threads = 0,
@@ -183,10 +183,37 @@ bool args_parse(const int argc, char **argv, args_t *args)
 
 		else if (SDL_strcmp(arg, "--log-priority") == 0 && i + 1 < argc)
 		{
-			args->log_priority = parse_log_priority(argv[++i]);
-			if (args->log_priority == SDL_LOG_PRIORITY_INVALID)
+			const char *value = argv[++i];
+
+			char *sep = SDL_strchr(value, '=');
+			if (sep == nullptr)
 			{
-				SDL_LogError(LOG_CATEGORY_CORE, "Unknown priority: '%s'", argv[i]);
+				// Global log priority
+				const SDL_LogPriority log_priority = parse_log_priority(value);
+				if (log_priority == SDL_LOG_PRIORITY_INVALID)
+				{
+					SDL_LogError(LOG_CATEGORY_CORE, "Unknown priority: '%s'", argv[i]);
+					continue;
+				}
+				args->log_priorities[LOG_CATEGORY_COUNT] = log_priority;
+			}
+			else
+			{
+				// Category log priority
+				*sep = '\0';
+				const int category = log_category_parse(value);
+				if (category < 0)
+				{
+					SDL_LogError(LOG_CATEGORY_CORE, "Unknown category: '%s'", value);
+					continue;
+				}
+				const SDL_LogPriority log_priority = parse_log_priority(sep + 1);
+				if (log_priority == SDL_LOG_PRIORITY_INVALID)
+				{
+					SDL_LogError(LOG_CATEGORY_CORE, "Unknown priority: '%s'", argv[i]);
+					continue;
+				}
+				args->log_priorities[category] = log_priority;
 			}
 		}
 
