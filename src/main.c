@@ -548,11 +548,6 @@ SDL_AppResult SDL_AppIterate(void *appstate)
 	time_stats->dt = (float) (current_update - time_stats->last_update) / SDL_NS_PER_SECOND;
 	time_stats->last_update = current_update;
 
-	if (time_stats->fps == 0)
-	{
-		time_stats->fps = 1.F / time_stats->dt;
-	}
-
 	time_stats->count++;
 	time_stats->duration += time_stats->dt;
 	if (time_stats->duration >= 1.F)
