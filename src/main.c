@@ -286,10 +286,6 @@ static void build_scene(ecs_iter_t *iter)
 	ecs_set_id(ecs_world(), blaster, EcsPosition,
 		sizeof(position_t), &position);
 
-	// Bullet
-
-	load_model(assets, gpu_device, "bullet");
-
 	// Scene
 
 	const ecs_entity_t scene = load_model(assets, gpu_device, "scene");
@@ -650,8 +646,8 @@ SDL_AppResult SDL_AppIterate(void *appstate)
 		{
 			static constexpr float firepower = 10.F;
 
-			const ecs_entity_t bullet = ecs_lookup(ecs_world(), "Model.bullet");
-			const ecs_entity_t entity = create_instance(bullet);
+			const ecs_entity_t entity = ecs_new(ecs_world());
+			ecs_set_id(ecs_world(), entity, prefab_model("bullet"));
 
 			static ecs_query_t *position_query = nullptr;
 			if (position_query == nullptr)
