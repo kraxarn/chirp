@@ -323,7 +323,6 @@ static void module([[maybe_unused]] ecs_world_t *unused)
 	{
 		EcsInstanceOf = entity("InstanceOf");
 
-		EcsEngine = tag("Engine");
 		EcsScene = tag("Scene");
 
 		EcsAssets = component("Assets", assets_t);
@@ -514,8 +513,8 @@ void ecs_create()
 	// SDL has to initialise before we set up OS-specific stuff
 	ecs_observer_init(world, &(ecs_observer_desc_t){
 		.query.terms = {
-			(ecs_term_t){.id = EcsInit, .src.id = EcsEngine, .inout = EcsInOutNone},
-			(ecs_term_t){.id = EcsArgs, .src.id = EcsArgs, .inout = EcsIn},
+			(ecs_term_t){.id = ecs_singleton_id(EcsInit), .inout = EcsInOutNone},
+			(ecs_term_t){.id = ecs_singleton_id(EcsArgs), .inout = EcsIn},
 		},
 		.events = {EcsOnSet},
 		.callback = on_init_set,
@@ -553,10 +552,4 @@ ecs_entity_t ecs_set_error(const char *title, const char *message)
 		sizeof(error_t), &error);
 
 	return entity;
-}
-
-void *ecs_get_id_ptr(const ecs_id_t component)
-{
-	const void *data = ecs_get_id(world, EcsEngine, component);
-	return data == nullptr ? nullptr : *(void**) data;
 }

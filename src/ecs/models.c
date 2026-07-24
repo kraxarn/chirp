@@ -38,8 +38,10 @@ static ecs_entity_t load_model(const char *name)
 {
 	SDL_LogDebug(LOG_CATEGORY_ECS, "Loading model: '%s'", name);
 
-	const assets_t *assets = ecs_get_id(ecs_world(), EcsEngine, EcsAssets);
-	SDL_GPUDevice *gpu_device = *((SDL_GPUDevice**) ecs_get_mut_id(ecs_world(), EcsEngine, EcsGpuDevice));
+	const assets_t *assets = ecs_get_id(ecs_world(), ecs_singleton(EcsAssets));
+
+	SDL_GPUDevice *gpu_device = *((SDL_GPUDevice**) ecs_get_mut_id(ecs_world(),
+		ecs_singleton(EcsGpuDevice)));
 
 	model_t model;
 	if (!assets_load_model(assets, gpu_device, name, &model))

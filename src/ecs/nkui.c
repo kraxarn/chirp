@@ -10,7 +10,7 @@
 #include <SDL3/SDL_log.h>
 #include <SDL3/SDL_video.h>
 
-static void init(ecs_iter_t *iter)
+static void init_nkui(ecs_iter_t *iter)
 {
 	SDL_Window *window = *ecs_field(iter, SDL_Window*, 0);
 	SDL_GPUDevice *device = *ecs_field(iter, SDL_GPUDevice*, 1);
@@ -43,11 +43,11 @@ void ecs_add_nkui()
 {
 	ecs_observer_init(ecs_world(), &(ecs_observer_desc_t){
 		.query.terms = {
-			(ecs_term_t){.id = EcsWindow, .inout = EcsIn},
-			(ecs_term_t){.id = EcsGpuDevice, .inout = EcsIn},
+			(ecs_term_t){.id = ecs_singleton_id(EcsWindow), .inout = EcsIn},
+			(ecs_term_t){.id = ecs_singleton_id(EcsGpuDevice), .inout = EcsIn},
 		},
 		.events = {EcsOnSet},
-		.callback = init,
+		.callback = init_nkui,
 	});
 
 	ecs_system_init(ecs_world(), &(ecs_system_desc_t){
@@ -56,7 +56,7 @@ void ecs_add_nkui()
 			.add = ecs_ids(ecs_dependson(ecs_phase(PHASE_UPDATE_BEGIN))),
 		}),
 		.query.terms = {
-			(ecs_term_t){.id = EcsNkContext, .inout = EcsInOut},
+			(ecs_term_t){.id = ecs_singleton_id(EcsNkContext), .inout = EcsInOut},
 		},
 		.callback = end_input,
 	});
@@ -67,7 +67,7 @@ void ecs_add_nkui()
 			.add = ecs_ids(ecs_dependson(ecs_phase(PHASE_UPDATE_END))),
 		}),
 		.query.terms = {
-			(ecs_term_t){.id = EcsNkContext, .inout = EcsInOut},
+			(ecs_term_t){.id = ecs_singleton_id(EcsNkContext), .inout = EcsInOut},
 		},
 		.callback = begin_input,
 	});

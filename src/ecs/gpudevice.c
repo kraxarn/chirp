@@ -89,7 +89,7 @@ static void create_gpu_device(ecs_iter_t *iter)
 		return;
 	}
 
-	ecs_set_id(ecs_world(), EcsEngine, EcsGpuDevice,
+	ecs_set_id(ecs_world(), ecs_singleton(EcsGpuDevice),
 		sizeof(SDL_GPUDevice*), (const void*) &device);
 }
 
@@ -170,7 +170,7 @@ static void set_depth_texture(ecs_iter_t *iter)
 		return;
 	}
 
-	ecs_set_id(ecs_world(), EcsEngine, EcsDepthTexture,
+	ecs_set_id(ecs_world(), ecs_singleton(EcsDepthTexture),
 		sizeof(SDL_GPUTexture*), (const void*) &depth_texture);
 }
 
@@ -319,7 +319,7 @@ static void create_default_pipeline(ecs_iter_t *iter)
 		return;
 	}
 
-	ecs_set_id(ecs_world(), EcsEngine, EcsGpuGraphicsPipeline,
+	ecs_set_id(ecs_world(), ecs_singleton(EcsGpuGraphicsPipeline),
 		sizeof(SDL_GPUGraphicsPipeline*), (const void*) &pipeline);
 }
 
@@ -343,55 +343,55 @@ void ecs_add_gpu()
 	const ecs_observer_desc_t observer_desc[] = {
 		(ecs_observer_desc_t){
 			.query.terms = {
-				(ecs_term_t){.id = EcsWindow, .inout = EcsInOut},
-				(ecs_term_t){.id = EcsArgs, .src.name = "$args", .inout = EcsIn},
+				(ecs_term_t){.id = ecs_singleton_id(EcsWindow), .inout = EcsInOut},
+				(ecs_term_t){.id = ecs_singleton_id(EcsArgs), .inout = EcsIn},
 			},
 			.events = {EcsOnSet},
 			.callback = create_gpu_device,
 		},
 		(ecs_observer_desc_t){
 			.query.terms = {
-				(ecs_term_t){.id = EcsGpuDevice}
+				(ecs_term_t){.id = ecs_singleton_id(EcsGpuDevice), .inout = EcsInOut}
 			},
 			.events = {EcsOnSet},
 			.callback = log_gpu_info,
 		},
 		(ecs_observer_desc_t){
 			.query.terms = {
-				(ecs_term_t){.id = EcsWindow},
-				(ecs_term_t){.id = EcsGpuDevice}
+				(ecs_term_t){.id = ecs_singleton_id(EcsWindow), .inout = EcsInOut},
+				(ecs_term_t){.id = ecs_singleton_id(EcsGpuDevice), .inout = EcsInOut}
 			},
 			.events = {EcsOnSet},
 			.callback = enable_vsync,
 		},
 		(ecs_observer_desc_t){
 			.query.terms = {
-				(ecs_term_t){.id = EcsWindow},
-				(ecs_term_t){.id = EcsGpuDevice}
+				(ecs_term_t){.id = ecs_singleton_id(EcsWindow), .inout = EcsInOut},
+				(ecs_term_t){.id = ecs_singleton_id(EcsGpuDevice), .inout = EcsInOut}
 			},
 			.events = {EcsOnSet},
 			.callback = set_depth_texture,
 		},
 		(ecs_observer_desc_t){
 			.query.terms = {
-				(ecs_term_t){.id = EcsWindowEvent, .inout = EcsIn},
-				(ecs_term_t){.id = EcsGpuDevice, .src.name = "$g", .inout = EcsIn},
-				(ecs_term_t){.id = EcsDepthTexture, .src.name = "$d", .inout = EcsInOut},
+				(ecs_term_t){.id = EcsWindowEvent, .inout = EcsInOut},
+				(ecs_term_t){.id = ecs_singleton_id(EcsGpuDevice), .inout = EcsInOut},
+				(ecs_term_t){.id = ecs_singleton_id(EcsDepthTexture), .inout = EcsInOut},
 			},
 			.events = {EcsOnWindowResized},
 			.callback = resize_depth_texture,
 		},
 		(ecs_observer_desc_t){
 			.query.terms = {
-				(ecs_term_t){.id = EcsGpuDevice}
+				(ecs_term_t){.id = ecs_singleton_id(EcsGpuDevice), .inout = EcsInOut}
 			},
 			.events = {EcsOnSet},
 			.callback = load_default_shaders,
 		},
 		(ecs_observer_desc_t){
 			.query.terms = {
-				(ecs_term_t){.id = EcsWindow, .src.name = "$engine", .inout = EcsIn},
-				(ecs_term_t){.id = EcsGpuDevice, .src.name = "$engine", .inout = EcsIn},
+				(ecs_term_t){.id = ecs_singleton_id(EcsWindow), .inout = EcsIn},
+				(ecs_term_t){.id = ecs_singleton_id(EcsGpuDevice), .inout = EcsIn},
 				(ecs_term_t){.id = EcsVertexShader, .inout = EcsIn},
 				(ecs_term_t){.id = EcsFragmentShader, .inout = EcsIn},
 			},

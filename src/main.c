@@ -66,12 +66,14 @@ static bool fatal_error_message_box()
 static SDL_AppResult fatal_error(const char *message)
 {
 	SDL_LogCritical(LOG_CATEGORY_CORE, "%s: %s", message, SDL_GetError());
+
 	if (fatal_error_message_box())
 	{
-		SDL_Window *window = ecs_get_id_ptr(EcsWindow);
+		SDL_Window *window = *(SDL_Window**) ecs_get_mut_id(ecs_world(), ecs_singleton(EcsWindow));
 		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR,
 			message, SDL_GetError(), window);
 	}
+
 	return SDL_APP_FAILURE;
 }
 
@@ -447,15 +449,15 @@ SDL_AppResult SDL_AppInit(void **appstate, const int argc, char **argv)
 		ecs_add_nkui();
 	}
 
-	ecs_set_id(ecs_world(), EcsArgs, EcsArgs,
+	ecs_set_id(ecs_world(), ecs_singleton(EcsArgs),
 		sizeof(args_t), &args);
 
 	ecs_observer_init(ecs_world(), &(ecs_observer_desc_t){
 		.query.terms = {
-			(ecs_term_t){.id = EcsAssets, .inout = EcsIn},
-			(ecs_term_t){.id = EcsGpuDevice, .inout = EcsIn},
-			(ecs_term_t){.id = EcsPhysicsWorld, .src.id = EcsPhysicsWorld, .inout = EcsIn},
-			(ecs_term_t){.id = EcsPhysicsConfig, .inout = EcsIn},
+			(ecs_term_t){.id = ecs_singleton_id(EcsAssets), .inout = EcsIn},
+			(ecs_term_t){.id = ecs_singleton_id(EcsGpuDevice), .inout = EcsIn},
+			(ecs_term_t){.id = ecs_singleton_id(EcsPhysicsWorld), .inout = EcsIn},
+			(ecs_term_t){.id = ecs_singleton_id(EcsPhysicsConfig), .inout = EcsIn},
 		},
 		.events = {EcsOnSet},
 		.callback = build_scene,
@@ -470,21 +472,21 @@ SDL_AppResult SDL_AppInit(void **appstate, const int argc, char **argv)
 		return fatal_error("Initialisation failed");
 	}
 
-	ecs_set_id(ecs_world(), EcsEngine, EcsInit,
+	ecs_set_id(ecs_world(), ecs_singleton(EcsInit),
 		sizeof(SDL_InitFlags), &init_flags);
 
 	state->last_update = SDL_GetTicks();
 
 	const camera_t camera = camera_create_default();
-	ecs_set_id(ecs_world(), EcsEngine, EcsCamera,
+	ecs_set_id(ecs_world(), ecs_singleton(EcsCamera),
 		sizeof(camera_t), &camera);
 
 	const physics_config_t physics_config = physics_config_create_default();
-	ecs_set_id(ecs_world(), EcsEngine, EcsPhysicsConfig,
+	ecs_set_id(ecs_world(), ecs_singleton(EcsPhysicsConfig),
 		sizeof(physics_config_t), &physics_config);
 
 	const SDL_FColor clear_color = {.r = 0.12F, .g = 0.12F, .b = 0.12F, .a = 1.F};
-	ecs_set_id(ecs_world(), EcsEngine, EcsClearColor,
+	ecs_set_id(ecs_world(), ecs_singleton(EcsClearColor),
 		sizeof(clear_color_t), &clear_color);
 
 	state->status_query = ecs_query_init(ecs_world(), &(ecs_query_desc_t){
@@ -508,14 +510,14 @@ SDL_AppResult SDL_AppInit(void **appstate, const int argc, char **argv)
 			.add = ecs_ids(ecs_dependson(ecs_phase(PHASE_UPDATE))),
 		}),
 		.query.terms = {
-			(ecs_term_t){.id = EcsNkContext, .src.id = EcsNkContext, .inout = EcsIn},
-			(ecs_term_t){.id = EcsCamera, .src.id = EcsEngine, .inout = EcsIn},
-			(ecs_term_t){.id = EcsPhysicsBody, .src.name = "$player_body", .inout = EcsIn},
-			(ecs_term_t){.id = EcsWindow, .src.id = EcsEngine, .inout = EcsInOut},
-			(ecs_term_t){.id = EcsGpuDevice, .src.id = EcsEngine, .inout = EcsInOut},
+			(ecs_term_t){.id = ecs_singleton_id(EcsNkContext), .inout = EcsIn},
+			(ecs_term_t){.id = ecs_singleton_id(EcsCamera), .inout = EcsIn},
+			(ecs_term_t){.id = EcsPhysicsBody, .src.name = "$plr_bdy", .inout = EcsIn},
+			(ecs_term_t){.id = ecs_singleton_id(EcsWindow), .inout = EcsInOut},
+			(ecs_term_t){.id = ecs_singleton_id(EcsGpuDevice), .inout = EcsInOut},
 			(ecs_term_t){
 				.first.id = EcsPredEq,
-				.src.name = "$player_body",
+				.src.name = "$plr_bdy",
 				.second = (ecs_term_ref_t){.id = EcsIsName, .name = "Player"},
 				.inout = EcsInOutNone,
 			},
@@ -553,15 +555,15 @@ SDL_AppResult SDL_AppIterate(void *appstate)
 	ecs_progress(ecs_world(), state->dt);
 
 	const physics_config_t *physics_config = ecs_get_id(ecs_world(),
-		EcsEngine, EcsPhysicsConfig);
+		ecs_singleton(EcsPhysicsConfig));
 
 	const ecs_entity_t player_entity = ecs_lookup(ecs_world(), "Player");
 	const b3BodyId *player_body_id = player_entity != 0
 		? ecs_get_id(ecs_world(), player_entity, EcsPhysicsBody)
 		: nullptr;
 
-	SDL_Window *window = ecs_get_id_ptr(EcsWindow);
-	camera_t *camera = ecs_get_mut_id(ecs_world(), EcsEngine, EcsCamera);
+	SDL_Window *window = *(SDL_Window**) ecs_get_mut_id(ecs_world(), ecs_singleton(EcsWindow));
+	camera_t *camera = ecs_get_mut_id(ecs_world(), ecs_singleton(EcsCamera));
 
 	if (SDL_GetWindowRelativeMouseMode(window)
 		&& player_body_id != nullptr)
@@ -820,7 +822,9 @@ SDL_AppResult SDL_AppEvent([[maybe_unused]] void *appstate, SDL_Event *event)
 		emit(EcsOnKey, EcsKeyboardEvent, &event->key);
 	}
 
-	SDL_Window *window = *((window_t**) ecs_get_id(ecs_world(), EcsEngine, EcsWindow));
+	SDL_Window *window = *((SDL_Window**) ecs_get_id(ecs_world(),
+		ecs_singleton(EcsWindow)));
+
 	if (SDL_GetWindowRelativeMouseMode(window))
 	{
 		input_update(event);
@@ -858,13 +862,20 @@ void SDL_AppQuit(void *appstate, [[maybe_unused]] SDL_AppResult result)
 	}
 	ecs_query_fini(query);
 
-	assets_destroy(ecs_get_id(ecs_world(), EcsEngine, EcsAssets));
+	assets_destroy(ecs_get_id(ecs_world(), ecs_singleton(EcsAssets)));
 	script_engine_destroy();
 
-	SDL_Window *window = ecs_get_id_ptr(EcsWindow);
-	SDL_GPUDevice *gpu_device = ecs_get_id_ptr(EcsGpuDevice);
-	SDL_GPUGraphicsPipeline *pipeline = ecs_get_id_ptr(EcsGpuGraphicsPipeline);
-	SDL_GPUTexture *depth_texture = ecs_get_id_ptr(EcsDepthTexture);
+	SDL_Window *window = *(SDL_Window**) ecs_get_mut_id(ecs_world(),
+		ecs_singleton(EcsWindow));
+
+	SDL_GPUDevice *gpu_device = *(SDL_GPUDevice**) ecs_get_mut_id(ecs_world(),
+		ecs_singleton(EcsGpuDevice));
+
+	SDL_GPUGraphicsPipeline *pipeline = *(SDL_GPUGraphicsPipeline**) ecs_get_mut_id(ecs_world(),
+		ecs_singleton(EcsGpuGraphicsPipeline));
+
+	SDL_GPUTexture *depth_texture = *(SDL_GPUTexture**) ecs_get_mut_id(ecs_world(),
+		ecs_singleton(EcsDepthTexture));
 
 	SDL_ReleaseGPUTexture(gpu_device, depth_texture);
 	SDL_ReleaseGPUGraphicsPipeline(gpu_device, pipeline);

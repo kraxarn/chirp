@@ -224,11 +224,12 @@ static void end_render(ecs_iter_t *iter)
 
 void ecs_add_render()
 {
-	ecs_add_id(ecs_world(), EcsEngine, EcsGpuCommandBuffer);
-	ecs_add_id(ecs_world(), EcsEngine, EcsGpuRenderPass);
-	ecs_add_id(ecs_world(), EcsEngine, EcsSwapchainTexture);
-	ecs_add_id(ecs_world(), EcsEngine, EcsSwapchainTextureSize);
-	ecs_add_id(ecs_world(), EcsEngine, EcsViewProjection);
+	// TODO: Why though?
+	ecs_add_id(ecs_world(), ecs_singleton(EcsGpuCommandBuffer));
+	ecs_add_id(ecs_world(), ecs_singleton(EcsGpuRenderPass));
+	ecs_add_id(ecs_world(), ecs_singleton(EcsSwapchainTexture));
+	ecs_add_id(ecs_world(), ecs_singleton(EcsSwapchainTextureSize));
+	ecs_add_id(ecs_world(), ecs_singleton(EcsViewProjection));
 
 	ecs_system_init(ecs_world(), &(ecs_system_desc_t){
 		.entity = ecs_entity_init(ecs_world(), &(ecs_entity_desc_t){
@@ -236,16 +237,16 @@ void ecs_add_render()
 			.add = ecs_ids(ecs_dependson(ecs_phase(PHASE_RENDER_BEGIN))),
 		}),
 		.query.terms = {
-			(ecs_term_t){.id = EcsWindow, .inout = EcsIn},
-			(ecs_term_t){.id = EcsGpuDevice, .inout = EcsIn},
-			(ecs_term_t){.id = EcsClearColor, .inout = EcsIn},
-			(ecs_term_t){.id = EcsDepthTexture, .inout = EcsIn, .oper = EcsOptional},
-			(ecs_term_t){.id = EcsNkContext, .src.id = EcsNkContext, .inout = EcsInOut, .oper = EcsOptional},
-			(ecs_term_t){.id = EcsGpuGraphicsPipeline, .inout = EcsIn},
-			(ecs_term_t){.id = EcsGpuCommandBuffer, .inout = EcsOut},
-			(ecs_term_t){.id = EcsGpuRenderPass, .inout = EcsOut},
-			(ecs_term_t){.id = EcsSwapchainTexture, .inout = EcsOut},
-			(ecs_term_t){.id = EcsSwapchainTextureSize, .inout = EcsOut},
+			(ecs_term_t){.id = ecs_singleton_id(EcsWindow), .inout = EcsIn},
+			(ecs_term_t){.id = ecs_singleton_id(EcsGpuDevice), .inout = EcsIn},
+			(ecs_term_t){.id = ecs_singleton_id(EcsClearColor), .inout = EcsIn},
+			(ecs_term_t){.id = ecs_singleton_id(EcsDepthTexture), .inout = EcsIn, .oper = EcsOptional},
+			(ecs_term_t){.id = ecs_singleton_id(EcsNkContext), .inout = EcsInOut, .oper = EcsOptional},
+			(ecs_term_t){.id = ecs_singleton_id(EcsGpuGraphicsPipeline), .inout = EcsIn},
+			(ecs_term_t){.id = ecs_singleton_id(EcsGpuCommandBuffer), .inout = EcsOut},
+			(ecs_term_t){.id = ecs_singleton_id(EcsGpuRenderPass), .inout = EcsOut},
+			(ecs_term_t){.id = ecs_singleton_id(EcsSwapchainTexture), .inout = EcsOut},
+			(ecs_term_t){.id = ecs_singleton_id(EcsSwapchainTextureSize), .inout = EcsOut},
 		},
 		.callback = begin_render,
 	});
@@ -256,9 +257,9 @@ void ecs_add_render()
 			.add = ecs_ids(ecs_dependson(ecs_phase(PHASE_RENDER_BEGIN))),
 		}),
 		.query.terms = {
-			(ecs_term_t){.id = EcsCamera, .inout = EcsIn},
-			(ecs_term_t){.id = EcsSwapchainTextureSize, .inout = EcsIn, .oper = EcsOptional},
-			(ecs_term_t){.id = EcsViewProjection, .inout = EcsOut},
+			(ecs_term_t){.id = ecs_singleton_id(EcsCamera), .inout = EcsIn},
+			(ecs_term_t){.id = ecs_singleton_id(EcsSwapchainTextureSize), .inout = EcsIn, .oper = EcsOptional},
+			(ecs_term_t){.id = ecs_singleton_id(EcsViewProjection), .inout = EcsOut},
 		},
 		.callback = rebuild_camera_projection,
 	});
@@ -269,11 +270,11 @@ void ecs_add_render()
 			.add = ecs_ids(ecs_dependson(ecs_phase(PHASE_RENDER))),
 		}),
 		.query.terms = {
-			(ecs_term_t){.id = EcsGpuRenderPass, .inout = EcsIn},
-			(ecs_term_t){.id = EcsGpuCommandBuffer, .inout = EcsIn},
-			(ecs_term_t){.id = EcsViewProjection, .inout = EcsIn},
-			(ecs_term_t){.id = EcsModel, .src.name = "$model", .inout = EcsIn},
-			(ecs_term_t){.id = EcsScene, .src.name = "$model", .inout = EcsInOutNone},
+			(ecs_term_t){.id = ecs_singleton_id(EcsGpuRenderPass), .inout = EcsIn},
+			(ecs_term_t){.id = ecs_singleton_id(EcsGpuCommandBuffer), .inout = EcsIn},
+			(ecs_term_t){.id = ecs_singleton_id(EcsViewProjection), .inout = EcsIn},
+			(ecs_term_t){.id = EcsModel, .inout = EcsIn},
+			(ecs_term_t){.id = EcsScene, .inout = EcsInOutNone},
 		},
 		.callback = render_scene,
 	});
@@ -284,91 +285,22 @@ void ecs_add_render()
 			.add = ecs_ids(ecs_dependson(ecs_phase(PHASE_RENDER))),
 		}),
 		.query.terms = {
-			/* 0 */ (ecs_term_t){
-				.id = EcsGpuRenderPass,
-				.src.name = "$render_pass",
-				.inout = EcsIn,
-			},
-			/* 1 */ (ecs_term_t){
-				.id = EcsGpuCommandBuffer,
-				.src.name = "$command_buffer",
-				.inout = EcsIn,
-			},
-			/* 2 */ (ecs_term_t){
-				.id = EcsViewProjection,
-				.src.name = "$view_projection",
-				.inout = EcsIn,
-			},
-			/* 3 */ (ecs_term_t){
-				.id = EcsProjection,
-				.src.name = "$this",
-				.inout = EcsInOut,
-			},
-			/* 4 */ (ecs_term_t){
-				.second.name = "$model_instance",
-				.first.id = EcsChildOf,
-				.src.name = "$this",
-			},
-			/* 5 */ (ecs_term_t){
-				.id = EcsScale,
-				.src.name = "$model_instance",
-				.oper = EcsOptional,
-				.inout = EcsIn,
-			},
-			/* 6 */(ecs_term_t){
-				.id = EcsRotation,
-				.src.name = "$model_instance",
-				.oper = EcsOptional,
-				.inout = EcsIn,
-			},
-			/* 7 */(ecs_term_t){
-				.id = EcsPosition,
-				.src.name = "$model_instance",
-				.oper = EcsOptional,
-				.inout = EcsIn,
-			},
-			/* 8 */ (ecs_term_t){
-				.second.name = "$entity",
-				.first.id = EcsChildOf,
-				.src.name = "$model_instance",
-			},
-			/* 9 */ (ecs_term_t){
-				.id = EcsScale,
-				.src.name = "$entity",
-				.oper = EcsOptional,
-				.inout = EcsIn,
-			},
-			/* 10 */ (ecs_term_t){
-				.id = EcsRotation,
-				.src.name = "$entity",
-				.oper = EcsOptional,
-				.inout = EcsIn,
-			},
-			/* 11 */ (ecs_term_t){
-				.id = EcsPosition,
-				.src.name = "$entity",
-				.oper = EcsOptional,
-				.inout = EcsIn,
-			},
-			/* 12 */ (ecs_term_t){
-				.second.name = "$model_node",
-				.first.id = EcsInstanceOf,
-				.src.name = "$this",
-			},
-			/* 13 */ (ecs_term_t){
-				.id = EcsWorldTransform,
-				.src.name = "$model_node",
-			},
-			/* 14 */ (ecs_term_t){
-				.second.name = "$model",
-				.first.id = EcsChildOf,
-				.src.name = "$model_node",
-			},
-			/* 15 */ (ecs_term_t){
-				.id = EcsModel,
-				.src.name = "$model",
-				.inout = EcsIn,
-			},
+			/* 0  */ (ecs_term_t){.id = ecs_singleton_id(EcsGpuRenderPass), .inout = EcsIn},
+			/* 1  */ (ecs_term_t){.id = ecs_singleton_id(EcsGpuCommandBuffer), .inout = EcsIn},
+			/* 2  */ (ecs_term_t){.id = ecs_singleton_id(EcsViewProjection), .inout = EcsIn},
+			/* 3  */ (ecs_term_t){.id = EcsProjection, .src.name = "$this", .inout = EcsInOut},
+			/* 4  */ (ecs_term_t){.second.name = "$mdl_ins", .first.id = EcsChildOf, .src.name = "$this"},
+			/* 5  */ (ecs_term_t){.id = EcsScale, .src.name = "$mdl_ins", .oper = EcsOptional, .inout = EcsIn},
+			/* 6  */ (ecs_term_t){.id = EcsRotation, .src.name = "$mdl_ins", .oper = EcsOptional, .inout = EcsIn},
+			/* 7  */ (ecs_term_t){.id = EcsPosition, .src.name = "$mdl_ins", .oper = EcsOptional, .inout = EcsIn},
+			/* 8  */ (ecs_term_t){.second.name = "$ent", .first.id = EcsChildOf, .src.name = "$mdl_ins"},
+			/* 9  */ (ecs_term_t){.id = EcsScale, .src.name = "$ent", .oper = EcsOptional, .inout = EcsIn},
+			/* 10 */ (ecs_term_t){.id = EcsRotation, .src.name = "$ent", .oper = EcsOptional, .inout = EcsIn},
+			/* 11 */ (ecs_term_t){.id = EcsPosition, .src.name = "$ent", .oper = EcsOptional, .inout = EcsIn},
+			/* 12 */ (ecs_term_t){.second.name = "$mdl_nod", .first.id = EcsInstanceOf, .src.name = "$this"},
+			/* 13 */ (ecs_term_t){.id = EcsWorldTransform, .src.name = "$mdl_nod"},
+			/* 14 */ (ecs_term_t){.second.name = "$mdl", .first.id = EcsChildOf, .src.name = "$mdl_nod"},
+			/* 15 */ (ecs_term_t){.id = EcsModel, .src.name = "$mdl", .inout = EcsIn},
 		},
 		.callback = render_model,
 	});
@@ -379,11 +311,11 @@ void ecs_add_render()
 			.add = ecs_ids(ecs_dependson(ecs_phase(PHASE_RENDER_END))),
 		}),
 		.query.terms = {
-			(ecs_term_t){.id = EcsGpuRenderPass, .inout = EcsIn},
-			(ecs_term_t){.id = EcsGpuCommandBuffer, .inout = EcsIn},
-			(ecs_term_t){.id = EcsSwapchainTexture, .inout = EcsIn, .oper = EcsOptional},
-			(ecs_term_t){.id = EcsNkContext, .src.id = EcsNkContext, .inout = EcsInOut, .oper = EcsOptional},
-			(ecs_term_t){.id = EcsWindow, .inout = EcsIn, .oper = EcsOptional},
+			(ecs_term_t){.id = ecs_singleton_id(EcsGpuRenderPass), .inout = EcsIn},
+			(ecs_term_t){.id = ecs_singleton_id(EcsGpuCommandBuffer), .inout = EcsIn},
+			(ecs_term_t){.id = ecs_singleton_id(EcsSwapchainTexture), .oper = EcsOptional, .inout = EcsIn},
+			(ecs_term_t){.id = ecs_singleton_id(EcsNkContext), .oper = EcsOptional, .inout = EcsInOut},
+			(ecs_term_t){.id = ecs_singleton_id(EcsWindow), .oper = EcsOptional, .inout = EcsIn},
 		},
 		.callback = end_render,
 	});

@@ -2,7 +2,6 @@
 #include "ecs.h"
 #include "logcategory.h"
 #include "ecs/components.h"
-#include "ecs/tags.h"
 
 #include "flecs.h"
 
@@ -21,7 +20,7 @@ static void on_file_opened([[maybe_unused]] void *userdata,
 	assets_t assets;
 	if (assets_create(filelist[0], &assets))
 	{
-		ecs_set_id(ecs_world(), EcsEngine, EcsAssets,
+		ecs_set_id(ecs_world(), ecs_singleton(EcsAssets),
 			sizeof(assets_t), &assets);
 	}
 }
@@ -39,7 +38,7 @@ static void create_assets([[maybe_unused]] ecs_iter_t *iter)
 	{
 		SDL_free(path);
 
-		ecs_set_id(ecs_world(), EcsEngine, EcsAssets,
+		ecs_set_id(ecs_world(), ecs_singleton(EcsAssets),
 			sizeof(assets_t), &assets);
 
 		return;
@@ -66,7 +65,7 @@ void ecs_add_assets()
 {
 	const ecs_observer_desc_t observer_desc = {
 		.query.terms = {
-			(ecs_term_t){.id = EcsInit, .inout = EcsInOutFilter},
+			(ecs_term_t){.id = ecs_singleton_id(EcsInit), .inout = EcsInOutFilter},
 		},
 		.events = {EcsOnSet},
 		.callback = create_assets,

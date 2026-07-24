@@ -1,7 +1,6 @@
 #include "assets.h"
 #include "ecs.h"
 #include "ecs/components.h"
-#include "ecs/tags.h"
 
 #include "flecs.h"
 
@@ -10,7 +9,7 @@ static void load_window_config(ecs_iter_t *iter)
 	const assets_t *assets = ecs_field(iter, assets_t, 0);
 
 	const window_config_t window_config = assets_window_config(assets);
-	ecs_set_id(ecs_world(), EcsEngine, EcsWindowConfig,
+	ecs_set_id(ecs_world(), ecs_singleton(EcsWindowConfig),
 		sizeof(window_config_t), &window_config);
 }
 
@@ -29,7 +28,7 @@ static void create_window(ecs_iter_t *iter)
 		return;
 	}
 
-	ecs_set_id(ecs_world(), EcsEngine, EcsWindow,
+	ecs_set_id(ecs_world(), ecs_singleton(EcsWindow),
 		sizeof(SDL_Window*), (const void*) &window);
 }
 
@@ -38,14 +37,14 @@ void ecs_add_window()
 	const ecs_observer_desc_t observer_desc[] = {
 		(ecs_observer_desc_t){
 			.query.terms = {
-				(ecs_term_t){.id = EcsAssets},
+				(ecs_term_t){.id = ecs_singleton_id(EcsAssets), .inout = EcsIn},
 			},
 			.events = {EcsOnSet},
 			.callback = load_window_config,
 		},
 		(ecs_observer_desc_t){
 			.query.terms = {
-				(ecs_term_t){.id = EcsWindowConfig},
+				(ecs_term_t){.id = ecs_singleton_id(EcsWindowConfig), .inout = EcsIn},
 			},
 			.events = {EcsOnSet},
 			.callback = create_window,
