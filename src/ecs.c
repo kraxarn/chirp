@@ -7,8 +7,8 @@
 #include "model.h"
 #include "mousebutton.h"
 #include "nkui.h"
-#include "physics.h"
 #include "physicsconfig.h"
+#include "timestats.h"
 #include "windowconfig.h"
 #include "ecs/components.h"
 #include "ecs/entities.h"
@@ -325,6 +325,7 @@ static void module([[maybe_unused]] ecs_world_t *unused)
 		EcsAssets = component("Assets", assets_t);
 		EcsMetadata = component("Metadata", metadata_t);
 		EcsInit = component("Init", init_flags_t);
+		EcsTimeStats = component("TimeStats", time_stats_t);
 		EcsWindowConfig = component("WindowConfig", window_config_t);
 		EcsWindow = component("Window", window_t*);
 		EcsGpuDevice = component("GpuDevice", gpu_device_t*);

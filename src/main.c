@@ -14,6 +14,7 @@
 #include "scriptengine.h"
 #include "systeminfo.h"
 #include "termcolors.h"
+#include "timestats.h"
 #include "vector.h"
 #include "ecs/components.h"
 #include "ecs/entities.h"
@@ -476,7 +477,12 @@ SDL_AppResult SDL_AppInit(void **appstate, const int argc, char **argv)
 	ecs_set_id(ecs_world(), ecs_singleton(EcsInit),
 		sizeof(SDL_InitFlags), &init_flags);
 
-	state->last_update = SDL_GetTicks();
+	const time_stats_t time_stats = {
+		.last_update = SDL_GetTicks(),
+	};
+
+	ecs_set_id(ecs_world(), ecs_singleton(EcsTimeStats),
+		sizeof(time_stats_t), &time_stats);
 
 	const camera_t camera = camera_create_default();
 	ecs_set_id(ecs_world(), ecs_singleton(EcsCamera),
@@ -534,26 +540,29 @@ SDL_AppResult SDL_AppIterate(void *appstate)
 {
 	app_state_t *state = appstate;
 
+	time_stats_t *time_stats = ecs_get_mut_id(ecs_world(),
+		ecs_singleton(EcsTimeStats));
+
 	constexpr auto ns_s = 1'000'000'000.F;
 	const Uint64 current_update = SDL_GetTicksNS();
-	state->dt = (float) (current_update - state->last_update) / ns_s;
-	state->last_update = current_update;
+	time_stats->dt = (float) (current_update - time_stats->last_update) / ns_s;
+	time_stats->last_update = current_update;
 
-	if (state->fps == 0)
+	if (time_stats->fps == 0)
 	{
-		state->fps = 1.F / state->dt;
+		time_stats->fps = 1.F / time_stats->dt;
 	}
 
-	state->count++;
-	state->duration += state->dt;
-	if (state->duration >= 1.F)
+	time_stats->count++;
+	time_stats->duration += time_stats->dt;
+	if (time_stats->duration >= 1.F)
 	{
-		state->fps = state->count;
-		state->count = 0;
-		state->duration = 0;
+		time_stats->fps = time_stats->count;
+		time_stats->count = 0;
+		time_stats->duration = 0;
 	}
 
-	ecs_progress(ecs_world(), state->dt);
+	ecs_progress(ecs_world(), time_stats->dt);
 
 	const physics_config_t *physics_config = ecs_get_id(ecs_world(),
 		ecs_singleton(EcsPhysicsConfig));
@@ -579,37 +588,37 @@ SDL_AppResult SDL_AppIterate(void *appstate)
 
 		if (input_is_down("move_forward"))
 		{
-			const vector3f_t velocity = camera_to_z(camera, move_speed * state->dt);
+			const vector3f_t velocity = camera_to_z(camera, move_speed * time_stats->dt);
 			b3Body_SetLinearVelocity(*player_body_id, cast(b3Vec3, velocity));
 		}
 
 		if (input_is_down("move_backward"))
 		{
-			const vector3f_t velocity = camera_to_z(camera, -(move_speed * state->dt));
+			const vector3f_t velocity = camera_to_z(camera, -(move_speed * time_stats->dt));
 			b3Body_SetLinearVelocity(*player_body_id, cast(b3Vec3, velocity));
 		}
 
 		if (input_is_down("move_left"))
 		{
-			const vector3f_t velocity = camera_to_x(camera, -(move_speed * state->dt));
+			const vector3f_t velocity = camera_to_x(camera, -(move_speed * time_stats->dt));
 			b3Body_SetLinearVelocity(*player_body_id, cast(b3Vec3, velocity));
 		}
 
 		if (input_is_down("move_right"))
 		{
-			const vector3f_t velocity = camera_to_x(camera, move_speed * state->dt);
+			const vector3f_t velocity = camera_to_x(camera, move_speed * time_stats->dt);
 			b3Body_SetLinearVelocity(*player_body_id, cast(b3Vec3, velocity));
 		}
 
 		if (input_is_down("move_up"))
 		{
-			const vector3f_t velocity = camera_to_y(camera, move_speed * state->dt);
+			const vector3f_t velocity = camera_to_y(camera, move_speed * time_stats->dt);
 			b3Body_SetLinearVelocity(*player_body_id, cast(b3Vec3, velocity));
 		}
 
 		if (input_is_down("move_down"))
 		{
-			const vector3f_t velocity = camera_to_y(camera, -(move_speed * state->dt));
+			const vector3f_t velocity = camera_to_y(camera, -(move_speed * time_stats->dt));
 			b3Body_SetLinearVelocity(*player_body_id, cast(b3Vec3, velocity));
 		}
 
