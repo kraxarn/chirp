@@ -94,10 +94,8 @@ static void finish_task(void *task, [[maybe_unused]] void *context)
 	}
 }
 
-void physics_ctor(void *ptr, const Sint32 count,
-	[[maybe_unused]] const ecs_type_info_t *type_info)
+bool physics_create(b3WorldId *world)
 {
-	SDL_assert(count == 1);
 	SDL_assert(b3GetWorldCount() == 0);
 
 	b3SetLogFcn(b3_log);
@@ -110,18 +108,20 @@ void physics_ctor(void *ptr, const Sint32 count,
 	world_def.enqueueTask = enqueue_task;
 	world_def.finishTask = finish_task;
 
-	b3WorldId *world = ptr;
 	*world = b3CreateWorld(&world_def);
-	SDL_assert(world->index1 != 0);
+	if (world->index1 == 0)
+	{
+		return SDL_SetError("Failed to create world");
+	}
 
 	// Should be the same as world_def.workerCount
 	SDL_LogInfo(LOG_CATEGORY_PHYSICS, "Using %d workers",
 		b3World_GetWorkerCount(*world));
+
+	return true;
 }
 
-void physics_dtor(void *ptr, const Sint32 count,
-	[[maybe_unused]] const ecs_type_info_t *type_info)
+void physics_destroy(const b3WorldId world)
 {
-	SDL_assert(count == 1);
-	b3DestroyWorld(*(b3WorldId*) ptr);
+	b3DestroyWorld(world);
 }

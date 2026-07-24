@@ -1,11 +1,7 @@
 #pragma once
 
-#include "flecs.h"
+#include "box3d/id.h"
 
-#include <SDL3/SDL_stdinc.h>
+bool physics_create(b3WorldId *world);
 
-void physics_ctor(void *ptr, Sint32 count,
-	const ecs_type_info_t *type_info);
-
-void physics_dtor(void *ptr, Sint32 count,
-	const ecs_type_info_t *type_info);
+void physics_destroy(b3WorldId world);

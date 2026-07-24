@@ -218,9 +218,6 @@ static ecs_id_t component_impl(const char *name, const char *symbol,
 #define component(name, symbol)	\
 	component_impl(name, #symbol, ECS_SIZEOF(symbol), ECS_ALIGNOF(symbol), ctor_zero, nullptr)
 
-#define component_xtor(name, symbol, ctor, dtor)	\
-	component_impl(name, #symbol, ECS_SIZEOF(symbol), ECS_ALIGNOF(symbol), ctor, dtor)
-
 static ecs_entity_t tag(const char *name)
 {
 	const ecs_entity_desc_t entity_desc = {
@@ -339,7 +336,7 @@ static void module([[maybe_unused]] ecs_world_t *unused)
 		EcsSwapchainTextureSize = component("SwapchainTextureSize", swapchain_texture_size_t);
 		EcsCamera = component("Camera", camera_t);
 		EcsPhysicsConfig = component("PhysicsConfig", physics_config_t);
-		EcsPhysicsWorld = component_xtor("PhysicsWorld", b3WorldId, physics_ctor, physics_dtor);
+		EcsPhysicsWorld = component("PhysicsWorld", b3WorldId);
 		EcsPhysicsBody = component("PhysicsBody", b3BodyId);
 		EcsModel = component("Model", model_t);
 		EcsRotation = component("Rotation", rotation_t);

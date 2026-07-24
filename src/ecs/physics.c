@@ -8,10 +8,17 @@
 #include "box3d/id.h"
 #include "flecs/addons/flecs_c.h"
 
-/** \see physics_ctor */
 static void init_physics([[maybe_unused]] ecs_iter_t *iter)
 {
-	ecs_add_id(ecs_world(), EcsPhysicsWorld, EcsPhysicsWorld);
+	b3WorldId world = {0};
+	if (!physics_create(&world))
+	{
+		ecs_set_error("Physics error", SDL_GetError());
+		return;
+	}
+
+	ecs_set_id(ecs_world(), ecs_singleton(EcsPhysicsWorld),
+		sizeof(b3WorldId), &world);
 }
 
 static void update_physics(ecs_iter_t *iter)

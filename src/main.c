@@ -8,6 +8,7 @@
 #include "logcategory.h"
 #include "model.h"
 #include "nkui.h"
+#include "physics.h"
 #include "physicsconfig.h"
 #include "prefabs.h"
 #include "scriptengine.h"
@@ -864,6 +865,7 @@ void SDL_AppQuit(void *appstate, [[maybe_unused]] SDL_AppResult result)
 
 	assets_destroy(ecs_get_id(ecs_world(), ecs_singleton(EcsAssets)));
 	script_engine_destroy();
+	physics_destroy(*(b3WorldId*) ecs_get_id(ecs_world(), ecs_singleton(EcsPhysicsWorld)));
 
 	SDL_Window *window = *(SDL_Window**) ecs_get_mut_id(ecs_world(),
 		ecs_singleton(EcsWindow));
