@@ -17,7 +17,11 @@ static void create_window(ecs_iter_t *iter)
 {
 	const window_config_t *config = ecs_field(iter, window_config_t, 0);
 
-	SDL_Window *window = SDL_CreateWindow(config->title,
+	const char *title = config->title == nullptr
+		? ENGINE_NAME " " ENGINE_VERSION
+		: config->title;
+
+	SDL_Window *window = SDL_CreateWindow(title,
 		config->size.x, config->size.y,
 		window_config_flags(*config)
 	);

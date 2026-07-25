@@ -7,7 +7,7 @@ window_config_t window_config_default()
 	constexpr auto height = 480;
 
 	return (window_config_t){
-		.title = "game window",
+		.title = nullptr,
 		.size = (vector2i_t){
 			.x = width,
 			.y = height,

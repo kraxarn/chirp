@@ -376,6 +376,7 @@ bool assets_create(const char *path, assets_t *assets)
 	}
 
 	assets->stream = stream;
+	assets->window_config = window_config_default();
 	assets->desc = map_create();
 
 	if (assets->desc == 0)
