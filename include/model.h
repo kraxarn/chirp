@@ -9,7 +9,7 @@
 
 typedef Uint16 mesh_index_t;
 
-typedef struct vertex_t
+typedef struct vertex
 {
 	vector3f_t position;
 	vector3f_t normal;
@@ -17,11 +17,11 @@ typedef struct vertex_t
 	vector4f_t color;
 } vertex_t;
 
-typedef struct material_t material_t;
-typedef struct node_t node_t;
-typedef struct scene_camera_t scene_camera_t;
+typedef struct material material_t;
+typedef struct node node_t;
+typedef struct scene_camera scene_camera_t;
 
-typedef struct model_t
+typedef struct model
 {
 	SDL_GPUDevice *device;
 
@@ -38,7 +38,10 @@ typedef struct model_t
 	SDL_GPUTexture *texture;
 } model_t;
 
-bool model_create(SDL_GPUDevice *device, SDL_IOStream *stream, bool close_io, model_t *model);
+typedef struct assets assets_t;
+
+bool model_create(SDL_GPUDevice *device, const assets_t *assets,
+	SDL_IOStream *stream, bool close_io, model_t *model);
 
 void model_destroy(const model_t *model);
 

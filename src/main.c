@@ -277,7 +277,7 @@ static void build_scene(ecs_iter_t *iter)
 	const ecs_entity_t scene = load_model(assets, gpu_device, "scene");
 	if (scene == 0)
 	{
-		SDL_LogError(LOG_CATEGORY_CORE, "Failed to load scene");
+		SDL_LogError(LOG_CATEGORY_CORE, "Failed to load scene: %s", SDL_GetError());
 		return;
 	}
 

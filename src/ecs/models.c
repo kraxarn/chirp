@@ -1,8 +1,8 @@
 #include "assets.h"
 #include "ecs.h"
 #include "logcategory.h"
+#include "model.h"
 #include "ecs/components.h"
-#include "ecs/tags.h"
 
 #include "flecs.h"
 

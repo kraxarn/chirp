@@ -1,4 +1,5 @@
 #include "model.h"
+#include "assets.h"
 #include "logcategory.h"
 #include "uniformdata.h"
 #include "vector.h"
@@ -13,13 +14,13 @@
 
 #include "cgltf.h"
 
-typedef struct material_t
+typedef struct material
 {
 	const char *name;
 	SDL_FColor *color;
 } material_t;
 
-typedef struct mesh_primitive_t
+typedef struct mesh_primitive
 {
 	vertex_t *vertices;
 	size_t vertex_count;
@@ -31,7 +32,7 @@ typedef struct mesh_primitive_t
 	SDL_GPUBuffer *index_buffer;
 } mesh_primitive_t;
 
-typedef struct node_t
+typedef struct node
 {
 	char *name;
 
@@ -42,7 +43,7 @@ typedef struct node_t
 	vector3f_t translation;
 } node_t;
 
-typedef struct scene_camera_t
+typedef struct scene_camera
 {
 	char *name;
 } scene_camera_t;
@@ -763,7 +764,46 @@ static bool upload_model(const model_t *model)
 	return true;
 }
 
-bool model_create(SDL_GPUDevice *device, SDL_IOStream *stream, const bool close_io, model_t *model)
+static void *gltf_alloc([[maybe_unused]] void *user,
+	const cgltf_size size)
+{
+	return SDL_malloc(size);
+}
+
+static void gltf_free([[maybe_unused]] void *user, void *ptr)
+{
+	SDL_free(ptr);
+}
+
+static cgltf_result gltf_read([[maybe_unused]] const cgltf_memory_options *memory_options,
+	const cgltf_file_options *file_options, const char *path, cgltf_size *size, void **data)
+{
+	const char *ext = SDL_strrchr(path, '.');
+	if (ext == nullptr)
+	{
+		return cgltf_result_unknown_format;
+	}
+
+	const bool is_buffer = SDL_strcmp(ext, ".bin") == 0;
+	char *asset_name = nullptr;
+	SDL_asprintf(&asset_name, "models/%s/%.*s",
+		(int) is_buffer ? "buffers" : "images",
+		(int) (ext - path), path
+	);
+
+	const assets_t *assets = file_options->user_data;
+	SDL_IOStream *stream = assets_load(assets, asset_name);
+	if (stream == nullptr)
+	{
+		return cgltf_result_file_not_found;
+	}
+
+	*data = SDL_LoadFile_IO(stream, size, true);
+	return cgltf_result_success;
+}
+
+bool model_create(SDL_GPUDevice *device, const assets_t *assets,
+	SDL_IOStream *stream, const bool close_io, model_t *model)
 {
 	size_t file_size;
 	void *file_data = SDL_LoadFile_IO(stream, &file_size, close_io);
@@ -784,7 +824,15 @@ bool model_create(SDL_GPUDevice *device, SDL_IOStream *stream, const bool close_
 	model->texture = nullptr;
 
 	const cgltf_options options = {
-		.type = cgltf_file_type_glb,
+		.type = cgltf_file_type_gltf,
+		.memory = (cgltf_memory_options){
+			.alloc_func = gltf_alloc,
+			.free_func = gltf_free,
+		},
+		.file = (cgltf_file_options){
+			.read = gltf_read,
+			.user_data = (void*) assets,
+		}
 	};
 	cgltf_data *gltf_data = nullptr;
 
@@ -803,7 +851,7 @@ bool model_create(SDL_GPUDevice *device, SDL_IOStream *stream, const bool close_
 	const Uint64 parse_end = SDL_GetTicks();
 	SDL_LogDebug(LOG_CATEGORY_MODEL, "Parsed model in %lu ms", parse_end - begin);
 
-	result = cgltf_load_buffers(&options, gltf_data, nullptr);
+	result = cgltf_load_buffers(&options, gltf_data, ".");
 	if (result != cgltf_result_success)
 	{
 		SDL_SetError("%s", cgltf_error_string(result));

@@ -1,19 +1,21 @@
 #pragma once
 
-#include "input.h"
 #include "map.h"
-#include "model.h"
 #include "windowconfig.h"
 
+#include <SDL3/SDL_gpu.h>
 #include <SDL3/SDL_iostream.h>
 #include <SDL3/SDL_surface.h>
 
-typedef struct
+// TODO: Maybe move to ecs? (and remove map_t)
+typedef struct assets
 {
 	SDL_IOStream *stream;
 	window_config_t window_config;
 	map_t desc;
 } assets_t;
+
+typedef struct model model_t;
 
 bool assets_create(const char *path, assets_t *assets);
 

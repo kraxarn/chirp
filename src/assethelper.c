@@ -41,7 +41,7 @@ bool assets_load_model(const assets_t *assets, SDL_GPUDevice *device, const char
 		return false;
 	}
 
-	return model_create(device, stream, true, model);
+	return model_create(device, assets, stream, true, model);
 }
 
 SDL_IOStream *assets_load_script(const assets_t *assets, const char *name)
