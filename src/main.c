@@ -87,16 +87,14 @@ static bool sdl_supported()
 		return SDL_SetError("SDL 3.4 or newer is required");
 	}
 
-	constexpr int compiled = SDL_VERSION;
-
 	// Micro is bugfixes only, so just ignore it
-	if (SDL_VERSIONNUM_MAJOR(linked) != SDL_VERSIONNUM_MAJOR(compiled)
-		|| SDL_VERSIONNUM_MINOR(linked) != SDL_VERSIONNUM_MINOR(compiled))
+	if (SDL_VERSIONNUM_MAJOR(linked) != SDL_MAJOR_VERSION
+		|| SDL_VERSIONNUM_MINOR(linked) != SDL_MINOR_VERSION)
 	{
 		SDL_LogWarn(LOG_CATEGORY_CORE,
 			"Binary is linked against SDL %d.%d, but running against SDL %d.%d",
 			SDL_VERSIONNUM_MAJOR(linked), SDL_VERSIONNUM_MINOR(linked),
-			SDL_VERSIONNUM_MAJOR(compiled), SDL_VERSIONNUM_MINOR(compiled)
+			SDL_MAJOR_VERSION, SDL_MINOR_VERSION
 		);
 	}
 
