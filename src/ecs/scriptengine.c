@@ -1,9 +1,14 @@
 #include "scriptengine.h"
 #include "assets.h"
 #include "ecs.h"
+#include "logcategory.h"
 #include "ecs/components.h"
 
 #include "flecs.h"
+
+#include <SDL3/SDL_error.h>
+#include <SDL3/SDL_iostream.h>
+#include <SDL3/SDL_log.h>
 
 static void create_script_engine([[maybe_unused]] ecs_iter_t *iter)
 {
@@ -20,13 +25,13 @@ static void load_main_script(ecs_iter_t *iter)
 	SDL_IOStream *script_stream = assets_load_script(assets, "main");
 	if (script_stream == nullptr)
 	{
-		ecs_set_error("Script error", SDL_GetError());
+		SDL_LogError(LOG_CATEGORY_SCRIPT, "'main' not found: %s", SDL_GetError());
 		return;
 	}
 
 	if (!script_engine_exec("main", script_stream, true))
 	{
-		ecs_set_error("Script error", SDL_GetError());
+		SDL_LogError(LOG_CATEGORY_SCRIPT, "Exec error: %s", SDL_GetError());
 	}
 }
 
