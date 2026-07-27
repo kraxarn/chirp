@@ -92,9 +92,9 @@ static bool sdl_supported()
 		|| SDL_VERSIONNUM_MINOR(linked) != SDL_MINOR_VERSION)
 	{
 		SDL_LogWarn(LOG_CATEGORY_CORE,
-			"Binary is linked against SDL %d.%d, but running against SDL %d.%d",
-			SDL_VERSIONNUM_MAJOR(linked), SDL_VERSIONNUM_MINOR(linked),
-			SDL_MAJOR_VERSION, SDL_MINOR_VERSION
+			"Binary is compiled against SDL %d.%d, but running against SDL %d.%d",
+			SDL_MAJOR_VERSION, SDL_MINOR_VERSION,
+			SDL_VERSIONNUM_MAJOR(linked), SDL_VERSIONNUM_MINOR(linked)
 		);
 	}
 
