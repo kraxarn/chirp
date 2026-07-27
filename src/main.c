@@ -17,9 +17,7 @@
 #include "timestats.h"
 #include "vector.h"
 #include "ecs/components.h"
-#include "ecs/entities.h"
 #include "ecs/events.h"
-#include "ecs/tags.h"
 #include "ui/debugoverlay.h"
 
 #include "flecs.h"
@@ -105,122 +103,6 @@ static bool sdl_supported()
 	return true;
 }
 
-[[deprecated]]
-static Uint16 fix_entity_name(const char *name)
-{
-	Uint16 changes = 0;
-
-	char *str;
-	while ((str = SDL_strchr(name, '.')) != nullptr)
-	{
-		*str = '_';
-		changes++;
-	}
-
-	return changes;
-}
-
-[[deprecated]]
-static ecs_entity_t load_model(const assets_t *assets, gpu_device_t *gpu_device, const char *name)
-{
-	model_t model;
-	if (!assets_load_model(assets, gpu_device, name, &model))
-	{
-		return 0;
-	}
-
-	// TODO: Needed because data is fetched when we create an instance, without progressing the ecs
-	ecs_defer_suspend(ecs_world());
-
-	const ecs_entity_desc_t parent_desc = {
-		.name = "Model",
-	};
-	const ecs_entity_t parent = ecs_entity_init(ecs_world(), &parent_desc);
-
-	const ecs_entity_desc_t entity_desc = {
-		.name = name,
-	};
-	const ecs_entity_t entity = ecs_entity_init(ecs_world(), &entity_desc);
-	ecs_add_pair(ecs_world(), entity, EcsChildOf, parent);
-
-	ecs_set_id(ecs_world(), entity, EcsModel,
-		sizeof(model_t), &model);
-
-	for (size_t i = 0; i < model.node_count; i++)
-	{
-		char *node_name = SDL_strdup(model_node_name(&model, i));
-		if (fix_entity_name(node_name) > 0)
-		{
-			SDL_LogWarn(LOG_CATEGORY_MODEL, "Renamed invalid entity name \"%s\" to \"%s\" in \"%s\"",
-				model_node_name(&model, i), node_name, name);
-		}
-		const ecs_entity_t node = ecs_entity_init(ecs_world(), &(ecs_entity_desc_t){
-			.name = node_name,
-		});
-		SDL_free(node_name);
-
-		ecs_add_pair(ecs_world(), node, EcsChildOf, entity);
-
-		const position_t position = model_node_translation(&model, i);
-		ecs_set_id(ecs_world(), node, EcsPosition,
-			sizeof(position_t), &position);
-
-		const world_transform_t world_transform = model_node_world_transform(&model, i);
-		ecs_set_id(ecs_world(), node, EcsWorldTransform,
-			sizeof(world_transform_t), &world_transform);
-	}
-
-	ecs_defer_resume(ecs_world());
-	return entity;
-}
-
-[[deprecated]]
-static ecs_entity_t create_instance(const ecs_entity_t model)
-{
-	SDL_assert(model != 0);
-
-	const ecs_entity_t instance = ecs_new(ecs_world());
-
-	char *instance_name = nullptr;
-	SDL_asprintf(&instance_name, "%s#%ld",
-		ecs_get_name(ecs_world(), model),
-		instance
-	);
-	ecs_set_name(ecs_world(), instance, instance_name);
-	SDL_free(instance_name);
-
-	const ecs_entity_desc_t parent_desc = {
-		.name = "Instance",
-	};
-	const ecs_entity_t parent = ecs_entity_init(ecs_world(), &parent_desc);
-	ecs_add_pair(ecs_world(), instance, EcsChildOf, parent);
-
-	ecs_add_pair(ecs_world(), instance, EcsInstanceOf, model);
-
-	ecs_iter_t iter = ecs_children(ecs_world(), model);
-	while (ecs_children_next(&iter))
-	{
-		for (Sint32 i = 0; i < iter.count; i++)
-		{
-			const ecs_entity_t child = iter.entities[i];
-
-			const ecs_entity_t node = ecs_new_w_pair(ecs_world(), EcsChildOf, instance);
-			char *node_name = nullptr;
-			SDL_asprintf(&node_name, "%s#%ld", ecs_get_name(ecs_world(), child), node);
-			ecs_set_name(ecs_world(), node, node_name);
-			SDL_free(node_name);
-
-			const projection_t projection = {.rebuild = true};
-			ecs_set_id(ecs_world(), node, EcsProjection,
-				sizeof(projection_t), &projection);
-
-			ecs_add_pair(ecs_world(), node, EcsInstanceOf, child);
-		}
-	}
-
-	return instance;
-}
-
 static void log_spawn_position(ecs_iter_t *iter)
 {
 	const position_t *spawn_position = ecs_field(iter, position_t, 0);
@@ -229,10 +111,8 @@ static void log_spawn_position(ecs_iter_t *iter)
 
 static void build_scene(ecs_iter_t *iter)
 {
-	const assets_t *assets = ecs_field(iter, assets_t, 0);
-	SDL_GPUDevice *gpu_device = *ecs_field(iter, gpu_device_t*, 1);
-	b3WorldId physics_world = *ecs_field(iter, b3WorldId, 2);
-	const physics_config_t *physics_config = ecs_field(iter, physics_config_t, 3);
+	const b3WorldId physics_world = *ecs_field(iter, b3WorldId, 0);
+	const physics_config_t *physics_config = ecs_field(iter, physics_config_t, 1);
 
 	ecs_observer_init(ecs_world(), &(ecs_observer_desc_t){
 		.query.terms = {
@@ -274,14 +154,8 @@ static void build_scene(ecs_iter_t *iter)
 
 	// Scene
 
-	const ecs_entity_t scene = load_model(assets, gpu_device, "scene");
-	if (scene == 0)
-	{
-		SDL_LogError(LOG_CATEGORY_CORE, "Failed to load scene: %s", SDL_GetError());
-		return;
-	}
-
-	ecs_add_id(ecs_world(), scene, EcsScene);
+	const ecs_entity_t scene = ecs_new(ecs_world());
+	ecs_set_id(ecs_world(), scene, prefab_scene("scene"));
 
 	// Physics
 
@@ -456,8 +330,6 @@ SDL_AppResult SDL_AppInit(void **appstate, const int argc, char **argv)
 
 	ecs_observer_init(ecs_world(), &(ecs_observer_desc_t){
 		.query.terms = {
-			(ecs_term_t){.id = ecs_singleton_id(EcsAssets), .inout = EcsIn},
-			(ecs_term_t){.id = ecs_singleton_id(EcsGpuDevice), .inout = EcsIn},
 			(ecs_term_t){.id = ecs_singleton_id(EcsPhysicsWorld), .inout = EcsIn},
 			(ecs_term_t){.id = ecs_singleton_id(EcsPhysicsConfig), .inout = EcsIn},
 		},

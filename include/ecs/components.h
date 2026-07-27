@@ -36,6 +36,7 @@ extern ecs_id_t EcsError;
 extern ecs_id_t EcsScriptEngine;
 extern ecs_id_t EcsArgs;
 extern ecs_id_t EcsModelInstance;
+extern ecs_id_t EcsModelScene;
 
 // Input
 

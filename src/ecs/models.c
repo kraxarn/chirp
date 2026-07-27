@@ -3,13 +3,17 @@
 #include "logcategory.h"
 #include "model.h"
 #include "ecs/components.h"
+#include "ecs/entities.h"
+#include "ecs/tags.h"
 
 #include "flecs.h"
+#include "flecs/addons/system.h"
 
 #include <SDL3/SDL_assert.h>
+#include <SDL3/SDL_error.h>
+#include <SDL3/SDL_gpu.h>
 #include <SDL3/SDL_log.h>
-
-#include "ecs/entities.h"
+#include <SDL3/SDL_stdinc.h>
 
 [[nodiscard]]
 static ecs_entity_t models_entity()
@@ -36,7 +40,7 @@ static Uint16 fix_entity_name(const char *name)
 
 static ecs_entity_t load_model(const char *name)
 {
-	SDL_LogDebug(LOG_CATEGORY_ECS, "Loading model: '%s'", name);
+	SDL_LogInfo(LOG_CATEGORY_ECS, "Loading model: '%s'", name);
 
 	const assets_t *assets = ecs_get_id(ecs_world(), ecs_singleton(EcsAssets));
 
@@ -131,7 +135,7 @@ static void instance_model(ecs_iter_t *iter)
 
 	SDL_assert(iter->count >= 1);
 
-	const char *name = ecs_field(iter, model_instance_t, 0)->name;
+	const char *name = ecs_field(iter, model_descriptor_t, 0)->name;
 
 	const ecs_entity_t entity = iter->entities[0];
 	SDL_assert(entity != 0);
@@ -143,12 +147,22 @@ static void instance_model(ecs_iter_t *iter)
 		{
 			// Don't try to load indefinitely
 			ecs_remove_id(ecs_world(), entity, EcsModelInstance);
+			ecs_remove_id(ecs_world(), entity, EcsModelScene);
 		}
 		return; // Deferred, I don't really like this, but it works
 	}
 
-	create_instance(entity, model);
-	ecs_remove_id(ecs_world(), entity, EcsModelInstance);
+	if (ecs_has_id(ecs_world(), entity, EcsModelInstance))
+	{
+		create_instance(entity, model);
+		ecs_remove_id(ecs_world(), entity, EcsModelInstance);
+	}
+	else if (ecs_has_id(ecs_world(), entity, EcsModelScene))
+	{
+		// TODO: We might want to keep the entity?
+		ecs_add_id(ecs_world(), model, EcsScene);
+		ecs_delete(ecs_world(), entity);
+	}
 }
 
 void ecs_add_models()
@@ -159,7 +173,8 @@ void ecs_add_models()
 			.add = ecs_ids(ecs_dependson(ecs_phase(PHASE_RENDER_BEGIN))),
 		}),
 		.query.terms = {
-			(ecs_term_t){.id = EcsModelInstance, .inout = EcsInOut},
+			(ecs_term_t){.id = EcsModelInstance, .oper = EcsOr, .inout = EcsInOut},
+			(ecs_term_t){.id = EcsModelScene, .inout = EcsInOut},
 		},
 		.callback = instance_model,
 	});

@@ -354,6 +354,7 @@ static void module([[maybe_unused]] ecs_world_t *unused)
 		EcsScriptEngine = component("ScriptEngine", py_vm_index_t);
 		EcsArgs = component("Args", args_t);
 		EcsModelInstance = component("ModelInstance", model_instance_t);
+		EcsModelScene = component("ModelScene", model_scene_t);
 
 #ifndef NDEBUG
 		reflect(EcsMetadata,
@@ -452,6 +453,10 @@ static void module([[maybe_unused]] ecs_world_t *unused)
 		);
 
 		reflect(EcsModelInstance,
+			(ecs_member_t){.name = "name", .type = ecs_id(ecs_string_t)},
+		);
+
+		reflect(EcsModelScene,
 			(ecs_member_t){.name = "name", .type = ecs_id(ecs_string_t)},
 		);
 

@@ -48,10 +48,13 @@ typedef struct
 	char *message;
 } error_t;
 
-typedef struct
+typedef struct model_descriptor
 {
 	char *name;
-} model_instance_t;
+} model_descriptor_t;
+
+typedef model_descriptor_t model_instance_t;
+typedef model_descriptor_t model_scene_t;
 
 typedef struct
 {
