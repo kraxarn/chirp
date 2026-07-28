@@ -37,9 +37,4 @@ extern ecs_id_t EcsScriptEngine;
 extern ecs_id_t EcsArgs;
 extern ecs_id_t EcsModelInstance;
 extern ecs_id_t EcsModelScene;
-
-// Input
-
-extern ecs_id_t EcsInputState;
-extern ecs_id_t EcsKeycode;
-extern ecs_id_t EcsMouseButtonFlags;
+extern ecs_id_t EcsInput;

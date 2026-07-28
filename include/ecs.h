@@ -80,15 +80,6 @@ typedef enum : Uint8
 	PHASE_COUNT,
 } phase_t;
 
-typedef enum : Uint8
-{
-	STATE_UP,
-	STATE_PRESSED,
-	STATE_DOWN,
-} input_state_t;
-
-static constexpr Uint32 ecs_offset_input = 1000;
-
 void ecs_create();
 
 void ecs_destroy();
@@ -127,3 +118,4 @@ void ecs_add_physics();
 void ecs_add_render();
 void ecs_add_script_engine();
 void ecs_add_models();
+void ecs_add_input();

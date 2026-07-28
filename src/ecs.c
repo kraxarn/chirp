@@ -3,6 +3,7 @@
 #include "assets.h"
 #include "camera.h"
 #include "ecsosapi.h"
+#include "input.h"
 #include "logcategory.h"
 #include "model.h"
 #include "mousebutton.h"
@@ -293,25 +294,7 @@ static int mouse_button_flags_serialize(const ecs_serializer_t *ser, const void 
 
 static void add_input()
 {
-	EcsInput = entity("Input");
-	EcsKeycodeStates = entity("KeycodeStates");
-	EcsMouseButtonStates = entity("MouseButtonStates");
-	EcsMapsTo = entity("MapsTo");
-
-	EcsInputState = component("InputState", input_state_t);
-	EcsKeycode = component("Keycode", SDL_Keycode);
-	EcsMouseButtonFlags = component("MouseButtonFlags", SDL_MouseButtonFlags);
-
-#ifndef NDEBUG
-	reflect_enum(EcsInputState, ecs_id(ecs_u8_t),
-		(ecs_enum_constant_t){.name = "Up", .value_unsigned = STATE_UP},
-		(ecs_enum_constant_t){.name = "Pressed", .value_unsigned = STATE_PRESSED},
-		(ecs_enum_constant_t){.name = "Down", .value_unsigned = STATE_DOWN},
-	);
-
-	reflect_string(EcsKeycode, keycode_serialize);
-	reflect_string(EcsMouseButtonFlags, mouse_button_flags_serialize);
-#endif
+	EcsInput = component("Input", input_t);
 }
 
 static void module([[maybe_unused]] ecs_world_t *unused)

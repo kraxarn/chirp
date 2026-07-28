@@ -33,9 +33,4 @@ ecs_id_t EcsScriptEngine = 0;
 ecs_id_t EcsArgs = 0;
 ecs_id_t EcsModelInstance = 0;
 ecs_id_t EcsModelScene = 0;
-
-// Input
-
-ecs_id_t EcsInputState = 0;
-ecs_id_t EcsKeycode = 0;
-ecs_id_t EcsMouseButtonFlags = 0;
+ecs_id_t EcsInput = 0;

@@ -321,6 +321,7 @@ SDL_AppResult SDL_AppInit(void **appstate, const int argc, char **argv)
 		ecs_add_script_engine();
 		ecs_add_models();
 		ecs_add_nkui();
+		ecs_add_input();
 	}
 
 	ecs_set_id(ecs_world(), ecs_singleton(EcsArgs),
@@ -443,6 +444,8 @@ SDL_AppResult SDL_AppIterate(void *appstate)
 	if (SDL_GetWindowRelativeMouseMode(window)
 		&& player_body_id != nullptr)
 	{
+		const input_t *input = ecs_get_id(ecs_world(), ecs_singleton(EcsInput));
+
 		vector2f_t mouse;
 		SDL_GetRelativeMouseState(&mouse.x, &mouse.y);
 		camera_rotate_x(camera, -(mouse.x * mouse_sensitivity));
@@ -451,43 +454,43 @@ SDL_AppResult SDL_AppIterate(void *appstate)
 		const float move_speed = physics_config->move_speed;
 		const float jump_speed = physics_config->jump_speed;
 
-		if (input_is_down("move_forward"))
+		if (input_is_down(input, "move_forward"))
 		{
 			const vector3f_t velocity = camera_to_z(camera, move_speed * time_stats->dt);
 			b3Body_SetLinearVelocity(*player_body_id, cast(b3Vec3, velocity));
 		}
 
-		if (input_is_down("move_backward"))
+		if (input_is_down(input, "move_backward"))
 		{
 			const vector3f_t velocity = camera_to_z(camera, -(move_speed * time_stats->dt));
 			b3Body_SetLinearVelocity(*player_body_id, cast(b3Vec3, velocity));
 		}
 
-		if (input_is_down("move_left"))
+		if (input_is_down(input, "move_left"))
 		{
 			const vector3f_t velocity = camera_to_x(camera, -(move_speed * time_stats->dt));
 			b3Body_SetLinearVelocity(*player_body_id, cast(b3Vec3, velocity));
 		}
 
-		if (input_is_down("move_right"))
+		if (input_is_down(input, "move_right"))
 		{
 			const vector3f_t velocity = camera_to_x(camera, move_speed * time_stats->dt);
 			b3Body_SetLinearVelocity(*player_body_id, cast(b3Vec3, velocity));
 		}
 
-		if (input_is_down("move_up"))
+		if (input_is_down(input, "move_up"))
 		{
 			const vector3f_t velocity = camera_to_y(camera, move_speed * time_stats->dt);
 			b3Body_SetLinearVelocity(*player_body_id, cast(b3Vec3, velocity));
 		}
 
-		if (input_is_down("move_down"))
+		if (input_is_down(input, "move_down"))
 		{
 			const vector3f_t velocity = camera_to_y(camera, -(move_speed * time_stats->dt));
 			b3Body_SetLinearVelocity(*player_body_id, cast(b3Vec3, velocity));
 		}
 
-		if (input_is_pressed("jump"))
+		if (input_is_pressed(input, "jump"))
 		{
 			const b3Vec3 velocity = b3Body_GetLinearVelocity(*player_body_id);
 			if (velocity.y > -0.1F && velocity.y < 0.1F)
@@ -501,7 +504,7 @@ SDL_AppResult SDL_AppIterate(void *appstate)
 			}
 		}
 
-		if (input_is_pressed("shoot"))
+		if (input_is_pressed(input, "shoot"))
 		{
 			static constexpr float firepower = 10.F;
 
@@ -697,17 +700,18 @@ SDL_AppResult SDL_AppEvent([[maybe_unused]] void *appstate, SDL_Event *event)
 		emit(EcsOnKey, EcsKeyboardEvent, &event->key);
 	}
 
+	if (event->type == SDL_EVENT_WINDOW_RESIZED)
+	{
+		emit(EcsOnWindowResized, EcsWindowEvent, &event->window);
+	}
+
 	SDL_Window *window = *((SDL_Window**) ecs_get_id(ecs_world(),
 		ecs_singleton(EcsWindow)));
 
 	if (SDL_GetWindowRelativeMouseMode(window))
 	{
-		input_update(event);
-	}
-
-	if (event->type == SDL_EVENT_WINDOW_RESIZED)
-	{
-		emit(EcsOnWindowResized, EcsWindowEvent, &event->window);
+		const input_t *input = ecs_get_id(ecs_world(), ecs_singleton(EcsInput));
+		input_update(input, event);
 	}
 
 	return SDL_APP_CONTINUE;
