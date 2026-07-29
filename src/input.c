@@ -87,7 +87,12 @@ void input_update(const input_t *input, const SDL_Event *event)
 
 static void input_map_cleanup([[maybe_unused]] void *userdata, void *value)
 {
-	array_destroy(((input_map_t*)value)->keycodes);
+	const input_map_t *map = value;
+	if (map->type == TYPE_KEYBOARD)
+	{
+		array_destroy(map->keycodes);
+	}
+
 	SDL_free(value);
 }
 
