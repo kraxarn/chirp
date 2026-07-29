@@ -2,6 +2,7 @@
 #include "assets.h"
 #include "assetstream.h"
 #include "ecs.h"
+#include "gamepadaxis.h"
 #include "input.h"
 #include "inputconfig.h"
 #include "json.h"
@@ -14,6 +15,7 @@
 #include "flecs.h"
 
 #include <SDL3/SDL_error.h>
+#include <SDL3/SDL_gamepad.h>
 #include <SDL3/SDL_init.h>
 #include <SDL3/SDL_iostream.h>
 #include <SDL3/SDL_keyboard.h>
@@ -157,7 +159,13 @@ static bool parse_project_input(const input_t *input, char *json, const json_tok
 	const int token_count, const json_token_t *token)
 {
 	const json_token_t *prev_parent = nullptr;
-	input_config_t input_config = {0};
+
+	input_config_t input_config = {
+		.keycodes = nullptr,
+		.mouse_button = 0,
+		.gamepad_axis = SDL_GAMEPAD_AXIS_INVALID,
+		.gamepad_axis_range = {0.F, 0.F},
+	};
 
 	for (int i = (token + 1)->parent + 2; i < token_count; i++)
 	{
@@ -217,11 +225,20 @@ static bool parse_project_input(const input_t *input, char *json, const json_tok
 		}
 		else if (is_key(json, key, "axi"))
 		{
-			// TODO: Gamepads are currently not supported
+			json[value->end] = '\0';
+			input_config.gamepad_axis = gamepad_axis_from_name(json + value->start);
+			if (input_config.gamepad_axis == SDL_GAMEPAD_AXIS_INVALID)
+			{
+				SDL_LogError(LOG_CATEGORY_INPUT, "Unknown gamepad axis for %.*s: %s",
+					token_str(key), json + value->start);
+			}
 		}
 		else if (is_key(json, key, "ara"))
 		{
-			// TODO: Gamepads are currently not supported
+			const double axis_min = SDL_strtod(json + (value + 1)->start, nullptr);
+			const double axis_max = SDL_strtod(json + (value + 2)->start, nullptr);
+			input_config.gamepad_axis_range[0] = (float) axis_min;
+			input_config.gamepad_axis_range[1] = (float) axis_max;
 		}
 		else
 		{
