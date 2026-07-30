@@ -15,7 +15,8 @@
 static const char *names[] = {
 	[SDL_GAMEPAD_BUTTON_SOUTH] = "South",
 	[SDL_GAMEPAD_BUTTON_EAST] = "East",
-	[SDL_GAMEPAD_BUTTON_WEST] = "North",
+	[SDL_GAMEPAD_BUTTON_WEST] = "West",
+	[SDL_GAMEPAD_BUTTON_NORTH] = "North",
 	[SDL_GAMEPAD_BUTTON_BACK] = "Back", // I remember when this was called "select" :(
 	[SDL_GAMEPAD_BUTTON_GUIDE] = "Guide",
 	[SDL_GAMEPAD_BUTTON_START] = "Start",
