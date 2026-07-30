@@ -19,6 +19,7 @@ const char *map_key_uint8(Uint8 key);
 const char *map_key_uint16(Uint16 key);
 const char *map_key_uint32(Uint32 key);
 const char *map_key_uint64(Uint64 key);
+const char *map_key_sint32(Sint32 key);
 
 #define map_key(value)					\
 	_Generic((value),					\
@@ -27,7 +28,8 @@ const char *map_key_uint64(Uint64 key);
 		Uint8:        map_key_uint8,	\
 		Uint16:       map_key_uint16,	\
 		Uint32:       map_key_uint32,	\
-		Uint64:       map_key_uint64	\
+		Uint64:       map_key_uint64,	\
+		Sint32:       map_key_sint32	\
 	)(value)
 
 #define map_get(map, name, fallback)		\

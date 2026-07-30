@@ -45,6 +45,11 @@ const char *map_key_uint64(const Uint64 key)
 	return temp;
 }
 
+const char *map_key_sint32(const Sint32 key)
+{
+	return map_key_uint32((Uint32) key);
+}
+
 bool map_set_with_cleanup(const map_t map, const char *name, void *value,
 	const map_cleanup_callback_t callback)
 {

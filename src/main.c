@@ -394,6 +394,7 @@ SDL_AppResult SDL_AppInit(void **appstate, const int argc, char **argv)
 			(ecs_term_t){.id = ecs_singleton_id(EcsWindow), .inout = EcsInOut},
 			(ecs_term_t){.id = ecs_singleton_id(EcsGpuDevice), .inout = EcsInOut},
 			(ecs_term_t){.id = ecs_singleton_id(EcsTimeStats), .inout = EcsIn},
+			(ecs_term_t){.id = ecs_singleton_id(EcsInput), .inout = EcsIn},
 			(ecs_term_t){
 				.first.id = EcsPredEq,
 				.src.name = "$plr_bdy",
@@ -444,7 +445,7 @@ SDL_AppResult SDL_AppIterate(void *appstate)
 	if (SDL_GetWindowRelativeMouseMode(window)
 		&& player_body_id != nullptr)
 	{
-		const input_t *input = ecs_get_id(ecs_world(), ecs_singleton(EcsInput));
+		const input_t input = *(const input_t*) ecs_get_id(ecs_world(), ecs_singleton(EcsInput));
 
 		vector2f_t mouse;
 		SDL_GetRelativeMouseState(&mouse.x, &mouse.y);
@@ -705,12 +706,18 @@ SDL_AppResult SDL_AppEvent([[maybe_unused]] void *appstate, SDL_Event *event)
 		emit(EcsOnWindowResized, EcsWindowEvent, &event->window);
 	}
 
-	SDL_Window *window = *((SDL_Window**) ecs_get_id(ecs_world(),
-		ecs_singleton(EcsWindow)));
+	if (event->type == SDL_EVENT_GAMEPAD_ADDED)
+	{
+		input_gamepad_open(event->gdevice.which);
+	}
+	else if (event->type == SDL_EVENT_GAMEPAD_REMOVED)
+	{
+		input_gamepad_close(event->gdevice.which);
+	}
 
 	if (SDL_GetWindowRelativeMouseMode(window))
 	{
-		const input_t *input = ecs_get_id(ecs_world(), ecs_singleton(EcsInput));
+		const input_t input = *(const input_t*) ecs_get_id(ecs_world(), ecs_singleton(EcsInput));
 		input_update(input, event);
 	}
 

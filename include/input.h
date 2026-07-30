@@ -4,22 +4,43 @@
 #include "map.h"
 
 #include <SDL3/SDL_events.h>
+#include <SDL3/SDL_joystick.h>
+#include <SDL3/SDL_stdinc.h>
+
+static constexpr size_t input_gamepad_count = 4;
 
 typedef struct
 {
-	map_t key_map;    // key -> input state
-	map_t button_map; // mouse button -> input state
-	map_t name_map;   // input name -> input map
+	map_t key_map;                           // key            -> input state
+	map_t button_map;                        // mouse button   -> input state
+	map_t gamepad_maps[input_gamepad_count]; // gamepad button -> input state
+	map_t name_map;                          // input name     -> input map
 } input_t;
+
+typedef enum : Sint64
+{
+	STATE_UP,
+	STATE_PRESSED,
+	STATE_DOWN,
+} input_state_t;
 
 bool input_create(input_t *input);
 
-void input_update(const input_t *input, const SDL_Event *event);
+void input_destroy(input_t input);
 
-bool input_add(const input_t *input, const char *name, input_config_t config);
+void input_update(input_t input, const SDL_Event *event);
+
+bool input_add(input_t input, const char *name, input_config_t config);
+
+void input_gamepad_open(SDL_JoystickID joystick_id);
+
+void input_gamepad_close(SDL_JoystickID joystick_id);
 
 [[nodiscard]]
-bool input_is_pressed(const input_t *input, const char *name);
+input_state_t input_state(input_t input, const char *name, bool reset_pressed);
 
 [[nodiscard]]
-bool input_is_down(const input_t *input, const char *name);
+bool input_is_pressed(input_t input, const char *name);
+
+[[nodiscard]]
+bool input_is_down(input_t input, const char *name);

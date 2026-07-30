@@ -23,7 +23,7 @@ static void on_file_opened(void *userdata,
 	}
 
 	assets_t assets;
-	if (assets_create(filelist[0], userdata, &assets))
+	if (assets_create(filelist[0], *(const input_t*) userdata, &assets))
 	{
 		ecs_set_id(ecs_world(), ecs_singleton(EcsAssets),
 			sizeof(assets_t), &assets);
@@ -41,7 +41,7 @@ static void create_assets(ecs_iter_t *iter)
 	SDL_strlcat(path, "assets.nest", path_len);
 
 	assets_t assets;
-	if (assets_create(path, input, &assets))
+	if (assets_create(path, *input, &assets))
 	{
 		SDL_free(path);
 

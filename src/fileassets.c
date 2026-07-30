@@ -3,6 +3,8 @@
 #include "assetstream.h"
 #include "ecs.h"
 #include "gamepadaxis.h"
+#include "gamepadbutton.h"
+#include "gamepadbuttonlabel.h"
 #include "input.h"
 #include "inputconfig.h"
 #include "json.h"
@@ -155,17 +157,12 @@ static bool parse_project_window(char *json, window_config_t *window_config,
 	return true;
 }
 
-static bool parse_project_input(const input_t *input, char *json, const json_token_t *tokens,
+static bool parse_project_input(const input_t input, char *json, const json_token_t *tokens,
 	const int token_count, const json_token_t *token)
 {
 	const json_token_t *prev_parent = nullptr;
 
-	input_config_t input_config = {
-		.keycodes = nullptr,
-		.mouse_button = 0,
-		.gamepad_axis = SDL_GAMEPAD_AXIS_INVALID,
-		.gamepad_axis_range = {0.F, 0.F},
-	};
+	input_config_t input_config = input_config_default();
 
 	for (int i = (token + 1)->parent + 2; i < token_count; i++)
 	{
@@ -192,7 +189,7 @@ static bool parse_project_input(const input_t *input, char *json, const json_tok
 			{
 				return false;
 			}
-			SDL_zero(input_config);
+			input_config = input_config_default();
 		}
 
 		if (is_key(json, key, "key"))
@@ -206,8 +203,8 @@ static bool parse_project_input(const input_t *input, char *json, const json_tok
 				const SDL_Keycode keycode = SDL_GetKeyFromName(json + curr->start);
 				if (keycode == SDLK_UNKNOWN)
 				{
-					SDL_LogError(LOG_CATEGORY_INPUT, "Unknown keycode for %.*s: %s",
-						token_str(key), json + curr->start);
+					SDL_LogError(LOG_CATEGORY_INPUT, "Unknown keycode: %s",
+						json + curr->start);
 					continue;
 				}
 				array_push(input_config.keycodes, keycode);
@@ -219,8 +216,8 @@ static bool parse_project_input(const input_t *input, char *json, const json_tok
 			input_config.mouse_button = mouse_button_from_name(json + value->start);
 			if (input_config.mouse_button == 0)
 			{
-				SDL_LogError(LOG_CATEGORY_INPUT, "Unknown mouse button for %.*s: %s",
-					token_str(key), json + value->start);
+				SDL_LogError(LOG_CATEGORY_INPUT, "Unknown mouse button: %s",
+					json + value->start);
 			}
 		}
 		else if (is_key(json, key, "axi"))
@@ -229,16 +226,36 @@ static bool parse_project_input(const input_t *input, char *json, const json_tok
 			input_config.gamepad_axis = gamepad_axis_from_name(json + value->start);
 			if (input_config.gamepad_axis == SDL_GAMEPAD_AXIS_INVALID)
 			{
-				SDL_LogError(LOG_CATEGORY_INPUT, "Unknown gamepad axis for %.*s: %s",
-					token_str(key), json + value->start);
+				SDL_LogError(LOG_CATEGORY_INPUT, "Unknown gamepad axis: %s",
+					json + value->start);
 			}
 		}
-		else if (is_key(json, key, "ara"))
+		else if (is_key(json, key, "dea"))
 		{
-			const double axis_min = SDL_strtod(json + (value + 1)->start, nullptr);
-			const double axis_max = SDL_strtod(json + (value + 2)->start, nullptr);
-			input_config.gamepad_axis_range[0] = (float) axis_min;
-			input_config.gamepad_axis_range[1] = (float) axis_max;
+			const double deadzone = SDL_strtod(json + (value + 1)->start, nullptr);
+			input_config.deadzone = (float) deadzone;
+		}
+		else if (is_key(json, key, "gam"))
+		{
+			json[value->end] = '\0';
+			const SDL_GamepadButton button = gamepad_button_from_name(json + value->start);
+			if (button != SDL_GAMEPAD_BUTTON_INVALID)
+			{
+				input_config.gamepad_button = button;
+			}
+			else
+			{
+				const SDL_GamepadButtonLabel label = gamepad_button_label_from_name(json + value->start);
+				if (label != SDL_GAMEPAD_BUTTON_LABEL_UNKNOWN)
+				{
+					input_config.gamepad_button_label = label;
+				}
+				else
+				{
+					SDL_LogError(LOG_CATEGORY_INPUT, "Unknown gamepad button: %s",
+						json + value->start);
+				}
+			}
 		}
 		else
 		{
@@ -263,7 +280,7 @@ static bool parse_project_input(const input_t *input, char *json, const json_tok
 
 [[nodiscard]]
 static bool parse_project(SDL_IOStream *stream,
-	assets_t *assets, const input_t *input)
+	assets_t *assets, const input_t input)
 {
 	size_t json_len = 0;
 	char *json = SDL_LoadFile_IO(stream, &json_len, true);
@@ -373,7 +390,7 @@ static bool validate_header(SDL_IOStream *stream)
 	return true;
 }
 
-bool assets_create(const char *path, const input_t *input, assets_t *assets)
+bool assets_create(const char *path, const input_t input, assets_t *assets)
 {
 	SDL_IOStream *stream = SDL_IOFromFile(path, "rb");
 	if (stream == nullptr)

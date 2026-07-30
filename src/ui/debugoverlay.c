@@ -11,6 +11,7 @@
 #include "systeminfo.h"
 #include "timestats.h"
 #include "videodriver.h"
+#include "ecs/components.h"
 
 #include "flecs.h"
 #include "box3d/box3d.h"
@@ -77,27 +78,29 @@ static void draw_physics_info(nk_context_t *ctx, const b3BodyId body_id)
 		velocity.x, velocity.y, velocity.z);
 }
 
-static void draw_input_row(nk_context_t *ctx, const char *name, const input_state_t state)
+[[nodiscard]]
+static const char *state_string(const input_state_t state)
 {
-	nk_label(ctx, name, NK_TEXT_LEFT);
-
-	const char *state_str = nullptr;
 	switch (state)
 	{
 		case STATE_UP:
-			state_str = "Up";
-			break;
+			return "Up";
 
 		case STATE_PRESSED:
-			state_str = "Pressed";
-			break;
+			return "Pressed";
 
 		case STATE_DOWN:
-			state_str = "Down";
-			break;
-	}
+			return "Down";
 
-	nk_label(ctx, state_str, NK_TEXT_LEFT);
+		default:
+			return nullptr;
+	}
+}
+
+static void draw_input_row(nk_context_t *ctx, const char *name, const input_state_t state)
+{
+	nk_label(ctx, name, NK_TEXT_LEFT);
+	nk_label(ctx, state_string(state), NK_TEXT_LEFT);
 }
 
 static void draw_keyboard_input_row(void *userdata, const SDL_PropertiesID props, const char *name)
@@ -116,6 +119,19 @@ static void draw_gamepad_input_row(void *userdata, const SDL_PropertiesID props,
 {
 	const SDL_GamepadButton button = SDL_strtol(name, nullptr, 16);
 	draw_input_row(userdata, gamepad_button_name(button), map_get(props, name, (Sint64)0));
+}
+
+static void draw_name_map_row(void *userdata,
+	[[maybe_unused]] const SDL_PropertiesID props, const char *name)
+{
+	nk_label(userdata, name, NK_TEXT_LEFT);
+
+	// Not ideal, but it works
+	const input_t input = *(const input_t*) ecs_get_id(ecs_world(),
+		ecs_singleton(EcsInput));
+
+	const input_state_t state = input_state(input, name, false);
+	nk_label(userdata, state_string(state), NK_TEXT_LEFT);
 }
 
 void draw_debug_overlay(ecs_iter_t *iter)
@@ -223,10 +239,11 @@ void draw_debug_overlay(ecs_iter_t *iter)
 	{
 		static Uint8 current = 0;
 
-		nk_layout_row_dynamic(ctx, row_height, 3);
-		current = (int) nk_option_label(ctx, "Keyboard", current == 0) ? 0 : current;
+		nk_layout_row_dynamic(ctx, row_height, 4);
+		current = (int) nk_option_label(ctx, "Key", current == 0) ? 0 : current;
 		current = (int) nk_option_label(ctx, "Mouse", current == 1) ? 1 : current;
-		current = (int) nk_option_label(ctx, "Gamepad", current == 2) ? 2 : current;
+		current = (int) nk_option_label(ctx, "Pad", current == 2) ? 2 : current;
+		current = (int) nk_option_label(ctx, "Map", current == 3) ? 3 : current;
 
 		nk_layout_row(ctx, NK_DYNAMIC, row_height, 2, (float[]){0.6F, 0.4F});
 		switch (current)
@@ -240,7 +257,12 @@ void draw_debug_overlay(ecs_iter_t *iter)
 				break;
 
 			case 2:
-				SDL_EnumerateProperties(input.gamepad_map, draw_gamepad_input_row, ctx);
+				// Maybe don't assume player 1? It's just debug though
+				SDL_EnumerateProperties(input.gamepad_maps[0], draw_gamepad_input_row, ctx);
+				break;
+
+			case 3:
+				SDL_EnumerateProperties(input.name_map, draw_name_map_row, ctx);
 				break;
 
 			default:
