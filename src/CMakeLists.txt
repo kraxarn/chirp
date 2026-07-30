@@ -13,6 +13,7 @@ target_sources(${PROJECT_NAME} PRIVATE
 	"${CMAKE_CURRENT_SOURCE_DIR}/ecs.c"
 	"${CMAKE_CURRENT_SOURCE_DIR}/ecsosapi.c"
 	"${CMAKE_CURRENT_SOURCE_DIR}/fileassets.c"
+	"${CMAKE_CURRENT_SOURCE_DIR}/gamepadaxis.c"
 	"${CMAKE_CURRENT_SOURCE_DIR}/gpudevicedriver.c"
 	"${CMAKE_CURRENT_SOURCE_DIR}/gpudriver.c"
 	"${CMAKE_CURRENT_SOURCE_DIR}/gpushaderformat.c"
