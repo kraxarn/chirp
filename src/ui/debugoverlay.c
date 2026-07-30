@@ -2,7 +2,11 @@
 #include "audiodriver.h"
 #include "camera.h"
 #include "ecs.h"
+#include "gamepadbutton.h"
 #include "gpudevicedriver.h"
+#include "input.h"
+#include "map.h"
+#include "mousebutton.h"
 #include "nkui.h"
 #include "systeminfo.h"
 #include "timestats.h"
@@ -15,8 +19,12 @@
 
 #include <SDL3/SDL_assert.h>
 #include <SDL3/SDL_audio.h>
+#include <SDL3/SDL_gamepad.h>
 #include <SDL3/SDL_gpu.h>
+#include <SDL3/SDL_keyboard.h>
+#include <SDL3/SDL_keycode.h>
 #include <SDL3/SDL_mouse.h>
+#include <SDL3/SDL_properties.h>
 #include <SDL3/SDL_stdinc.h>
 #include <SDL3/SDL_video.h>
 
@@ -69,6 +77,47 @@ static void draw_physics_info(nk_context_t *ctx, const b3BodyId body_id)
 		velocity.x, velocity.y, velocity.z);
 }
 
+static void draw_input_row(nk_context_t *ctx, const char *name, const input_state_t state)
+{
+	nk_label(ctx, name, NK_TEXT_LEFT);
+
+	const char *state_str = nullptr;
+	switch (state)
+	{
+		case STATE_UP:
+			state_str = "Up";
+			break;
+
+		case STATE_PRESSED:
+			state_str = "Pressed";
+			break;
+
+		case STATE_DOWN:
+			state_str = "Down";
+			break;
+	}
+
+	nk_label(ctx, state_str, NK_TEXT_LEFT);
+}
+
+static void draw_keyboard_input_row(void *userdata, const SDL_PropertiesID props, const char *name)
+{
+	const SDL_Keycode keycode = SDL_strtol(name, nullptr, 16);
+	draw_input_row(userdata, SDL_GetKeyName(keycode), map_get(props, name, (Sint64)0));
+}
+
+static void draw_mouse_input_row(void *userdata, const SDL_PropertiesID props, const char *name)
+{
+	const SDL_MouseButtonFlags button = SDL_strtol(name, nullptr, 16);
+	draw_input_row(userdata, mouse_button_name(button), map_get(props, name, (Sint64)0));
+}
+
+static void draw_gamepad_input_row(void *userdata, const SDL_PropertiesID props, const char *name)
+{
+	const SDL_GamepadButton button = SDL_strtol(name, nullptr, 16);
+	draw_input_row(userdata, gamepad_button_name(button), map_get(props, name, (Sint64)0));
+}
+
 void draw_debug_overlay(ecs_iter_t *iter)
 {
 	nk_context_t *ctx = &ecs_field(iter, nkui_context_t, 0)->nk;
@@ -77,6 +126,7 @@ void draw_debug_overlay(ecs_iter_t *iter)
 	SDL_Window *window = *ecs_field(iter, SDL_Window*, 3);
 	SDL_GPUDevice *device = *ecs_field(iter, SDL_GPUDevice*, 4);
 	const time_stats_t *time_stats = ecs_field(iter, time_stats_t, 5);
+	const input_t input = *ecs_field(iter, input_t, 6);
 
 #ifdef FLECS_STATS
 	const EcsWorldSummary *world_summary = ecs_get_id(ecs_world(),
@@ -163,6 +213,41 @@ void draw_debug_overlay(ecs_iter_t *iter)
 	}
 	nk_end(ctx);
 #endif
+
+	if (nk_begin(ctx, "Input overlay", (nk_rect_t){
+		.w = 300.F,
+		.h = 325.F,
+		.x = padding,
+		.y = (padding * 3) + 180.F + 150.F,
+	}, NK_WINDOW_BORDER))
+	{
+		static Uint8 current = 0;
+
+		nk_layout_row_dynamic(ctx, row_height, 3);
+		current = (int) nk_option_label(ctx, "Keyboard", current == 0) ? 0 : current;
+		current = (int) nk_option_label(ctx, "Mouse", current == 1) ? 1 : current;
+		current = (int) nk_option_label(ctx, "Gamepad", current == 2) ? 2 : current;
+
+		nk_layout_row(ctx, NK_DYNAMIC, row_height, 2, (float[]){0.6F, 0.4F});
+		switch (current)
+		{
+			case 0:
+				SDL_EnumerateProperties(input.key_map, draw_keyboard_input_row, ctx);
+				break;
+
+			case 1:
+				SDL_EnumerateProperties(input.button_map, draw_mouse_input_row, ctx);
+				break;
+
+			case 2:
+				SDL_EnumerateProperties(input.gamepad_map, draw_gamepad_input_row, ctx);
+				break;
+
+			default:
+				break;
+		}
+	}
+	nk_end(ctx);
 
 	if (!SDL_GetWindowRelativeMouseMode(window))
 	{
