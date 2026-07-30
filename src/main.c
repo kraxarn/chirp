@@ -715,11 +715,8 @@ SDL_AppResult SDL_AppEvent([[maybe_unused]] void *appstate, SDL_Event *event)
 		input_gamepad_close(event->gdevice.which);
 	}
 
-	if (SDL_GetWindowRelativeMouseMode(window))
-	{
-		const input_t input = *(const input_t*) ecs_get_id(ecs_world(), ecs_singleton(EcsInput));
-		input_update(input, event);
-	}
+	const input_t input = *(const input_t*) ecs_get_id(ecs_world(), ecs_singleton(EcsInput));
+	input_update(input, event);
 
 	return SDL_APP_CONTINUE;
 }
