@@ -41,12 +41,12 @@ static const char *names[] = {
 	[SDL_GAMEPAD_BUTTON_MISC6] = "Misc6",
 };
 
-const char *gamepad_button_name(const SDL_GamepadButton gamepad_button)
+const char *gamepad_button_name(const SDL_GamepadButton button)
 {
-	SDL_assert(gamepad_button > SDL_GAMEPAD_BUTTON_INVALID);
-	SDL_assert(gamepad_button < SDL_GAMEPAD_BUTTON_COUNT);
+	SDL_assert(button > SDL_GAMEPAD_BUTTON_INVALID);
+	SDL_assert(button < SDL_GAMEPAD_BUTTON_COUNT);
 
-	return names[gamepad_button];
+	return names[button];
 }
 
 SDL_GamepadButton gamepad_button_from_name(const char *name)
