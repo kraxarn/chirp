@@ -52,14 +52,29 @@ static void update_mouse_button_event(const input_t input, const SDL_MouseButton
 
 static void update_gamepad_button_event(const input_t input, const SDL_GamepadButtonEvent event)
 {
-	const int index = SDL_GetGamepadPlayerIndexForID(event.which);
+	SDL_Gamepad *gamepad = SDL_GetGamepadFromID(event.which);
+	if (gamepad == nullptr)
+	{
+		SDL_LogError(LOG_CATEGORY_INPUT, "Unknown gamepad: %d", event.which);
+		return;
+	}
+
+	const int index = SDL_GetGamepadPlayerIndex(gamepad);
 	if (index < 0 || index >= input_gamepad_count)
 	{
 		SDL_LogError(LOG_CATEGORY_INPUT, "Invalid player index: %d", index);
 		return;
 	}
 
-	map_set(input.gamepad_maps[index], event.button, event.down ? STATE_PRESSED : STATE_UP);
+	map_set(input.gamepad_button_maps[index], event.button,
+		event.down ? STATE_PRESSED : STATE_UP);
+
+	const SDL_GamepadButtonLabel label = SDL_GetGamepadButtonLabel(gamepad, event.button);
+	if (label != SDL_GAMEPAD_BUTTON_LABEL_UNKNOWN)
+	{
+		map_set(input.gamepad_label_maps[index], label,
+			event.down ? STATE_PRESSED : STATE_UP);
+	}
 }
 
 bool input_create(input_t *input)
@@ -70,8 +85,17 @@ bool input_create(input_t *input)
 
 	for (size_t i = 0; i < input_gamepad_count; i++)
 	{
-		input->gamepad_maps[i] = map_create();
-		if (input->gamepad_maps[i] == 0)
+		input->gamepad_button_maps[i] = map_create();
+		if (input->gamepad_button_maps[i] == 0)
+		{
+			return false;
+		}
+	}
+
+	for (size_t i = 0; i < input_gamepad_count; i++)
+	{
+		input->gamepad_label_maps[i] = map_create();
+		if (input->gamepad_label_maps[i] == 0)
 		{
 			return false;
 		}
@@ -90,7 +114,12 @@ void input_destroy(const input_t input)
 
 	for (size_t i = 0; i < input_gamepad_count; i++)
 	{
-		SDL_DestroyProperties(input.gamepad_maps[i]);
+		SDL_DestroyProperties(input.gamepad_button_maps[i]);
+	}
+
+	for (size_t i = 0; i < input_gamepad_count; i++)
+	{
+		SDL_DestroyProperties(input.gamepad_label_maps[i]);
 	}
 }
 
@@ -269,11 +298,29 @@ input_state_t input_state(const input_t input, const char *name,
 		// TODO: Don't assume player 1 (/0)
 		constexpr size_t index = 0;
 		const SDL_GamepadButton button = input_map->gamepad_button;
-		const input_state_t state = map_get(input.gamepad_maps[index], button, STATE_UP);
+		const input_state_t state = map_get(input.gamepad_button_maps[index], button, STATE_UP);
 
 		if (reset_pressed && state == STATE_PRESSED)
 		{
-			map_set(input.gamepad_maps[index], button, STATE_DOWN);
+			map_set(input.gamepad_button_maps[index], button, STATE_DOWN);
+		}
+
+		if (state != STATE_UP)
+		{
+			return state;
+		}
+	}
+
+	if (input_map->gamepad_button_label != SDL_GAMEPAD_BUTTON_LABEL_UNKNOWN)
+	{
+		// TODO: Don't assume player 1 (/0)
+		constexpr size_t index = 0;
+		const SDL_GamepadButtonLabel label = input_map->gamepad_button_label;
+		const input_state_t state = map_get(input.gamepad_label_maps[index], label, STATE_UP);
+
+		if (reset_pressed && state == STATE_PRESSED)
+		{
+			map_set(input.gamepad_label_maps[index], label, STATE_DOWN);
 		}
 
 		if (state != STATE_UP)

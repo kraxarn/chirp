@@ -3,6 +3,7 @@
 #include "camera.h"
 #include "ecs.h"
 #include "gamepadbutton.h"
+#include "gamepadbuttonlabel.h"
 #include "gpudevicedriver.h"
 #include "input.h"
 #include "map.h"
@@ -115,10 +116,16 @@ static void draw_mouse_input_row(void *userdata, const SDL_PropertiesID props, c
 	draw_input_row(userdata, mouse_button_name(button), map_get(props, name, (Sint64)0));
 }
 
-static void draw_gamepad_input_row(void *userdata, const SDL_PropertiesID props, const char *name)
+static void draw_gamepad_button_input_row(void *userdata, const SDL_PropertiesID props, const char *name)
 {
 	const SDL_GamepadButton button = SDL_strtol(name, nullptr, 16);
 	draw_input_row(userdata, gamepad_button_name(button), map_get(props, name, (Sint64)0));
+}
+
+static void draw_gamepad_label_input_row(void *userdata, const SDL_PropertiesID props, const char *name)
+{
+	const SDL_GamepadButtonLabel label = SDL_strtol(name, nullptr, 16);
+	draw_input_row(userdata, gamepad_button_label_name(label), map_get(props, name, (Sint64)0));
 }
 
 static void draw_name_map_row(void *userdata,
@@ -237,16 +244,21 @@ void draw_debug_overlay(ecs_iter_t *iter)
 		.y = (padding * 3) + 180.F + 150.F,
 	}, NK_WINDOW_BORDER))
 	{
-		static Uint8 current = 0;
+		static int selected = 0;
+		static const char *sources[] = {
+			"Keyboard",
+			"Mouse",
+			"Gamepad buttons",
+			"Gamepad labels",
+			"Name map",
+		};
 
-		nk_layout_row_dynamic(ctx, row_height, 4);
-		current = (int) nk_option_label(ctx, "Key", current == 0) ? 0 : current;
-		current = (int) nk_option_label(ctx, "Mouse", current == 1) ? 1 : current;
-		current = (int) nk_option_label(ctx, "Pad", current == 2) ? 2 : current;
-		current = (int) nk_option_label(ctx, "Map", current == 3) ? 3 : current;
+		nk_layout_row_dynamic(ctx, row_height * 1.5F, 1);
+		selected = nk_combo(ctx, sources, SDL_arraysize(sources), selected,
+			(int) row_height, nk_vec2(150.F, 120.F));
 
 		nk_layout_row(ctx, NK_DYNAMIC, row_height, 2, (float[]){0.6F, 0.4F});
-		switch (current)
+		switch (selected)
 		{
 			case 0:
 				SDL_EnumerateProperties(input.key_map, draw_keyboard_input_row, ctx);
@@ -258,10 +270,15 @@ void draw_debug_overlay(ecs_iter_t *iter)
 
 			case 2:
 				// Maybe don't assume player 1? It's just debug though
-				SDL_EnumerateProperties(input.gamepad_maps[0], draw_gamepad_input_row, ctx);
+				SDL_EnumerateProperties(input.gamepad_button_maps[0], draw_gamepad_button_input_row, ctx);
 				break;
 
 			case 3:
+				// Maybe don't assume player 1? It's just debug though
+				SDL_EnumerateProperties(input.gamepad_label_maps[0], draw_gamepad_label_input_row, ctx);
+				break;
+
+			case 4:
 				SDL_EnumerateProperties(input.name_map, draw_name_map_row, ctx);
 				break;
 

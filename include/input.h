@@ -11,10 +11,20 @@ static constexpr size_t input_gamepad_count = 4;
 
 typedef struct
 {
-	map_t key_map;                           // key            -> input state
-	map_t button_map;                        // mouse button   -> input state
-	map_t gamepad_maps[input_gamepad_count]; // gamepad button -> input state
-	map_t name_map;                          // input name     -> input map
+	// key -> input state
+	map_t key_map;
+
+	// mouse button -> input state
+	map_t button_map;
+
+	// gamepad button -> input state
+	map_t gamepad_button_maps[input_gamepad_count];
+
+	// gamepad button labels -> input state
+	map_t gamepad_label_maps[input_gamepad_count];
+
+	// input name -> input map
+	map_t name_map;
 } input_t;
 
 typedef enum : Sint64
