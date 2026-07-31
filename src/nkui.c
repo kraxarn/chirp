@@ -601,7 +601,7 @@ static void set_default_theme(nk_context_t *ctx)
 		[NK_COLOR_BORDER] = palette[4],
 		[NK_COLOR_BUTTON] = invalid,
 		[NK_COLOR_BUTTON_HOVER] = palette[4],
-		[NK_COLOR_BUTTON_ACTIVE] = invalid,
+		[NK_COLOR_BUTTON_ACTIVE] = palette[3],
 		[NK_COLOR_TOGGLE] = palette[3],
 		[NK_COLOR_TOGGLE_HOVER] = palette[2],
 		[NK_COLOR_TOGGLE_CURSOR] = palette[5],
