@@ -207,6 +207,13 @@ bool input_add(const input_t input, const char *name, const input_config_t confi
 		is_valid = true;
 	}
 
+	if (config.gamepad_axis != SDL_GAMEPAD_AXIS_INVALID)
+	{
+		map->gamepad_axis = config.gamepad_axis;
+		map->deadzone = config.deadzone;
+		is_valid = true;
+	}
+
 	if (!is_valid)
 	{
 		SDL_ClearProperty(input.name_map, name);
@@ -254,7 +261,7 @@ input_state_t input_state(const input_t input, const char *name,
 	const input_map_t *input_map = map_get(input.name_map, name, nullptr);
 	if (input_map == nullptr)
 	{
-		SDL_LogWarn(LOG_CATEGORY_INPUT, "Unmapped input: %s", name);
+		SDL_LogError(LOG_CATEGORY_INPUT, "Unmapped input: %s", name);
 		return STATE_UP;
 	}
 
@@ -340,4 +347,31 @@ bool input_is_pressed(const input_t input, const char *name)
 bool input_is_down(const input_t input, const char *name)
 {
 	return input_state(input, name, true) != STATE_UP;
+}
+
+float input_axis(const input_t input, const int index, const char *name)
+{
+	const input_map_t *input_map = map_get(input.name_map, name, nullptr);
+	if (input_map == nullptr)
+	{
+		SDL_LogError(LOG_CATEGORY_INPUT, "Unmapped input: %s", name);
+		return STATE_UP;
+	}
+
+	if (input_map->gamepad_axis != SDL_GAMEPAD_AXIS_INVALID)
+	{
+		SDL_Gamepad *gamepad = SDL_GetGamepadFromPlayerIndex(index);
+		if (gamepad != nullptr)
+		{
+			const Sint16 axis = SDL_GetGamepadAxis(gamepad, input_map->gamepad_axis);
+			const float axis_f = (float) axis / (float) SDL_MAX_SINT16;
+
+			if (SDL_fabsf(axis_f) >= input_map->deadzone)
+			{
+				return axis_f;
+			}
+		}
+	}
+
+	return (int) input_is_down(input, name) ? 1.F : 0.F;
 }

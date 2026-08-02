@@ -455,25 +455,25 @@ SDL_AppResult SDL_AppIterate(void *appstate)
 		const float move_speed = physics_config->move_speed;
 		const float jump_speed = physics_config->jump_speed;
 
-		if (input_is_down(input, "move_forward"))
+		if (input_axis(input, 0, "move_forward") < 0.F)
 		{
 			const vector3f_t velocity = camera_to_z(camera, move_speed * time_stats->dt);
 			b3Body_SetLinearVelocity(*player_body_id, cast(b3Vec3, velocity));
 		}
 
-		if (input_is_down(input, "move_backward"))
+		if (input_axis(input, 0, "move_backward") > 0.F)
 		{
 			const vector3f_t velocity = camera_to_z(camera, -(move_speed * time_stats->dt));
 			b3Body_SetLinearVelocity(*player_body_id, cast(b3Vec3, velocity));
 		}
 
-		if (input_is_down(input, "move_left"))
+		if (input_axis(input, 0, "move_left") < 0.F)
 		{
 			const vector3f_t velocity = camera_to_x(camera, -(move_speed * time_stats->dt));
 			b3Body_SetLinearVelocity(*player_body_id, cast(b3Vec3, velocity));
 		}
 
-		if (input_is_down(input, "move_right"))
+		if (input_axis(input, 0, "move_right") > 0.F)
 		{
 			const vector3f_t velocity = camera_to_x(camera, move_speed * time_stats->dt);
 			b3Body_SetLinearVelocity(*player_body_id, cast(b3Vec3, velocity));

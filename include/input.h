@@ -54,3 +54,6 @@ bool input_is_pressed(input_t input, const char *name);
 
 [[nodiscard]]
 bool input_is_down(input_t input, const char *name);
+
+[[nodiscard]]
+float input_axis(input_t input, int index, const char *name);
