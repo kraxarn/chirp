@@ -139,6 +139,9 @@ static void draw_name_map_row(void *userdata,
 
 	const input_state_t state = input_state(input, name, 0, false);
 	nk_label(userdata, state_string(state), NK_TEXT_LEFT);
+
+	const float axis = input_axis(input, name, 0);
+	nk_labelf(userdata, NK_TEXT_LEFT, "%5.2f", axis);
 }
 
 void draw_debug_overlay(ecs_iter_t *iter)
@@ -279,6 +282,7 @@ void draw_debug_overlay(ecs_iter_t *iter)
 				break;
 
 			case 4:
+				nk_layout_row(ctx, NK_DYNAMIC, row_height, 3, (float[]){0.5F, 0.3F, 0.2F});
 				SDL_EnumerateProperties(input.name_map, draw_name_map_row, ctx);
 				break;
 
