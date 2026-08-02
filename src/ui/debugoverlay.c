@@ -154,11 +154,6 @@ void draw_debug_overlay(ecs_iter_t *iter)
 	const time_stats_t *time_stats = ecs_field(iter, time_stats_t, 5);
 	const input_t input = *ecs_field(iter, input_t, 6);
 
-#ifdef FLECS_STATS
-	const EcsWorldSummary *world_summary = ecs_get_id(ecs_world(),
-		EcsWorld, ecs_id(EcsWorldSummary));
-#endif
-
 	constexpr auto padding = 16.F;
 	constexpr auto alpha = 0.75F;
 	constexpr auto row_height = 18.F;
@@ -211,6 +206,9 @@ void draw_debug_overlay(ecs_iter_t *iter)
 		.y = (padding * 2) + 180.F,
 	}, NK_WINDOW_BORDER))
 	{
+		const EcsWorldSummary *world_summary = ecs_get_id(ecs_world(),
+			EcsWorld, ecs_id(EcsWorldSummary));
+
 		nk_layout_row(ctx, NK_DYNAMIC, row_height, 2, (float[]){0.4F, 0.6F});
 
 		nk_label(ctx, "Entities", NK_TEXT_LEFT);
