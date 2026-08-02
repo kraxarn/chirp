@@ -232,7 +232,7 @@ static bool parse_project_input(const input_t input, char *json, const json_toke
 		}
 		else if (is_key(json, key, "dea"))
 		{
-			const double deadzone = SDL_strtod(json + (value + 1)->start, nullptr);
+			const double deadzone = SDL_strtod(json + value->start, nullptr);
 			input_config.deadzone = (float) deadzone;
 		}
 		else if (is_key(json, key, "gam"))
