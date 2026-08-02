@@ -455,43 +455,43 @@ SDL_AppResult SDL_AppIterate(void *appstate)
 		const float move_speed = physics_config->move_speed;
 		const float jump_speed = physics_config->jump_speed;
 
-		if (input_axis(input, 0, "move_forward") < 0.F)
+		if (input_axis(input, "move_forward", 0) < 0.F)
 		{
 			const vector3f_t velocity = camera_to_z(camera, move_speed * time_stats->dt);
 			b3Body_SetLinearVelocity(*player_body_id, cast(b3Vec3, velocity));
 		}
 
-		if (input_axis(input, 0, "move_backward") > 0.F)
+		if (input_axis(input, "move_backward", 0) > 0.F)
 		{
 			const vector3f_t velocity = camera_to_z(camera, -(move_speed * time_stats->dt));
 			b3Body_SetLinearVelocity(*player_body_id, cast(b3Vec3, velocity));
 		}
 
-		if (input_axis(input, 0, "move_left") < 0.F)
+		if (input_axis(input, "move_left", 0) < 0.F)
 		{
 			const vector3f_t velocity = camera_to_x(camera, -(move_speed * time_stats->dt));
 			b3Body_SetLinearVelocity(*player_body_id, cast(b3Vec3, velocity));
 		}
 
-		if (input_axis(input, 0, "move_right") > 0.F)
+		if (input_axis(input, "move_right", 0) > 0.F)
 		{
 			const vector3f_t velocity = camera_to_x(camera, move_speed * time_stats->dt);
 			b3Body_SetLinearVelocity(*player_body_id, cast(b3Vec3, velocity));
 		}
 
-		if (input_is_down(input, "move_up"))
+		if (input_is_down(input, "move_up", 0))
 		{
 			const vector3f_t velocity = camera_to_y(camera, move_speed * time_stats->dt);
 			b3Body_SetLinearVelocity(*player_body_id, cast(b3Vec3, velocity));
 		}
 
-		if (input_is_down(input, "move_down"))
+		if (input_is_down(input, "move_down", 0))
 		{
 			const vector3f_t velocity = camera_to_y(camera, -(move_speed * time_stats->dt));
 			b3Body_SetLinearVelocity(*player_body_id, cast(b3Vec3, velocity));
 		}
 
-		if (input_is_pressed(input, "jump"))
+		if (input_is_pressed(input, "jump", 0))
 		{
 			const b3Vec3 velocity = b3Body_GetLinearVelocity(*player_body_id);
 			if (velocity.y > -0.1F && velocity.y < 0.1F)
@@ -505,7 +505,7 @@ SDL_AppResult SDL_AppIterate(void *appstate)
 			}
 		}
 
-		if (input_is_pressed(input, "shoot"))
+		if (input_is_pressed(input, "shoot", 0))
 		{
 			static constexpr float firepower = 10.F;
 

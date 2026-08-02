@@ -4,6 +4,7 @@
 #include "logcategory.h"
 #include "map.h"
 
+#include <SDL3/SDL_assert.h>
 #include <SDL3/SDL_error.h>
 #include <SDL3/SDL_events.h>
 #include <SDL3/SDL_gamepad.h>
@@ -256,8 +257,11 @@ void input_gamepad_close(const SDL_JoystickID joystick_id)
 }
 
 input_state_t input_state(const input_t input, const char *name,
-	const bool reset_pressed)
+	const int index, const bool reset_pressed)
 {
+	SDL_assert(index >= 0);
+	SDL_assert(index < input_gamepad_count);
+
 	const input_map_t *input_map = map_get(input.name_map, name, nullptr);
 	if (input_map == nullptr)
 	{
@@ -265,7 +269,10 @@ input_state_t input_state(const input_t input, const char *name,
 		return STATE_UP;
 	}
 
-	if (input_map->keycodes != nullptr)
+	// We assume that keyboard/mouse is always player 1
+	// (overlapping with gamepad player 1)
+
+	if (input_map->keycodes != nullptr && index == 0)
 	{
 		for (size_t i = 0; i < array_size(input_map->keycodes); i++)
 		{
@@ -284,7 +291,7 @@ input_state_t input_state(const input_t input, const char *name,
 		}
 	}
 
-	if (input_map->mouse_button > 0)
+	if (input_map->mouse_button > 0 && index == 0)
 	{
 		const SDL_MouseButtonFlags button = input_map->mouse_button;
 		const input_state_t state = map_get(input.button_map, button, STATE_UP);
@@ -302,8 +309,6 @@ input_state_t input_state(const input_t input, const char *name,
 
 	if (input_map->gamepad_button != SDL_GAMEPAD_BUTTON_INVALID)
 	{
-		// TODO: Don't assume player 1 (/0)
-		constexpr size_t index = 0;
 		const SDL_GamepadButton button = input_map->gamepad_button;
 		const input_state_t state = map_get(input.gamepad_button_maps[index], button, STATE_UP);
 
@@ -320,8 +325,6 @@ input_state_t input_state(const input_t input, const char *name,
 
 	if (input_map->gamepad_button_label != SDL_GAMEPAD_BUTTON_LABEL_UNKNOWN)
 	{
-		// TODO: Don't assume player 1 (/0)
-		constexpr size_t index = 0;
 		const SDL_GamepadButtonLabel label = input_map->gamepad_button_label;
 		const input_state_t state = map_get(input.gamepad_label_maps[index], label, STATE_UP);
 
@@ -339,17 +342,17 @@ input_state_t input_state(const input_t input, const char *name,
 	return STATE_UP;
 }
 
-bool input_is_pressed(const input_t input, const char *name)
+bool input_is_pressed(const input_t input, const char *name, const int index)
 {
-	return input_state(input, name, true) == STATE_PRESSED;
+	return input_state(input, name, index, true) == STATE_PRESSED;
 }
 
-bool input_is_down(const input_t input, const char *name)
+bool input_is_down(const input_t input, const char *name, const int index)
 {
-	return input_state(input, name, true) != STATE_UP;
+	return input_state(input, name, index, true) != STATE_UP;
 }
 
-float input_axis(const input_t input, const int index, const char *name)
+float input_axis(const input_t input, const char *name, const int index)
 {
 	const input_map_t *input_map = map_get(input.name_map, name, nullptr);
 	if (input_map == nullptr)
@@ -373,5 +376,5 @@ float input_axis(const input_t input, const int index, const char *name)
 		}
 	}
 
-	return (int) input_is_down(input, name) ? 1.F : 0.F;
+	return (int) input_is_down(input, name, index) ? 1.F : 0.F;
 }

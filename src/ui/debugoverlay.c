@@ -137,7 +137,7 @@ static void draw_name_map_row(void *userdata,
 	const input_t input = *(const input_t*) ecs_get_id(ecs_world(),
 		ecs_singleton(EcsInput));
 
-	const input_state_t state = input_state(input, name, false);
+	const input_state_t state = input_state(input, name, 0, false);
 	nk_label(userdata, state_string(state), NK_TEXT_LEFT);
 }
 

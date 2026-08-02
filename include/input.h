@@ -47,13 +47,13 @@ void input_gamepad_open(SDL_JoystickID joystick_id);
 void input_gamepad_close(SDL_JoystickID joystick_id);
 
 [[nodiscard]]
-input_state_t input_state(input_t input, const char *name, bool reset_pressed);
+input_state_t input_state(input_t input, const char *name, int index, bool reset_pressed);
 
 [[nodiscard]]
-bool input_is_pressed(input_t input, const char *name);
+bool input_is_pressed(input_t input, const char *name, int index);
 
 [[nodiscard]]
-bool input_is_down(input_t input, const char *name);
+bool input_is_down(input_t input, const char *name, int index);
 
 [[nodiscard]]
-float input_axis(input_t input, int index, const char *name);
+float input_axis(input_t input, const char *name, int index);
