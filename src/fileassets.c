@@ -234,6 +234,10 @@ static bool parse_project_input(const input_t input, char *json, const json_toke
 		{
 			const double deadzone = SDL_strtod(json + value->start, nullptr);
 			input_config.deadzone = (float) deadzone;
+			if (deadzone < 0.0 || deadzone > 1.0)
+			{
+				SDL_LogError(LOG_CATEGORY_INPUT, "Invalid deadzone: %.2F", deadzone);
+			}
 		}
 		else if (is_key(json, key, "gam"))
 		{
