@@ -45,6 +45,8 @@ typedef struct vector3u16_t
 	Uint16 z;
 } vector3u16_t;
 
+typedef struct b3Vec3 b3Vec3;
+
 [[nodiscard]]
 vector2f_t vector2f_add(vector2f_t vec1, vector2f_t vec2);
 
@@ -86,6 +88,9 @@ vector3f_t vector3f_invert(vector3f_t vec);
 
 [[nodiscard]]
 vector3f_t vector3f_clamp(vector3f_t vec, vector3f_t min, vector3f_t max);
+
+[[nodiscard]]
+b3Vec3 vector3f_to_b3vec3(vector3f_t vec);
 
 [[nodiscard]]
 vector4f_t vector4f_one();

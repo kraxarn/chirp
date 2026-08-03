@@ -16,6 +16,15 @@ typedef struct camera_t
 camera_t camera_create_default();
 
 [[nodiscard]]
+vector3f_t camera_forward(const camera_t *camera);
+
+[[nodiscard]]
+vector3f_t camera_right(const camera_t *camera);
+
+[[nodiscard]]
+vector3f_t camera_up(const camera_t *camera);
+
+[[nodiscard]]
 vector3f_t camera_to_z(const camera_t *camera, float movement);
 
 [[nodiscard]]

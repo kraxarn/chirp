@@ -2,7 +2,8 @@ include(FetchContent)
 
 FetchContent_Declare(box3d
 	GIT_REPOSITORY https://github.com/erincatto/box3d.git
-	GIT_TAG v0.1.0
+	# Box3D is tagged, but still very experimental, so use latest commit for now
+	GIT_TAG 3fc20f5b453ba9e14cdf54ecafa87a2a4bcdf53c
 )
 
 set(BOX3D_SANITIZE OFF)

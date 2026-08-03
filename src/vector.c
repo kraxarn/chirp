@@ -1,5 +1,7 @@
 #include "vector.h"
 
+#include "box3d/math_functions.h"
+
 #include <SDL3/SDL_stdinc.h>
 
 vector2f_t vector2f_add(const vector2f_t vec1, const vector2f_t vec2)
@@ -127,6 +129,11 @@ vector3f_t vector3f_clamp(const vector3f_t vec,
 		.y = SDL_clamp(vec.y, min.y, max.y),
 		.z = SDL_clamp(vec.z, min.z, max.z)
 	};
+}
+
+b3Vec3 vector3f_to_b3vec3(const vector3f_t vec)
+{
+	return (b3Vec3){.x = vec.x, .y = vec.y, .z = vec.z};
 }
 
 vector4f_t vector4f_one()
