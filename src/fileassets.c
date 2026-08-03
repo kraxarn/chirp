@@ -222,12 +222,21 @@ static bool parse_project_input(const input_t input, char *json, const json_toke
 		}
 		else if (is_key(json, key, "axi"))
 		{
-			json[value->end] = '\0';
-			input_config.gamepad_axis = gamepad_axis_from_name(json + value->start);
-			if (input_config.gamepad_axis == SDL_GAMEPAD_AXIS_INVALID)
+			const input_axis_sign_t sign = json[value->end - 1];
+			if (sign != AXIS_NEGATIVE && sign != AXIS_POSITIVE)
 			{
-				SDL_LogError(LOG_CATEGORY_INPUT, "Unknown gamepad axis: %s",
-					json + value->start);
+				SDL_LogError(LOG_CATEGORY_INPUT, "Unknown gamepad axis sign: '%c'", sign);
+			}
+			else
+			{
+				input_config.gamepad_axis_sign = sign;
+				json[value->end - 1] = '\0';
+				input_config.gamepad_axis = gamepad_axis_from_name(json + value->start);
+				if (input_config.gamepad_axis == SDL_GAMEPAD_AXIS_INVALID)
+				{
+					SDL_LogError(LOG_CATEGORY_INPUT, "Unknown gamepad axis: %s",
+						json + value->start);
+				}
 			}
 		}
 		else if (is_key(json, key, "dea"))

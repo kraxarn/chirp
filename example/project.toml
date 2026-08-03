@@ -22,11 +22,11 @@ models = ["scene", "blaster", "bullet"]
 scripts = ["main"]
 
 [input]
-move_forward  = { keycode = ["w", "up"   ], axis    = "lefty",  deadzone = 0.2 }
-move_backward = { keycode = ["s", "down" ], axis    = "lefty",  deadzone = 0.2 }
-move_left     = { keycode = ["a", "left" ], axis    = "leftx",  deadzone = 0.2 }
-move_right    = { keycode = ["d", "right"], axis    = "leftx",  deadzone = 0.2 }
-move_up       = { keycode = "q",            axis    = "righty", deadzone = 0.2 }
-move_down     = { keycode = "e",            axis    = "righty", deadzone = 0.2 }
-jump          = { keycode = "space",        gamepad = "south"                  }
-shoot         = { mouse   = "left",         axis    = "righttrigger"           }
+move_forward  = { keycode = ["w", "up"   ], axis    = "lefty+",  deadzone = 0.2 }
+move_backward = { keycode = ["s", "down" ], axis    = "lefty-",  deadzone = 0.2 }
+move_left     = { keycode = ["a", "left" ], axis    = "leftx-",  deadzone = 0.2 }
+move_right    = { keycode = ["d", "right"], axis    = "leftx+",  deadzone = 0.2 }
+move_up       = { keycode = "q",            axis    = "righty+", deadzone = 0.2 }
+move_down     = { keycode = "e",            axis    = "righty-", deadzone = 0.2 }
+jump          = { keycode = "space",        gamepad = "south"                   }
+shoot         = { mouse   = "left",         axis    = "righttrigger+"           }

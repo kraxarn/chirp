@@ -211,7 +211,8 @@ bool input_add(const input_t input, const char *name, const input_config_t confi
 	if (config.gamepad_axis != SDL_GAMEPAD_AXIS_INVALID)
 	{
 		map->gamepad_axis = config.gamepad_axis;
-		map->deadzone = config.deadzone;
+		map->deadzone = config.deadzone
+			* (config.gamepad_axis_sign == AXIS_NEGATIVE ? -1.F : 1.F);
 		is_valid = true;
 	}
 
@@ -369,9 +370,15 @@ float input_axis(const input_t input, const char *name, const int index)
 			const Sint16 axis = SDL_GetGamepadAxis(gamepad, input_map->gamepad_axis);
 			const float axis_f = (float) axis / (float) SDL_MAX_SINT16;
 
-			if (SDL_fabsf(axis_f) >= input_map->deadzone)
+			if (SDL_copysignf(1.F, axis_f) == SDL_copysignf(1.F, input_map->deadzone))
 			{
-				return axis_f;
+				const float axis_abs = SDL_fabsf(axis_f);
+				const float deadzone_abs = SDL_fabsf(input_map->deadzone);
+
+				if (axis_abs >= deadzone_abs)
+				{
+					return axis_abs;
+				}
 			}
 		}
 	}

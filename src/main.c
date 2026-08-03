@@ -455,55 +455,54 @@ SDL_AppResult SDL_AppIterate(void *appstate)
 		const float move_speed = physics_config->move_speed;
 		const float jump_speed = physics_config->jump_speed;
 
-		if (input_axis(input, "move_forward", 0) < 0.F)
+		b3Vec3 player_velocity = b3Body_GetLinearVelocity(*player_body_id);
+
+		if (input_axis(input, "move_forward", 0) > 0.F)
 		{
 			const vector3f_t velocity = camera_to_z(camera, move_speed * time_stats->dt);
-			b3Body_SetLinearVelocity(*player_body_id, cast(b3Vec3, velocity));
+			player_velocity = b3Add(player_velocity, cast(b3Vec3, velocity));
 		}
 
 		if (input_axis(input, "move_backward", 0) > 0.F)
 		{
 			const vector3f_t velocity = camera_to_z(camera, -(move_speed * time_stats->dt));
-			b3Body_SetLinearVelocity(*player_body_id, cast(b3Vec3, velocity));
+			player_velocity = b3Add(player_velocity, cast(b3Vec3, velocity));
 		}
 
-		if (input_axis(input, "move_left", 0) < 0.F)
+		if (input_axis(input, "move_left", 0) > 0.F)
 		{
 			const vector3f_t velocity = camera_to_x(camera, -(move_speed * time_stats->dt));
-			b3Body_SetLinearVelocity(*player_body_id, cast(b3Vec3, velocity));
+			player_velocity = b3Add(player_velocity, cast(b3Vec3, velocity));
 		}
 
 		if (input_axis(input, "move_right", 0) > 0.F)
 		{
 			const vector3f_t velocity = camera_to_x(camera, move_speed * time_stats->dt);
-			b3Body_SetLinearVelocity(*player_body_id, cast(b3Vec3, velocity));
+			player_velocity = b3Add(player_velocity, cast(b3Vec3, velocity));
 		}
 
 		if (input_is_down(input, "move_up", 0))
 		{
 			const vector3f_t velocity = camera_to_y(camera, move_speed * time_stats->dt);
-			b3Body_SetLinearVelocity(*player_body_id, cast(b3Vec3, velocity));
+			player_velocity = b3Add(player_velocity, cast(b3Vec3, velocity));
 		}
 
 		if (input_is_down(input, "move_down", 0))
 		{
 			const vector3f_t velocity = camera_to_y(camera, -(move_speed * time_stats->dt));
-			b3Body_SetLinearVelocity(*player_body_id, cast(b3Vec3, velocity));
+			player_velocity = b3Add(player_velocity, cast(b3Vec3, velocity));
 		}
 
 		if (input_is_pressed(input, "jump", 0))
 		{
-			const b3Vec3 velocity = b3Body_GetLinearVelocity(*player_body_id);
-			if (velocity.y > -0.1F && velocity.y < 0.1F)
+			if (player_velocity.y > -0.1F && player_velocity.y < 0.1F)
 			{
-				const b3Vec3 jump_velocity = {
-					.x = velocity.x,
-					.y = jump_speed,
-					.z = velocity.z,
-				};
-				b3Body_SetLinearVelocity(*player_body_id, jump_velocity);
+				const b3Vec3 velocity = {.y = jump_speed};
+				player_velocity = b3Add(player_velocity, cast(b3Vec3, velocity));
 			}
 		}
+
+		b3Body_SetLinearVelocity(*player_body_id, player_velocity);
 
 		if (input_is_pressed(input, "shoot", 0))
 		{
