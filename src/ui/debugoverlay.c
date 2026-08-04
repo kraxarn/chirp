@@ -69,6 +69,7 @@ static void draw_physics_info(nk_context_t *ctx, const b3BodyId body_id)
 {
 	const b3Vec3 position = b3Body_GetPosition(body_id);
 	const b3Vec3 velocity = b3Body_GetLinearVelocity(body_id);
+	const b3Quat rotation = b3Body_GetRotation(body_id);
 
 	nk_label(ctx, "Position", NK_TEXT_LEFT);
 	nk_labelf(ctx, NK_TEXT_LEFT, "%-6.2f %-6.2f %-6.2f",
@@ -77,6 +78,10 @@ static void draw_physics_info(nk_context_t *ctx, const b3BodyId body_id)
 	nk_label(ctx, "Velocity", NK_TEXT_LEFT);
 	nk_labelf(ctx, NK_TEXT_LEFT, "%-6.2f %-6.2f %-6.2f",
 		velocity.x, velocity.y, velocity.z);
+
+	nk_label(ctx, "Rotation", NK_TEXT_LEFT);
+	nk_labelf(ctx, NK_TEXT_LEFT, "%-6.2f %-6.2f %-6.2f",
+		rotation.v.x, rotation.v.y, rotation.v.z);
 }
 
 [[nodiscard]]
@@ -158,16 +163,6 @@ void draw_debug_overlay(ecs_iter_t *iter)
 	constexpr auto alpha = 0.75F;
 	constexpr auto row_height = 18.F;
 
-	const nk_rect_t window_bounds = {
-		.x = padding,
-		.y = padding,
-		.w = 300.F,
-		.h = 180.F,
-	};
-
-	constexpr nk_panel_flags_t window_flags =
-		NK_WINDOW_BORDER;
-
 	nk_style_t *style = &ctx->style;
 	nk_style_item_t *window_style = &style->window.fixed_background;
 
@@ -177,7 +172,12 @@ void draw_debug_overlay(ecs_iter_t *iter)
 
 	nk_style_push_style_item(ctx, window_style, nk_style_item_color(color));
 
-	if (nk_begin(ctx, "Debug overlay", window_bounds, window_flags))
+	if (nk_begin(ctx, "Debug overlay", (nk_rect_t){
+		.x = padding,
+		.y = padding,
+		.w = 300.F,
+		.h = 195.F,
+	}, NK_WINDOW_BORDER))
 	{
 		constexpr auto ms_s = 1'000.F;
 
@@ -203,7 +203,7 @@ void draw_debug_overlay(ecs_iter_t *iter)
 		.w = 300.F,
 		.h = 150.F,
 		.x = padding,
-		.y = (padding * 2) + 180.F,
+		.y = (padding * 2) + 195.F,
 	}, NK_WINDOW_BORDER))
 	{
 		const EcsWorldSummary *world_summary = ecs_get_id(ecs_world(),
@@ -240,9 +240,9 @@ void draw_debug_overlay(ecs_iter_t *iter)
 
 	if (nk_begin(ctx, "Input overlay", (nk_rect_t){
 		.w = 300.F,
-		.h = 325.F,
+		.h = 310.F,
 		.x = padding,
-		.y = (padding * 3) + 180.F + 150.F,
+		.y = (padding * 3) + 195.F + 150.F,
 	}, NK_WINDOW_BORDER))
 	{
 		static int selected = 0;
