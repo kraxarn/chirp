@@ -168,6 +168,11 @@ static void build_scene(ecs_iter_t *iter)
 	b3BodyDef player_def = b3DefaultBodyDef();
 	player_def.position = (b3Pos){.y = 1.F};
 	player_def.type = b3_dynamicBody;
+	player_def.motionLocks = (b3MotionLocks){
+		.angularX = true,
+		.angularY = true,
+		.angularZ = true,
+	};
 	b3BodyId player_body = b3CreateBody(physics_world, &player_def);
 	b3Capsule player_capsule = {
 		.center1 = (b3Vec3){.x = 0.F, .y = 0.F},
