@@ -161,7 +161,7 @@ static void build_scene(ecs_iter_t *iter)
 	b3BodyId floor_body = b3CreateBody(physics_world, &floor_def);
 	b3BoxHull floor_box = b3MakeBoxHull(100.F, 0.F, 100.F);
 	b3ShapeDef floor_shape_def = b3DefaultShapeDef();
-	floor_shape_def.baseMaterial.friction = 15.F;
+	floor_shape_def.baseMaterial.friction = 5.F;
 	b3CreateHullShape(floor_body, &floor_shape_def, &floor_box.base);
 
 	// TODO: Make character mover
