@@ -169,11 +169,14 @@ static void build_scene(ecs_iter_t *iter)
 	player_def.position = (b3Pos){.y = 1.F};
 	player_def.type = b3_dynamicBody;
 	b3BodyId player_body = b3CreateBody(physics_world, &player_def);
-	b3BoxHull player_box = b3MakeCubeHull(1.F);
+	b3Capsule player_capsule = {
+		.center1 = (b3Vec3){.x = 0.F, .y = 0.F},
+		.center2 = (b3Vec3){.x = 0.F, .y = 1.F},
+		.radius = 1.F,
+	};
 	b3ShapeDef player_shape_def = b3DefaultShapeDef();
 	player_shape_def.density = 1.F;
-	player_shape_def.baseMaterial.friction = 0.3F;
-	b3CreateHullShape(player_body, &player_shape_def, &player_box.base);
+	b3CreateCapsuleShape(player_body, &player_shape_def, &player_capsule);
 
 	const ecs_entity_t player_entity = ecs_entity_init(ecs_world(), &(ecs_entity_desc_t){
 		.name = "Player",
