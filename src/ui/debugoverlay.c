@@ -343,6 +343,39 @@ void draw_debug_overlay(ecs_iter_t *iter)
 			nk_label(ctx, ENGINE_BUILD_TYPE, NK_TEXT_LEFT);
 		}
 		nk_end(ctx);
+
+		if (nk_begin(ctx, "Config", (nk_rect_t){
+			.x = window_x,
+			.y = (padding * 4.F) + 40.F + 210.F + 120.F,
+			.w = window_width,
+			.h = 120.F,
+		}, NK_WINDOW_BORDER | NK_WINDOW_TITLE))
+		{
+			nk_layout_row(ctx, NK_DYNAMIC, row_height * 1.5F, 2, (float[]){0.4F, 0.6F});
+
+			nk_label(ctx, "Target FPS", NK_TEXT_LEFT);
+
+			static int selected = 0;
+			const int previous = selected;
+			static const char *frame_rates[] = {
+				"Default",
+				"30  FPS",
+				"60  FPS",
+				"90  FPS",
+				"120 FPS",
+				"240 FPS",
+				"360 FPS",
+			};
+			selected = nk_combo(ctx, frame_rates, SDL_arraysize(frame_rates), selected,
+				(int) row_height, nk_vec2(160.F, 160.F));
+
+			if (previous != selected)
+			{
+				static float values[] = {0.F, 30.F, 60.F, 90.F, 120.F, 240.F, 360.F};
+				ecs_set_target_fps(ecs_world(), values[selected]);
+			}
+		}
+		nk_end(ctx);
 	}
 
 	nk_style_pop_style_item(ctx);
