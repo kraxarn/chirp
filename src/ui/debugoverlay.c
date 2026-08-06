@@ -6,6 +6,7 @@
 #include "gamepadbuttonlabel.h"
 #include "gpudevicedriver.h"
 #include "input.h"
+#include "logcategory.h"
 #include "map.h"
 #include "mousebutton.h"
 #include "nkui.h"
@@ -21,10 +22,12 @@
 
 #include <SDL3/SDL_assert.h>
 #include <SDL3/SDL_audio.h>
+#include <SDL3/SDL_error.h>
 #include <SDL3/SDL_gamepad.h>
 #include <SDL3/SDL_gpu.h>
 #include <SDL3/SDL_keyboard.h>
 #include <SDL3/SDL_keycode.h>
+#include <SDL3/SDL_log.h>
 #include <SDL3/SDL_mouse.h>
 #include <SDL3/SDL_properties.h>
 #include <SDL3/SDL_stdinc.h>
@@ -82,6 +85,77 @@ static void draw_physics_info(nk_context_t *ctx, const b3BodyId body_id)
 	nk_label(ctx, "Rotation", NK_TEXT_LEFT);
 	nk_labelf(ctx, NK_TEXT_LEFT, "%-6.2f %-6.2f %-6.2f",
 		rotation.v.x, rotation.v.y, rotation.v.z);
+}
+
+static void draw_render_config(nk_context_t *ctx, const float row_height)
+{
+	nk_layout_row(ctx, NK_DYNAMIC, row_height * 1.5F, 2, (float[]){0.4F, 0.6F});
+
+	static int selected_frame_rate = 0;
+	const int previous_frame_rate = selected_frame_rate;
+	static const char *frame_rates[] = {
+		"Default",
+		"30  FPS",
+		"60  FPS",
+		"90  FPS",
+		"120 FPS",
+		"180 FPS",
+		"240 FPS",
+		"360 FPS",
+	};
+
+	nk_label(ctx, "Target FPS", NK_TEXT_LEFT);
+	selected_frame_rate = nk_combo(ctx, frame_rates, SDL_arraysize(frame_rates),
+		selected_frame_rate, (int) row_height, nk_vec2(100.F, 190.F));
+
+	if (previous_frame_rate != selected_frame_rate)
+	{
+		static float values[] = {0.F, 30.F, 60.F, 90.F, 120.F, 180.F, 240.F, 360.F};
+		ecs_set_target_fps(ecs_world(), values[selected_frame_rate]);
+	}
+
+	// Set in ecs/gpudevice
+	static int selected_hdr = SDL_GPU_SWAPCHAINCOMPOSITION_SDR;
+	static int selected_vsync = SDL_GPU_PRESENTMODE_VSYNC;
+
+	static const char *hdr_modes[] = {
+		[SDL_GPU_SWAPCHAINCOMPOSITION_SDR] = "SDR",
+		[SDL_GPU_SWAPCHAINCOMPOSITION_SDR_LINEAR] = "SDR (linear)",
+		[SDL_GPU_SWAPCHAINCOMPOSITION_HDR_EXTENDED_LINEAR] = "HDR",
+		[SDL_GPU_SWAPCHAINCOMPOSITION_HDR10_ST2084] = "HDR10",
+	};
+
+	static const char *vsync_modes[] = {
+		[SDL_GPU_PRESENTMODE_VSYNC] = "VSync",
+		[SDL_GPU_PRESENTMODE_IMMEDIATE] = "Immediate",
+		[SDL_GPU_PRESENTMODE_MAILBOX] = "Mailbox",
+	};
+
+	const int previous_hdr = selected_hdr;
+	const int previous_vsync = selected_vsync;
+
+	nk_label(ctx, "HDR", NK_TEXT_LEFT);
+	selected_hdr = nk_combo(ctx, hdr_modes, SDL_arraysize(hdr_modes),
+		selected_hdr, (int) row_height, nk_vec2(140.F, 160.F));
+
+	nk_label(ctx, "VSync", NK_TEXT_LEFT);
+	selected_vsync = nk_combo(ctx, vsync_modes, SDL_arraysize(vsync_modes),
+		selected_vsync, (int) row_height, nk_vec2(130.F, 160.F));
+
+	if (selected_hdr != previous_hdr
+		|| selected_vsync != previous_vsync)
+	{
+		SDL_Window *window = *(SDL_Window**) ecs_get_id(ecs_world(),
+			ecs_singleton(EcsWindow));
+
+		SDL_GPUDevice *device = *(SDL_GPUDevice**) ecs_get_id(ecs_world(),
+			ecs_singleton(EcsGpuDevice));
+
+		if (!SDL_SetGPUSwapchainParameters(device, window, selected_hdr, selected_vsync))
+		{
+			SDL_LogWarn(LOG_CATEGORY_CORE, "Mode not supported: %s", SDL_GetError());
+		}
+	}
 }
 
 [[nodiscard]]
@@ -344,36 +418,14 @@ void draw_debug_overlay(ecs_iter_t *iter)
 		}
 		nk_end(ctx);
 
-		if (nk_begin(ctx, "Config", (nk_rect_t){
+		if (nk_begin(ctx, "Render config", (nk_rect_t){
 			.x = window_x,
 			.y = (padding * 4.F) + 40.F + 210.F + 120.F,
 			.w = window_width,
-			.h = 120.F,
+			.h = 150.F,
 		}, NK_WINDOW_BORDER | NK_WINDOW_TITLE))
 		{
-			nk_layout_row(ctx, NK_DYNAMIC, row_height * 1.5F, 2, (float[]){0.4F, 0.6F});
-
-			nk_label(ctx, "Target FPS", NK_TEXT_LEFT);
-
-			static int selected = 0;
-			const int previous = selected;
-			static const char *frame_rates[] = {
-				"Default",
-				"30  FPS",
-				"60  FPS",
-				"90  FPS",
-				"120 FPS",
-				"240 FPS",
-				"360 FPS",
-			};
-			selected = nk_combo(ctx, frame_rates, SDL_arraysize(frame_rates), selected,
-				(int) row_height, nk_vec2(160.F, 160.F));
-
-			if (previous != selected)
-			{
-				static float values[] = {0.F, 30.F, 60.F, 90.F, 120.F, 240.F, 360.F};
-				ecs_set_target_fps(ecs_world(), values[selected]);
-			}
+			draw_render_config(ctx, row_height);
 		}
 		nk_end(ctx);
 	}
