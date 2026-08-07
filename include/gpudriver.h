@@ -1,4 +1,4 @@
 #pragma once
 
 [[nodiscard]]
-char *gpu_driver_names();
+const char *gpu_driver_names();

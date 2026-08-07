@@ -3,7 +3,7 @@
 #include <SDL3/SDL_gpu.h>
 #include <SDL3/SDL_stdinc.h>
 
-char *shader_format_names(SDL_GPUDevice *device)
+const char *shader_format_names(SDL_GPUDevice *device)
 {
 	// "invalid, private, spir-v, dxbc, dxil, msl, metallib"
 	constexpr size_t shader_format_names_len = 52;

@@ -1,18 +1,14 @@
 #include "ui/debugoverlay.h"
-#include "audiodriver.h"
 #include "camera.h"
 #include "ecs.h"
 #include "gamepadbutton.h"
 #include "gamepadbuttonlabel.h"
-#include "gpudevicedriver.h"
 #include "input.h"
 #include "logcategory.h"
 #include "map.h"
 #include "mousebutton.h"
 #include "nkui.h"
-#include "systeminfo.h"
 #include "timestats.h"
-#include "videodriver.h"
 #include "ecs/components.h"
 
 #include "flecs.h"
@@ -21,7 +17,6 @@
 #include "box3d/math_functions.h"
 
 #include <SDL3/SDL_assert.h>
-#include <SDL3/SDL_audio.h>
 #include <SDL3/SDL_error.h>
 #include <SDL3/SDL_gamepad.h>
 #include <SDL3/SDL_gpu.h>
@@ -32,30 +27,6 @@
 #include <SDL3/SDL_properties.h>
 #include <SDL3/SDL_stdinc.h>
 #include <SDL3/SDL_video.h>
-
-static void draw_system_info(nk_context_t *ctx, SDL_GPUDevice *device)
-{
-	nk_label(ctx, "Platform", NK_TEXT_LEFT);
-	nk_label(ctx, system_info_platform(), NK_TEXT_LEFT);
-
-	nk_label(ctx, "CPU", NK_TEXT_LEFT);
-	nk_label(ctx, system_info_cpu_name(), NK_TEXT_LEFT);
-
-	nk_label(ctx, "GPU", NK_TEXT_LEFT);
-	nk_label(ctx, system_info_gpu_name(device), NK_TEXT_LEFT);
-
-	nk_label(ctx, "Driver", NK_TEXT_LEFT);
-	nk_label(ctx, system_info_gpu_driver(device), NK_TEXT_LEFT);
-
-	nk_label(ctx, "Video", NK_TEXT_LEFT);
-	nk_label(ctx, video_driver_display_name(SDL_GetCurrentVideoDriver()), NK_TEXT_LEFT);
-
-	nk_label(ctx, "Audio", NK_TEXT_LEFT);
-	nk_label(ctx, audio_driver_display_name(SDL_GetCurrentAudioDriver()), NK_TEXT_LEFT);
-
-	nk_label(ctx, "Renderer", NK_TEXT_LEFT);
-	nk_label(ctx, gpu_device_driver_display_name(SDL_GetGPUDeviceDriver(device)), NK_TEXT_LEFT);
-}
 
 static void draw_camera_info(nk_context_t *ctx, const camera_t *camera)
 {
@@ -386,21 +357,9 @@ void draw_debug_overlay(ecs_iter_t *iter)
 		}
 		nk_end(ctx);
 
-		if (nk_begin(ctx, "System info", (nk_rect_t){
-			.x = window_x,
-			.y = (padding * 2.F) + 40.F,
-			.w = window_width,
-			.h = 210.F,
-		}, NK_WINDOW_BORDER | NK_WINDOW_TITLE))
-		{
-			nk_layout_row(ctx, NK_DYNAMIC, row_height, 2, (float[]){0.3F, 0.7F});
-			draw_system_info(ctx, device);
-		}
-		nk_end(ctx);
-
 		if (nk_begin(ctx, "Build info", (nk_rect_t){
 			.x = window_x,
-			.y = (padding * 3.F) + 40.F + 210.F,
+			.y = (padding * 2.F) + 40.F,
 			.w = window_width,
 			.h = 120.F,
 		}, NK_WINDOW_BORDER | NK_WINDOW_TITLE))
@@ -420,7 +379,7 @@ void draw_debug_overlay(ecs_iter_t *iter)
 
 		if (nk_begin(ctx, "Render config", (nk_rect_t){
 			.x = window_x,
-			.y = (padding * 4.F) + 40.F + 210.F + 120.F,
+			.y = (padding * 3.F) + 40.F + 120.F,
 			.w = window_width,
 			.h = 150.F,
 		}, NK_WINDOW_BORDER | NK_WINDOW_TITLE))

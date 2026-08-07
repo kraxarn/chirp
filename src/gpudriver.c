@@ -3,7 +3,9 @@
 #include <SDL3/SDL_gpu.h>
 #include <SDL3/SDL_stdinc.h>
 
-char *gpu_driver_names()
+#include <stddef.h>
+
+const char *gpu_driver_names()
 {
 	// "vulkan, metal, direct3d12"
 	constexpr size_t gpu_drivers_len = 26;
