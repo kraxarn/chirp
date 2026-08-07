@@ -66,7 +66,7 @@ jobs:
         run: sudo apt install -y python3-venv
 
       - name: Configure CMake
-        run: cmake -S . -B build -D ENABLE_TESTS=ON -D CMAKE_BUILD_TYPE=$BUILD_TYPE -D CMAKE_C_FLAGS="${{ matrix.compile-flags }}" -D CMAKE_CXX_FLAGS="${{ matrix.compile-flags }}"
+        run: cmake -S . -B build -D ENABLE_TESTS=ON -D CMAKE_BUILD_TYPE=$BUILD_TYPE -D CMAKE_C_FLAGS="${{ matrix.compile-flags }}"
 
       - name: Build
         run: cmake --build build
