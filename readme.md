@@ -1,8 +1,6 @@
 # chirp3d
 
-Modern, lightweight and cross-platform 3D-focused game engine.
-Somewhat related to [chirp](https://github.com/kraxarn/chirp),
-but with a stronger focus on modern 3D support over supporting every platform in existence.
+Modern, lightweight, and cross-platform 3D game engine.
 
 # status
 
