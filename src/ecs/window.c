@@ -3,6 +3,7 @@
 #include "ecs/components.h"
 
 #include "flecs.h"
+#include "chirp/ecs.h"
 
 static void load_window_config(ecs_iter_t *iter)
 {

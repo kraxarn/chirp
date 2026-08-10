@@ -6,6 +6,7 @@
 #include "flecs.h"
 #include "box3d/box3d.h"
 #include "box3d/id.h"
+#include "chirp/ecs.h"
 #include "flecs/addons/flecs_c.h"
 
 static void init_physics([[maybe_unused]] ecs_iter_t *iter)

@@ -85,9 +85,6 @@ void ecs_create();
 void ecs_destroy();
 
 [[nodiscard]]
-ecs_world_t *ecs_world();
-
-[[nodiscard]]
 ecs_entity_t ecs_phase(phase_t phase);
 
 ecs_entity_t ecs_set_error(const char *title, const char *message);
@@ -97,14 +94,6 @@ ecs_entity_t ecs_set_error(const char *title, const char *message);
 		scope = ecs_set_scope(ecs_world(), mod);													\
 		ecs_get_scope(ecs_world()) == mod;															\
 		ecs_set_scope(ecs_world(), scope))
-
-/** Get/set data in singleton */
-#define ecs_singleton(component)	\
-	component, component
-
-/** Filter by singleton */
-#define ecs_singleton_id(component)	\
-	component, .src.id = component
 
 #define ecs_observer_init_all(o)					\
 	for (size_t i = 0; i < SDL_arraysize(o); i++)	\

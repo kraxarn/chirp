@@ -6,6 +6,7 @@
 #include "flecs.h"
 #include "chirp/array.h"
 #include "chirp/assetstream.h"
+#include "chirp/ecs.h"
 #include "chirp/gamepadaxis.h"
 #include "chirp/gamepadbutton.h"
 #include "chirp/gamepadbuttonlabel.h"

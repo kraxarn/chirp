@@ -1,6 +1,7 @@
 #include "ecs.h"
 #include "py.h"
 
+#include "chirp/ecs.h"
 #include "flecs.h"
 #include "pocketpy.h"
 #include "chirp/logcategory.h"

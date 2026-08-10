@@ -1,4 +1,6 @@
 #include "ecs.h"
+#include "chirp/ecs.h"
+
 #include "args.h"
 #include "assets.h"
 #include "camera.h"
@@ -24,104 +26,7 @@
 #include <SDL3/SDL_log.h>
 #include <SDL3/SDL_stdinc.h>
 
-static ecs_world_t *world = nullptr;
 static ecs_entity_t phases[PHASE_COUNT];
-
-static void log_debug_info()
-{
-	constexpr size_t temp_len = 160;
-	char temp[temp_len] = {0};
-
-#define append(str) if(temp[0] != '\0') SDL_strlcat(temp, ", ", temp_len); SDL_strlcat(temp, str, temp_len)
-
-#ifdef FLECS_CPP
-	append("cpp");
-#endif
-
-#ifdef FLECS_MODULE
-	append("module");
-#endif
-
-#ifdef FLECS_SYSTEM
-	append("system");
-#endif
-
-#ifdef FLECS_PIPELINE
-	append("pipeline");
-#endif
-
-#ifdef FLECS_TIMER
-	append("timer");
-#endif
-
-#ifdef FLECS_META
-	append("meta");
-#endif
-
-#ifdef FLECS_UNITS
-	append("units");
-#endif
-
-#ifdef FLECS_JSON
-	append("json");
-#endif
-
-#ifdef FLECS_DOC
-	append("doc");
-#endif
-
-#ifdef FLECS_HTTP
-	append("http");
-#endif
-
-#ifdef FLECS_REST
-	append("rest");
-#endif
-
-#ifdef FLECS_PARSER
-	append("parser");
-#endif
-
-#ifdef FLECS_QUERY_DSL
-	append("query_dsl");
-#endif
-
-#ifdef FLECS_SCRIPT
-	append("script");
-#endif
-
-#ifdef FLECS_STATS
-	append("stats");
-#endif
-
-#ifdef FLECS_METRICS
-	append("metrics");
-#endif
-
-#ifdef FLECS_ALERTS
-	append("alerts");
-#endif
-
-#ifdef FLECS_LOG
-	append("log");
-#endif
-
-#ifdef FLECS_JOURNAL
-	append("journal");
-#endif
-
-#ifdef FLECS_APP
-	append("app");
-#endif
-
-#ifdef FLECS_OS_API_IMPL
-	append("os_api_impl");
-#endif
-
-#undef append
-
-	SDL_LogDebug(LOG_CATEGORY_ECS, "Addons: %s", temp);
-}
 
 static ecs_entity_t phase(const char *name)
 {
@@ -129,12 +34,12 @@ static ecs_entity_t phase(const char *name)
 		.name = name,
 		.add = ecs_ids(EcsPhase),
 	};
-	return ecs_entity_init(world, &entity_desc);
+	return ecs_entity_init(ecs_world(), &entity_desc);
 }
 
 static void phase_depend(const phase_t source, const phase_t target)
 {
-	ecs_add_pair(world, phases[source], EcsDependsOn, phases[target]);
+	ecs_add_pair(ecs_world(), phases[source], EcsDependsOn, phases[target]);
 }
 
 static void create_pipeline()
@@ -151,8 +56,8 @@ static void create_pipeline()
 			},
 		},
 	};
-	const ecs_entity_t pipeline = ecs_pipeline_init(world, &pipeline_desc);
-	ecs_set_pipeline(world, pipeline);
+	const ecs_entity_t pipeline = ecs_pipeline_init(ecs_world(), &pipeline_desc);
+	ecs_set_pipeline(ecs_world(), pipeline);
 
 	phases[PHASE_UPDATE_BEGIN] = phase("UpdateBegin");
 	phases[PHASE_UPDATE] = phase("Update");
@@ -180,7 +85,7 @@ static void ctor_zero(void *ptr, const Sint32 count, const ecs_type_info_t *type
 [[nodiscard]]
 static ecs_entity_t entity(const char *name)
 {
-	return ecs_entity_init(world, &(ecs_entity_desc_t){
+	return ecs_entity_init(ecs_world(), &(ecs_entity_desc_t){
 		.name = name,
 	});
 }
@@ -197,21 +102,21 @@ static ecs_id_t component_impl(const char *name, const char *symbol,
 	};
 
 	const ecs_component_desc_t component_desc = {
-		.entity = ecs_entity_init(world, &entity_desc),
+		.entity = ecs_entity_init(ecs_world(), &entity_desc),
 		.type = (ecs_type_info_t){
 			.size = size,
 			.alignment = alignment,
 		},
 	};
 
-	const ecs_id_t component = ecs_component_init(world, &component_desc);
+	const ecs_id_t component = ecs_component_init(ecs_world(), &component_desc);
 	SDL_assert(component != 0);
 
 	const ecs_type_hooks_t hooks = {
 		.ctor = ctor,
 		.dtor = dtor,
 	};
-	ecs_set_hooks_id(world, component, &hooks);
+	ecs_set_hooks_id(ecs_world(), component, &hooks);
 
 	return component;
 }
@@ -225,33 +130,30 @@ static ecs_entity_t tag(const char *name)
 		.name = name,
 	};
 
-	const ecs_entity_t entity = ecs_entity_init(world, &entity_desc);
+	const ecs_entity_t entity = ecs_entity_init(ecs_world(), &entity_desc);
 	SDL_assert(entity != 0);
 	return entity;
 }
 
 #ifndef NDEBUG
 
-#define reflect(e, ...)							\
-	do {										\
-		const ecs_struct_desc_t struct_desc = {	\
-			.entity = e,						\
-			.members = {__VA_ARGS__},			\
-		};										\
-		ecs_struct_init(world, &struct_desc);	\
-	} while (false)
+#define reflect(e, ...)									\
+	ecs_struct_init(ecs_world(), &(ecs_struct_desc_t) {	\
+		.entity = e,									\
+		.members = {__VA_ARGS__},						\
+	});
 
-#define reflect_enum(e, t, ...)					\
-	ecs_enum_init(world, &(ecs_enum_desc_t){	\
-		.entity = e,							\
-		.constants = {__VA_ARGS__},				\
-		.underlying_type = t,					\
+#define reflect_enum(e, t, ...)						\
+	ecs_enum_init(ecs_world(), &(ecs_enum_desc_t){	\
+		.entity = e,								\
+		.constants = {__VA_ARGS__},					\
+		.underlying_type = t,						\
 	});
 
 static ecs_entity_t reflect_string(const ecs_entity_t entity,
 	const ecs_meta_serialize_t serialize)
 {
-	return ecs_opaque_init(world, &(ecs_opaque_desc_t){
+	return ecs_opaque_init(ecs_world(), &(ecs_opaque_desc_t){
 		.entity = entity,
 		.type = (EcsOpaque){
 			.as_type = ecs_id(ecs_string_t),
@@ -468,44 +370,37 @@ static void on_init_set([[maybe_unused]] ecs_iter_t *iter)
 
 	if (args->threads > 0)
 	{
-		ecs_set_threads(world, args->threads);
+		ecs_set_threads(ecs_world(), args->threads);
 		SDL_LogInfo(LOG_CATEGORY_ECS, "Using %d threads", args->threads);
 	}
 	else if (args->task_threads > 0)
 	{
-		ecs_set_task_threads(world, args->task_threads);
+		ecs_set_task_threads(ecs_world(), args->task_threads);
 		SDL_LogInfo(LOG_CATEGORY_ECS, "Using %d task threads", args->task_threads);
 	}
 	else
 	{
 		const int cores = SDL_GetNumLogicalCPUCores();
-		ecs_set_threads(world, cores);
+		ecs_set_threads(ecs_world(), cores);
 		SDL_LogInfo(LOG_CATEGORY_ECS, "Using %d threads", cores);
 	}
 
 #ifdef FLECS_REST
-	ecs_singleton_set(world, EcsRest, {0});
+	ecs_singleton_set(ecs_world(), EcsRest, {0});
 #endif
 
 #ifdef FLECS_STATS
-	ECS_IMPORT(world, FlecsStats);
+	ECS_IMPORT(ecs_world(), FlecsStats);
 #endif
 }
 
 void ecs_create()
 {
-	if (world != nullptr)
-	{
-		return;
-	}
-
-	log_debug_info();
-
-	world = ecs_init();
-	ecs_import(world, module, "chirp");
+	ecs_create_world();
+	ecs_import(ecs_world(), module, "chirp");
 
 	// SDL has to initialise before we set up OS-specific stuff
-	ecs_observer_init(world, &(ecs_observer_desc_t){
+	ecs_observer_init(ecs_world(), &(ecs_observer_desc_t){
 		.query.terms = {
 			(ecs_term_t){.id = ecs_singleton_id(EcsInit), .inout = EcsInOutNone},
 			(ecs_term_t){.id = ecs_singleton_id(EcsArgs), .inout = EcsIn},
@@ -517,13 +412,7 @@ void ecs_create()
 
 void ecs_destroy()
 {
-	ecs_fini(world);
-	world = nullptr;
-}
-
-ecs_world_t *ecs_world()
-{
-	return world;
+	ecs_destroy_world();
 }
 
 ecs_entity_t ecs_phase(const phase_t phase)
@@ -535,14 +424,14 @@ ecs_entity_t ecs_phase(const phase_t phase)
 
 ecs_entity_t ecs_set_error(const char *title, const char *message)
 {
-	const ecs_entity_t entity = ecs_new(world);
+	const ecs_entity_t entity = ecs_new(ecs_world());
 
 	const error_t error = {
 		.title = SDL_strdup(title),
 		.message = SDL_strdup(message),
 	};
 
-	ecs_set_id(world, entity, EcsError,
+	ecs_set_id(ecs_world(), entity, EcsError,
 		sizeof(error_t), &error);
 
 	return entity;

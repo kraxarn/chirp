@@ -3,6 +3,7 @@
 #include "ecs/components.h"
 
 #include "flecs.h"
+#include "chirp/ecs.h"
 #include "chirp/logcategory.h"
 
 #include <SDL3/SDL_error.h>

@@ -23,6 +23,7 @@
 #include "box3d/id.h"
 #include "box3d/math_functions.h"
 #include "box3d/types.h"
+#include "chirp/ecs.h"
 #include "chirp/input.h"
 #include "chirp/logcategory.h"
 #include "chirp/vector.h"

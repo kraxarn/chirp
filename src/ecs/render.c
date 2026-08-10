@@ -8,6 +8,7 @@
 #include "ecs/tags.h"
 
 #include "flecs.h"
+#include "chirp/ecs.h"
 #include "chirp/logcategory.h"
 #include "chirp/vector.h"
 

@@ -9,6 +9,7 @@
 #include "box3d/box3d.h"
 #include "box3d/id.h"
 #include "box3d/math_functions.h"
+#include "chirp/ecs.h"
 #include "chirp/gamepadbutton.h"
 #include "chirp/gamepadbuttonlabel.h"
 #include "chirp/input.h"
