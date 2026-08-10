@@ -1,6 +1,6 @@
 #include "tests.h"
 
-#include "array.h"
+#include "chirp/array.h"
 
 #include <assert.h>
 

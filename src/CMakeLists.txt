@@ -4,7 +4,6 @@ add_subdirectory(ui)
 
 target_sources(${PROJECT_NAME} PRIVATE
 	"${CMAKE_CURRENT_SOURCE_DIR}/args.c"
-	"${CMAKE_CURRENT_SOURCE_DIR}/array.c"
 	"${CMAKE_CURRENT_SOURCE_DIR}/assethelper.c"
 	"${CMAKE_CURRENT_SOURCE_DIR}/assetstream.c"
 	"${CMAKE_CURRENT_SOURCE_DIR}/audiodriver.c"

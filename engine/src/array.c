@@ -1,4 +1,4 @@
-#include "array.h"
+#include "chirp/array.h"
 
 #include <SDL3/SDL_stdinc.h>
 

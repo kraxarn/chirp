@@ -1,4 +1,3 @@
-#include "array.h"
 #include "assets.h"
 #include "assetstream.h"
 #include "ecs.h"
@@ -13,6 +12,8 @@
 #include "mousebutton.h"
 #include "windowconfig.h"
 #include "ecs/components.h"
+
+#include "chirp/array.h"
 
 #include "flecs.h"
 

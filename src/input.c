@@ -1,8 +1,9 @@
 #include "input.h"
-#include "array.h"
 #include "inputconfig.h"
 #include "logcategory.h"
 #include "map.h"
+
+#include "chirp/array.h"
 
 #include <SDL3/SDL_assert.h>
 #include <SDL3/SDL_error.h>
