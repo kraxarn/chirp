@@ -1,8 +1,6 @@
 #include "ui/debugoverlay.h"
 #include "camera.h"
 #include "ecs.h"
-#include "gamepadbutton.h"
-#include "gamepadbuttonlabel.h"
 #include "input.h"
 #include "mousebutton.h"
 #include "nkui.h"
@@ -13,6 +11,8 @@
 #include "box3d/box3d.h"
 #include "box3d/id.h"
 #include "box3d/math_functions.h"
+#include "chirp/gamepadbutton.h"
+#include "chirp/gamepadbuttonlabel.h"
 #include "chirp/logcategory.h"
 #include "chirp/map.h"
 

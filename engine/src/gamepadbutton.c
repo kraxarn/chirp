@@ -1,4 +1,10 @@
-#include "gamepadbutton.h"
+#include "chirp/gamepadbutton.h"
+
+#include <SDL3/SDL_assert.h>
+#include <SDL3/SDL_gamepad.h>
+#include <SDL3/SDL_stdinc.h>
+
+#include <stddef.h>
 
 /*
  * There is technically already a SDL_GetGamepadButtonFromString,
@@ -7,10 +13,6 @@
  * roll our own parser for the time being.
  * TODO: Maybe roll our own parsers for everything for consistency?
  */
-
-#include <SDL3/SDL_assert.h>
-#include <SDL3/SDL_gamepad.h>
-#include <SDL3/SDL_stdinc.h>
 
 static const char *names[] = {
 	[SDL_GAMEPAD_BUTTON_SOUTH] = "South",

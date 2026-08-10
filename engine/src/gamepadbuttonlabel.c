@@ -1,8 +1,10 @@
-#include "gamepadbuttonlabel.h"
+#include "chirp/gamepadbuttonlabel.h"
 
 #include <SDL3/SDL_assert.h>
 #include <SDL3/SDL_gamepad.h>
 #include <SDL3/SDL_stdinc.h>
+
+#include <stddef.h>
 
 static const char *names[] = {
 	[SDL_GAMEPAD_BUTTON_LABEL_UNKNOWN] = "Unknown",

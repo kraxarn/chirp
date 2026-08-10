@@ -1,9 +1,6 @@
 #include "assets.h"
 #include "assetstream.h"
 #include "ecs.h"
-#include "gamepadaxis.h"
-#include "gamepadbutton.h"
-#include "gamepadbuttonlabel.h"
 #include "input.h"
 #include "inputconfig.h"
 #include "json.h"
@@ -13,6 +10,9 @@
 
 #include "flecs.h"
 #include "chirp/array.h"
+#include "chirp/gamepadaxis.h"
+#include "chirp/gamepadbutton.h"
+#include "chirp/gamepadbuttonlabel.h"
 #include "chirp/logcategory.h"
 #include "chirp/map.h"
 

@@ -1,7 +1,9 @@
-#include "gamepadaxis.h"
+#include "chirp/gamepadaxis.h"
 
 #include <SDL3/SDL_gamepad.h>
 #include <SDL3/SDL_stdinc.h>
+
+#include <stddef.h>
 
 static const char *names[] = {
 	[SDL_GAMEPAD_AXIS_LEFTX] = "LeftX",
