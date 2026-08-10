@@ -2,7 +2,6 @@
 #include "args.h"
 #include "assets.h"
 #include "camera.h"
-#include "input.h"
 #include "model.h"
 #include "mousebutton.h"
 #include "nkui.h"
@@ -16,6 +15,7 @@
 #include "flecs.h"
 #include "box3d/id.h"
 #include "chirp/ecsosapi.h"
+#include "chirp/input.h"
 #include "chirp/logcategory.h"
 #include "chirp/windowconfig.h"
 

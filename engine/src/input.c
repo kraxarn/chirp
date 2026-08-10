@@ -1,7 +1,6 @@
-#include "input.h"
-#include "inputconfig.h"
-
+#include "chirp/input.h"
 #include "chirp/array.h"
+#include "chirp/inputconfig.h"
 #include "chirp/logcategory.h"
 #include "chirp/map.h"
 

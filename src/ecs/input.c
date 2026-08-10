@@ -1,4 +1,4 @@
-#include "input.h"
+#include "chirp/input.h"
 #include "ecs.h"
 #include "ecs/components.h"
 

@@ -1,7 +1,6 @@
 #pragma once
 
-#include "input.h"
-
+#include "chirp/input.h"
 #include "chirp/map.h"
 #include "chirp/windowconfig.h"
 

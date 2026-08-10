@@ -1,4 +1,4 @@
-#include "inputconfig.h"
+#include "chirp/inputconfig.h"
 
 #include <SDL3/SDL_gamepad.h>
 

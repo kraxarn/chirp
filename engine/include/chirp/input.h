@@ -1,7 +1,6 @@
 #pragma once
 
-#include "inputconfig.h"
-
+#include "chirp/inputconfig.h"
 #include "chirp/map.h"
 
 #include <SDL3/SDL_events.h>

@@ -1,9 +1,9 @@
 #include "assets.h"
 #include "ecs.h"
-#include "input.h"
 #include "ecs/components.h"
 
 #include "flecs.h"
+#include "chirp/input.h"
 #include "chirp/logcategory.h"
 #include "flecs/addons/flecs_c.h"
 
