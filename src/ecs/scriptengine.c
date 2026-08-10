@@ -1,4 +1,5 @@
 #include "scriptengine.h"
+#include "assethelper.h"
 #include "assets.h"
 #include "ecs.h"
 #include "ecs/components.h"

@@ -5,10 +5,10 @@ add_subdirectory(ui)
 target_sources(${PROJECT_NAME} PRIVATE
 	"${CMAKE_CURRENT_SOURCE_DIR}/args.c"
 	"${CMAKE_CURRENT_SOURCE_DIR}/assethelper.c"
+	"${CMAKE_CURRENT_SOURCE_DIR}/assets.c"
 	"${CMAKE_CURRENT_SOURCE_DIR}/camera.c"
 	"${CMAKE_CURRENT_SOURCE_DIR}/degutil.c"
 	"${CMAKE_CURRENT_SOURCE_DIR}/ecs.c"
-	"${CMAKE_CURRENT_SOURCE_DIR}/fileassets.c"
 	"${CMAKE_CURRENT_SOURCE_DIR}/gpudevicedriver.c"
 	"${CMAKE_CURRENT_SOURCE_DIR}/gpudriver.c"
 	"${CMAKE_CURRENT_SOURCE_DIR}/gpushaderformat.c"

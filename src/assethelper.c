@@ -1,3 +1,4 @@
+#include "assethelper.h"
 #include "assets.h"
 #include "model.h"
 
