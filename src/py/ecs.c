@@ -1,9 +1,9 @@
 #include "ecs.h"
-#include "logcategory.h"
 #include "py.h"
 
 #include "flecs.h"
 #include "pocketpy.h"
+#include "chirp/logcategory.h"
 
 #include <SDL3/SDL_log.h>
 

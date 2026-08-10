@@ -1,8 +1,8 @@
 #include "scriptengine.h"
-#include "logcategory.h"
 #include "py.h"
 
 #include "pocketpy.h"
+#include "chirp/logcategory.h"
 
 #include <SDL3/SDL_filesystem.h>
 #include <SDL3/SDL_iostream.h>

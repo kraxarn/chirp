@@ -1,12 +1,12 @@
 #include "assets.h"
 #include "ecs.h"
-#include "logcategory.h"
 #include "model.h"
 #include "ecs/components.h"
 #include "ecs/entities.h"
 #include "ecs/tags.h"
 
 #include "flecs.h"
+#include "chirp/logcategory.h"
 #include "flecs/addons/system.h"
 
 #include <SDL3/SDL_assert.h>

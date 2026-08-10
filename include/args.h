@@ -1,6 +1,6 @@
 #pragma once
 
-#include "logcategory.h"
+#include "chirp/logcategory.h"
 
 #include <SDL3/SDL_log.h>
 #include <SDL3/SDL_stdinc.h>

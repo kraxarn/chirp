@@ -1,9 +1,9 @@
 #include "model.h"
 #include "assets.h"
-#include "logcategory.h"
 #include "uniformdata.h"
 
 #include "cgltf.h"
+#include "chirp/logcategory.h"
 #include "chirp/vector.h"
 
 #include <SDL3/SDL_assert.h>

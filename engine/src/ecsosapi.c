@@ -1,12 +1,18 @@
-#include "ecsosapi.h"
-#include "logcategory.h"
+#include "chirp/ecsosapi.h"
+#include "chirp/logcategory.h"
 
-#include "flecs.h"
+#include "flecs/os_api.h"
+#include "flecs/private/api_defines.h"
 
+#include <SDL3/SDL_atomic.h>
+#include <SDL3/SDL_error.h>
 #include <SDL3/SDL_log.h>
 #include <SDL3/SDL_mutex.h>
+#include <SDL3/SDL_stdinc.h>
 #include <SDL3/SDL_thread.h>
 #include <SDL3/SDL_timer.h>
+
+#include <stddef.h>
 
 static void *malloc_(const ecs_size_t size)
 {
@@ -38,11 +44,12 @@ static void get_time(ecs_time_t *time)
 	const Uint64 now = SDL_GetTicksNS();
 	const Uint64 sec = now / SDL_NS_PER_SECOND;
 
-	time->sec = (uint32_t) sec;
-	time->nanosec = (uint32_t) (now - (sec * SDL_NS_PER_SECOND));
+	time->sec = (Uint32) sec;
+	time->nanosec = (Uint32) (now - (sec * SDL_NS_PER_SECOND));
 }
 
-static void log_(const Sint32 level, const char *file, const Sint32 line, const char *msg)
+static void log_(const Sint32 level, [[maybe_unused]] const char *file,
+	[[maybe_unused]] const Sint32 line, const char *msg)
 {
 	SDL_LogPriority priority;
 	switch (level)

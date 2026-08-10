@@ -1,18 +1,14 @@
 #include "args.h"
 #include "ecs.h"
-#include "gpudriver.h"
-#include "gpushaderformat.h"
-#include "logcategory.h"
 #include "model.h"
 #include "resources.h"
 #include "shader.h"
-#include "systeminfo.h"
 #include "ecs/components.h"
 #include "ecs/events.h"
 
 #include "flecs.h"
+#include "chirp/logcategory.h"
 
-#include <SDL3/SDL_audio.h>
 #include <SDL3/SDL_gpu.h>
 #include <SDL3/SDL_log.h>
 #include <SDL3/SDL_properties.h>

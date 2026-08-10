@@ -4,7 +4,6 @@
 #include "gamepadbutton.h"
 #include "gamepadbuttonlabel.h"
 #include "input.h"
-#include "logcategory.h"
 #include "map.h"
 #include "mousebutton.h"
 #include "nkui.h"
@@ -15,6 +14,7 @@
 #include "box3d/box3d.h"
 #include "box3d/id.h"
 #include "box3d/math_functions.h"
+#include "chirp/logcategory.h"
 
 #include <SDL3/SDL_assert.h>
 #include <SDL3/SDL_error.h>

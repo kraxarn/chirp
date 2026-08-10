@@ -1,7 +1,6 @@
 #include "camera.h"
 #include "degutil.h"
 #include "ecs.h"
-#include "logcategory.h"
 #include "model.h"
 #include "nkui.h"
 #include "ecs/components.h"
@@ -9,6 +8,7 @@
 #include "ecs/tags.h"
 
 #include "flecs.h"
+#include "chirp/logcategory.h"
 #include "chirp/vector.h"
 
 #include <SDL3/SDL_assert.h>

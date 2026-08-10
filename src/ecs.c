@@ -2,9 +2,7 @@
 #include "args.h"
 #include "assets.h"
 #include "camera.h"
-#include "ecsosapi.h"
 #include "input.h"
-#include "logcategory.h"
 #include "model.h"
 #include "mousebutton.h"
 #include "nkui.h"
@@ -18,6 +16,8 @@
 
 #include "flecs.h"
 #include "box3d/id.h"
+#include "chirp/ecsosapi.h"
+#include "chirp/logcategory.h"
 
 #include <SDL3/SDL_assert.h>
 #include <SDL3/SDL_cpuinfo.h>

@@ -1,11 +1,11 @@
 #include "ecs.h"
 #include "gpudriver.h"
 #include "gpushaderformat.h"
-#include "logcategory.h"
 #include "systeminfo.h"
 #include "ecs/components.h"
 
 #include "flecs.h"
+#include "chirp/logcategory.h"
 #include "flecs/addons/flecs_c.h"
 
 #include <SDL3/SDL_audio.h>

@@ -1,8 +1,8 @@
 #include "ecs.h"
-#include "logcategory.h"
 #include "resources.h"
 #include "shader.h"
 
+#include "chirp/logcategory.h"
 #include "chirp/resources.h"
 
 #include "flecs.h"

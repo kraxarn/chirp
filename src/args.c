@@ -1,5 +1,6 @@
 #include "args.h"
-#include "logcategory.h"
+
+#include "chirp/logcategory.h"
 
 #include <SDL3/SDL_audio.h>
 #include <SDL3/SDL_cpuinfo.h>

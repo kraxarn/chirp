@@ -5,7 +5,6 @@
 #include "cast.h"
 #include "ecs.h"
 #include "input.h"
-#include "logcategory.h"
 #include "model.h"
 #include "nkui.h"
 #include "physics.h"
@@ -25,6 +24,7 @@
 #include "box3d/id.h"
 #include "box3d/math_functions.h"
 #include "box3d/types.h"
+#include "chirp/logcategory.h"
 #include "chirp/vector.h"
 
 #define SDL_MAIN_USE_CALLBACKS

@@ -1,11 +1,10 @@
 #include "assets.h"
 #include "ecs.h"
 #include "input.h"
-#include "logcategory.h"
 #include "ecs/components.h"
-#include "ecs/entities.h"
 
 #include "flecs.h"
+#include "chirp/logcategory.h"
 #include "flecs/addons/flecs_c.h"
 
 #include <SDL3/SDL_dialog.h>

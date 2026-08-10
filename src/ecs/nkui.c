@@ -1,9 +1,9 @@
 #include "nkui.h"
 #include "ecs.h"
-#include "logcategory.h"
 #include "ecs/components.h"
 
 #include "flecs.h"
+#include "chirp/logcategory.h"
 
 #include <SDL3/SDL_error.h>
 #include <SDL3/SDL_gpu.h>
