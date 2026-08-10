@@ -1,7 +1,6 @@
 #include "ui/debugoverlay.h"
 #include "camera.h"
 #include "ecs.h"
-#include "mousebutton.h"
 #include "nkui.h"
 #include "timestats.h"
 #include "ecs/components.h"
@@ -15,6 +14,7 @@
 #include "chirp/input.h"
 #include "chirp/logcategory.h"
 #include "chirp/map.h"
+#include "chirp/mousebutton.h"
 
 #include <SDL3/SDL_assert.h>
 #include <SDL3/SDL_error.h>

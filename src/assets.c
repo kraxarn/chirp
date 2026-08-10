@@ -1,7 +1,6 @@
 #include "assets.h"
 #include "ecs.h"
 #include "json.h"
-#include "mousebutton.h"
 #include "ecs/components.h"
 
 #include "flecs.h"
@@ -14,6 +13,7 @@
 #include "chirp/inputconfig.h"
 #include "chirp/logcategory.h"
 #include "chirp/map.h"
+#include "chirp/mousebutton.h"
 #include "chirp/windowconfig.h"
 
 #include <SDL3/SDL_error.h>

@@ -3,7 +3,6 @@
 #include "assets.h"
 #include "camera.h"
 #include "model.h"
-#include "mousebutton.h"
 #include "nkui.h"
 #include "physicsconfig.h"
 #include "timestats.h"
@@ -17,6 +16,7 @@
 #include "chirp/ecsosapi.h"
 #include "chirp/input.h"
 #include "chirp/logcategory.h"
+#include "chirp/mousebutton.h"
 #include "chirp/windowconfig.h"
 
 #include <SDL3/SDL_assert.h>

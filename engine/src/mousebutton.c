@@ -1,4 +1,7 @@
-#include "mousebutton.h"
+#include "chirp/mousebutton.h"
+
+#include <SDL3/SDL_mouse.h>
+#include <SDL3/SDL_stdinc.h>
 
 #define button_left   "Left"
 #define button_middle "Middle"
