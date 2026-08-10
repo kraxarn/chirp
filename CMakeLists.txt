@@ -72,16 +72,8 @@ set_target_exec_properties(${PROJECT_NAME}
 	VERSION_SHORT "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}"
 )
 
-if (CMAKE_BUILD_TYPE STREQUAL "Release")
-	include(CheckIPOSupported)
-	check_ipo_supported(RESULT ipo_supported OUTPUT ipo_error)
-	if (ipo_supported)
-		set_property(TARGET ${PROJECT_NAME} PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
-		message(STATUS "LTO enabled")
-	else ()
-		message(WARNING "LTO error: ${ipo_error}")
-	endif ()
-endif ()
+include(cmake/lto.cmake)
+enable_lto(${PROJECT_NAME})
 
 if (TARGET SDL3-shared)
 	add_custom_command(
