@@ -11,6 +11,7 @@
 #include <SDL3/SDL_audio.h>
 #include <SDL3/SDL_gpu.h>
 #include <SDL3/SDL_log.h>
+#include <SDL3/SDL_platform.h>
 #include <SDL3/SDL_video.h>
 
 static void log_info(ecs_iter_t *iter)
@@ -18,7 +19,7 @@ static void log_info(ecs_iter_t *iter)
 	SDL_GPUDevice *device = *ecs_field(iter, gpu_device_t*, 0);
 
 	SDL_LogInfo(LOG_CATEGORY_CORE, "Platform: %s",
-		system_info_platform());
+		SDL_GetPlatform());
 
 	SDL_LogInfo(LOG_CATEGORY_CORE, "CPU: %s",
 		system_info_cpu_name());
