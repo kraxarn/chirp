@@ -3,6 +3,8 @@
 #include "resources.h"
 #include "shader.h"
 
+#include "chirp/resources.h"
+
 #include "flecs.h"
 
 #include <SDL3/SDL_assert.h>

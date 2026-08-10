@@ -3,11 +3,6 @@
 #include <SDL3/SDL_iostream.h>
 #include <SDL3/SDL_stdinc.h>
 
-static const Uint8 font_cousine_ttf[] =
-{
-#embed FONT_COUSINE_TTF_PATH
-};
-
 static const Uint8 shader_default_vert_dxil[] =
 {
 #embed SHADER_DEFAULT_VERT_DXIL_PATH
@@ -67,11 +62,6 @@ static const Uint8 shader_nkui_frag_spv[] =
 {
 #embed SHADER_NKUI_FRAG_SPV_PATH
 };
-
-SDL_IOStream *res_font_cousine_ttf()
-{
-	return SDL_IOFromConstMem(font_cousine_ttf, sizeof(font_cousine_ttf));
-}
 
 SDL_IOStream *res_shader_default_vert_dxil()
 {

@@ -35,6 +35,9 @@ if (ENABLE_SIMD)
 	target_compile_definitions(${PROJECT_NAME} PRIVATE SIMD_ENABLED)
 endif ()
 
+add_subdirectory(engine)
+target_link_libraries(${PROJECT_NAME} PRIVATE chirp)
+
 include(deps/sdl3.cmake)
 include(deps/qoi.cmake)
 include(deps/cpuinfo.cmake)
