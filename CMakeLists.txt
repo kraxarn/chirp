@@ -59,6 +59,7 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 )
 
 include(resources.cmake)
+target_resources(${PROJECT_NAME})
 
 if (ENABLE_TESTS)
 	add_subdirectory(tests)
