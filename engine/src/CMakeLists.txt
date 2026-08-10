@@ -1,5 +1,6 @@
 target_sources(${LIB_NAME} PRIVATE
 	"${CMAKE_CURRENT_SOURCE_DIR}/array.c"
+	"${CMAKE_CURRENT_SOURCE_DIR}/assetstream.c"
 	"${CMAKE_CURRENT_SOURCE_DIR}/ecsosapi.c"
 	"${CMAKE_CURRENT_SOURCE_DIR}/gamepadaxis.c"
 	"${CMAKE_CURRENT_SOURCE_DIR}/gamepadbutton.c"

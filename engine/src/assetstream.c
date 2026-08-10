@@ -1,4 +1,4 @@
-#include "assetstream.h"
+#include "chirp/assetstream.h"
 
 #include <SDL3/SDL_iostream.h>
 
