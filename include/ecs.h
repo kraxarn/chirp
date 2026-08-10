@@ -1,7 +1,6 @@
 #pragma once
 
-#include "matrix.h"
-
+#include "chirp/matrix.h"
 #include "chirp/vector.h"
 
 #include <SDL3/SDL_gpu.h>

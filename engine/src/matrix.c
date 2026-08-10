@@ -1,4 +1,4 @@
-#include "matrix.h"
+#include "chirp/matrix.h"
 
 #include <SDL3/SDL_stdinc.h>
 
