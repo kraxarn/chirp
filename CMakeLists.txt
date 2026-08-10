@@ -73,7 +73,7 @@ set_target_exec_properties(${PROJECT_NAME}
 )
 
 include(cmake/lto.cmake)
-enable_lto(${PROJECT_NAME})
+target_enable_lto(${PROJECT_NAME})
 
 if (TARGET SDL3-shared)
 	add_custom_command(

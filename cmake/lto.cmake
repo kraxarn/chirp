@@ -1,4 +1,4 @@
-function (enable_lto target)
+function (target_enable_lto target)
 	if (CMAKE_BUILD_TYPE STREQUAL "Release")
 		include(CheckIPOSupported)
 		check_ipo_supported(RESULT ipo_supported OUTPUT ipo_error)
