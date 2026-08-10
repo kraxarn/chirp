@@ -58,7 +58,7 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 	"${qoi_SOURCE_DIR}"
 )
 
-include(resources.cmake)
+include(cmake/resources.cmake)
 target_resources(${PROJECT_NAME})
 
 if (ENABLE_TESTS)

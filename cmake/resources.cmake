@@ -1,5 +1,5 @@
 function (target_resources target)
-	set(RESOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/resources")
+	set(RESOURCE_DIR "../resources")
 
 	target_compile_definitions(${target} PRIVATE
 		# Fonts
@@ -11,11 +11,11 @@ function (target_resources target)
 		SHADER_DEFAULT_FRAG_MSL_PATH="${RESOURCE_DIR}/shaders/msl/default.frag.msl"
 		SHADER_DEFAULT_VERT_SPV_PATH="${RESOURCE_DIR}/shaders/spv/default.vert.spv"
 		SHADER_DEFAULT_FRAG_SPV_PATH="${RESOURCE_DIR}/shaders/spv/default.frag.spv"
-		SHADER_NKUI_VERT_DXIL_PATH="${CMAKE_CURRENT_SOURCE_DIR}/resources/shaders/dxil/nkui.vert.dxil"
-		SHADER_NKUI_FRAG_DXIL_PATH="${CMAKE_CURRENT_SOURCE_DIR}/resources/shaders/dxil/nkui.frag.dxil"
-		SHADER_NKUI_VERT_MSL_PATH="${CMAKE_CURRENT_SOURCE_DIR}/resources/shaders/msl/nkui.vert.msl"
-		SHADER_NKUI_FRAG_MSL_PATH="${CMAKE_CURRENT_SOURCE_DIR}/resources/shaders/msl/nkui.frag.msl"
-		SHADER_NKUI_VERT_SPV_PATH="${CMAKE_CURRENT_SOURCE_DIR}/resources/shaders/spv/nkui.vert.spv"
-		SHADER_NKUI_FRAG_SPV_PATH="${CMAKE_CURRENT_SOURCE_DIR}/resources/shaders/spv/nkui.frag.spv"
+		SHADER_NKUI_VERT_DXIL_PATH="${RESOURCE_DIR}/shaders/dxil/nkui.vert.dxil"
+		SHADER_NKUI_FRAG_DXIL_PATH="${RESOURCE_DIR}/shaders/dxil/nkui.frag.dxil"
+		SHADER_NKUI_VERT_MSL_PATH="${RESOURCE_DIR}/shaders/msl/nkui.vert.msl"
+		SHADER_NKUI_FRAG_MSL_PATH="${RESOURCE_DIR}/shaders/msl/nkui.frag.msl"
+		SHADER_NKUI_VERT_SPV_PATH="${RESOURCE_DIR}/shaders/spv/nkui.vert.spv"
+		SHADER_NKUI_FRAG_SPV_PATH="${RESOURCE_DIR}/shaders/spv/nkui.frag.spv"
 	)
 endfunction ()
