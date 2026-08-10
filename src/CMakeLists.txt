@@ -6,7 +6,6 @@ target_sources(${PROJECT_NAME} PRIVATE
 	"${CMAKE_CURRENT_SOURCE_DIR}/args.c"
 	"${CMAKE_CURRENT_SOURCE_DIR}/assethelper.c"
 	"${CMAKE_CURRENT_SOURCE_DIR}/assetstream.c"
-	"${CMAKE_CURRENT_SOURCE_DIR}/audiodriver.c"
 	"${CMAKE_CURRENT_SOURCE_DIR}/camera.c"
 	"${CMAKE_CURRENT_SOURCE_DIR}/degutil.c"
 	"${CMAKE_CURRENT_SOURCE_DIR}/ecs.c"
