@@ -26,6 +26,15 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE
 	ENGINE_COMPILER="${CMAKE_C_COMPILER_ID} ${CMAKE_C_COMPILER_VERSION}"
 )
 
+set(ENABLE_SIMD_DEFAULT ON)
+if (ANDROID AND CMAKE_ANDROID_ARCH_ABI STREQUAL "armeabi-v7a")
+	set(ENABLE_SIMD_DEFAULT OFF)
+endif ()
+option(ENABLE_SIMD "Enable SSE2/NEON instructions" ${ENABLE_SIMD_DEFAULT})
+if (ENABLE_SIMD)
+	target_compile_definitions(${PROJECT_NAME} PRIVATE SIMD_ENABLED)
+endif ()
+
 include(deps/sdl3.cmake)
 include(deps/qoi.cmake)
 include(deps/cpuinfo.cmake)
