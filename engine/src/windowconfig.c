@@ -1,6 +1,7 @@
-#include "windowconfig.h"
-
+#include "chirp/windowconfig.h"
 #include "chirp/vector.h"
+
+#include <SDL3/SDL_video.h>
 
 window_config_t window_config_default()
 {

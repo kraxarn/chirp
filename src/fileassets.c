@@ -4,7 +4,6 @@
 #include "inputconfig.h"
 #include "json.h"
 #include "mousebutton.h"
-#include "windowconfig.h"
 #include "ecs/components.h"
 
 #include "flecs.h"
@@ -15,6 +14,7 @@
 #include "chirp/gamepadbuttonlabel.h"
 #include "chirp/logcategory.h"
 #include "chirp/map.h"
+#include "chirp/windowconfig.h"
 
 #include <SDL3/SDL_error.h>
 #include <SDL3/SDL_gamepad.h>

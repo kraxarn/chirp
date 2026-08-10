@@ -8,7 +8,6 @@
 #include "nkui.h"
 #include "physicsconfig.h"
 #include "timestats.h"
-#include "windowconfig.h"
 #include "ecs/components.h"
 #include "ecs/entities.h"
 #include "ecs/events.h"
@@ -18,6 +17,7 @@
 #include "box3d/id.h"
 #include "chirp/ecsosapi.h"
 #include "chirp/logcategory.h"
+#include "chirp/windowconfig.h"
 
 #include <SDL3/SDL_assert.h>
 #include <SDL3/SDL_cpuinfo.h>
