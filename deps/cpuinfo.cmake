@@ -16,5 +16,3 @@ set(CPUINFO_BUILD_PKG_CONFIG OFF)
 set(USE_SYSTEM_LIBS ON)
 
 FetchContent_MakeAvailable(cpuinfo)
-
-target_link_libraries(${PROJECT_NAME} PRIVATE cpuinfo)

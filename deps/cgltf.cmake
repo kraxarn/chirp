@@ -7,7 +7,3 @@ FetchContent_Declare(cgltf
 
 message(STATUS "Downloading cgltf")
 FetchContent_MakeAvailable(cgltf)
-
-target_include_directories(${PROJECT_NAME} PRIVATE
-	"${cgltf_SOURCE_DIR}"
-)

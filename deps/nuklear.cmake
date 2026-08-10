@@ -7,7 +7,3 @@ FetchContent_Declare(nuklear
 
 message(STATUS "Downloading nuklear")
 FetchContent_MakeAvailable(nuklear)
-
-target_include_directories(${PROJECT_NAME} PRIVATE
-	"${nuklear_SOURCE_DIR}"
-)

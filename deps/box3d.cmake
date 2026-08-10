@@ -18,7 +18,3 @@ endif ()
 
 message(STATUS "Downloading box3d")
 FetchContent_MakeAvailable(box3d)
-
-target_link_libraries(${PROJECT_NAME} PRIVATE
-	box3d::box3d
-)

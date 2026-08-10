@@ -21,5 +21,3 @@ set(PK_BUILD_MODULE_MSGPACK OFF)
 set(PK_BUILD_MODULE_PERIPHERY OFF)
 
 FetchContent_MakeAvailable(pocketpy)
-
-target_link_libraries(${PROJECT_NAME} PRIVATE pocketpy)

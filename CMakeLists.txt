@@ -44,6 +44,20 @@ include(deps/pocketpy.cmake)
 include(deps/nuklear.cmake)
 include(deps/box3d.cmake)
 
+target_link_libraries(${PROJECT_NAME} PRIVATE
+	SDL3::SDL3
+	box3d::box3d
+	cpuinfo
+	flecs_static
+	pocketpy
+)
+
+target_include_directories(${PROJECT_NAME} PRIVATE
+	"${cgltf_SOURCE_DIR}"
+	"${nuklear_SOURCE_DIR}"
+	"${qoi_SOURCE_DIR}"
+)
+
 include(resources.cmake)
 
 if (ENABLE_TESTS)

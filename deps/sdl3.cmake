@@ -31,8 +31,6 @@ else ()
 	FetchContent_MakeAvailable(sdl)
 endif ()
 
-target_link_libraries(${PROJECT_NAME} PRIVATE SDL3::SDL3)
-
 if (ANDROID)
 	set(JAVA_SRC "${sdl_SOURCE_DIR}/android-project/app/src/main/java/org/libsdl/app")
 	file(COPY

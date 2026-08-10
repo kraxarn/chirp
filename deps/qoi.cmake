@@ -7,7 +7,3 @@ FetchContent_Declare(qoi
 
 message(STATUS "Downloading qoi")
 FetchContent_MakeAvailable(qoi)
-
-target_include_directories(${PROJECT_NAME} PUBLIC
-	"${qoi_SOURCE_DIR}"
-)
