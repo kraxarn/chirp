@@ -176,24 +176,6 @@ static void add_events()
 	EcsWindowEvent = component("WindowEvent", SDL_WindowEvent);
 }
 
-#ifndef NDEBUG
-
-static int keycode_serialize(const ecs_serializer_t *ser, const void *ptr)
-{
-	const SDL_Keycode keycode = *(SDL_Keycode*) ptr;
-	const char *name = SDL_GetKeyName(keycode);
-	return ser->value(ser, ecs_id(ecs_string_t), (const void*) &name);
-}
-
-static int mouse_button_flags_serialize(const ecs_serializer_t *ser, const void *ptr)
-{
-	const SDL_MouseButtonFlags flags = *(SDL_MouseButtonFlags*) ptr;
-	const char *name = mouse_button_name(flags);
-	return ser->value(ser, ecs_id(ecs_string_t), (const void*) &name);
-}
-
-#endif
-
 static void add_input()
 {
 	EcsInput = component("Input", input_t);
