@@ -1,7 +1,7 @@
 function (target_resources target)
 	set(RESOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/resources")
 
-	target_compile_definitions(${PROJECT_NAME} PRIVATE
+	target_compile_definitions(${target} PRIVATE
 		# Fonts
 		FONT_COUSINE_TTF_PATH="${nuklear_SOURCE_DIR}/extra_font/Cousine-Regular.ttf"
 		# Shaders
