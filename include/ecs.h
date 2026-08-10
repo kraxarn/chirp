@@ -119,3 +119,4 @@ void ecs_add_render();
 void ecs_add_script_engine();
 void ecs_add_models();
 void ecs_add_input();
+void ecs_add_logging();

@@ -95,36 +95,6 @@ static void create_gpu_device(ecs_iter_t *iter)
 		sizeof(SDL_GPUDevice*), (const void*) &device);
 }
 
-static void log_gpu_info(ecs_iter_t *iter)
-{
-	SDL_GPUDevice *device = *ecs_field(iter, gpu_device_t*, 0);
-
-	// Some of this logging doesn't really make sense here,
-	// but it's nice to have everything in the same place,
-	// so maybe move everything somewhere else
-
-	SDL_LogInfo(LOG_CATEGORY_CORE, "Platform: %s",
-		system_info_platform());
-
-	SDL_LogInfo(LOG_CATEGORY_CORE, "CPU: %s",
-		system_info_cpu_name());
-
-	SDL_LogInfo(LOG_CATEGORY_CORE, "GPU: %s (%s)",
-		system_info_gpu_name(device), system_info_gpu_driver(device));
-
-	SDL_LogInfo(LOG_CATEGORY_CORE, "GPU driver: %s (%s)",
-		SDL_GetGPUDeviceDriver(device), gpu_driver_names());
-
-	SDL_LogInfo(LOG_CATEGORY_CORE, "Shader formats: %s",
-		shader_format_names(device));
-
-	SDL_LogInfo(LOG_CATEGORY_CORE, "Video driver: %s",
-		SDL_GetCurrentVideoDriver());
-
-	SDL_LogInfo(LOG_CATEGORY_CORE, "Audio driver: %s",
-		SDL_GetCurrentAudioDriver());
-}
-
 static void enable_vsync(ecs_iter_t *iter)
 {
 	SDL_Window *window = *ecs_field(iter, window_t*, 0);
@@ -356,13 +326,6 @@ void ecs_add_gpu()
 			},
 			.events = {EcsOnSet},
 			.callback = create_gpu_device,
-		},
-		(ecs_observer_desc_t){
-			.query.terms = {
-				(ecs_term_t){.id = ecs_singleton_id(EcsGpuDevice), .inout = EcsInOut}
-			},
-			.events = {EcsOnSet},
-			.callback = log_gpu_info,
 		},
 		(ecs_observer_desc_t){
 			.query.terms = {
