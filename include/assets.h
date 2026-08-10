@@ -1,8 +1,9 @@
 #pragma once
 
 #include "input.h"
-#include "map.h"
 #include "windowconfig.h"
+
+#include "chirp/map.h"
 
 #include <SDL3/SDL_gpu.h>
 #include <SDL3/SDL_iostream.h>

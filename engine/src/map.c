@@ -1,4 +1,4 @@
-#include "map.h"
+#include "chirp/map.h"
 
 #include <SDL3/SDL_properties.h>
 #include <SDL3/SDL_stdinc.h>

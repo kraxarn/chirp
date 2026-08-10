@@ -21,7 +21,6 @@ target_sources(${PROJECT_NAME} PRIVATE
 	"${CMAKE_CURRENT_SOURCE_DIR}/inputconfig.c"
 	"${CMAKE_CURRENT_SOURCE_DIR}/json.c"
 	"${CMAKE_CURRENT_SOURCE_DIR}/main.c"
-	"${CMAKE_CURRENT_SOURCE_DIR}/map.c"
 	"${CMAKE_CURRENT_SOURCE_DIR}/model.c"
 	"${CMAKE_CURRENT_SOURCE_DIR}/mousebutton.c"
 	"${CMAKE_CURRENT_SOURCE_DIR}/nkui.c"
