@@ -1,7 +1,8 @@
 #pragma once
 
 #include "matrix.h"
-#include "vector.h"
+
+#include "chirp/vector.h"
 
 #include <SDL3/SDL_gpu.h>
 #include <SDL3/SDL_init.h>

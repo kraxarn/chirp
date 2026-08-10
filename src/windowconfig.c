@@ -1,5 +1,6 @@
 #include "windowconfig.h"
-#include "vector.h"
+
+#include "chirp/vector.h"
 
 window_config_t window_config_default()
 {

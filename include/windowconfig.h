@@ -1,6 +1,6 @@
 #pragma once
 
-#include "vector.h"
+#include "chirp/vector.h"
 
 #include <SDL3/SDL_video.h>
 

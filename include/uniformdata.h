@@ -1,7 +1,8 @@
 #pragma once
 
 #include "matrix.h"
-#include "vector.h"
+
+#include "chirp/vector.h"
 
 typedef struct vertex_uniform_data_t
 {

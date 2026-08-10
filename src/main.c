@@ -15,7 +15,6 @@
 #include "systeminfo.h"
 #include "termcolors.h"
 #include "timestats.h"
-#include "vector.h"
 #include "ecs/components.h"
 #include "ecs/events.h"
 #include "ui/debugoverlay.h"
@@ -26,6 +25,7 @@
 #include "box3d/id.h"
 #include "box3d/math_functions.h"
 #include "box3d/types.h"
+#include "chirp/vector.h"
 
 #define SDL_MAIN_USE_CALLBACKS
 #include <SDL3/SDL_main.h>

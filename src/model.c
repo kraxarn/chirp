@@ -2,7 +2,9 @@
 #include "assets.h"
 #include "logcategory.h"
 #include "uniformdata.h"
-#include "vector.h"
+
+#include "cgltf.h"
+#include "chirp/vector.h"
 
 #include <SDL3/SDL_assert.h>
 #include <SDL3/SDL_error.h>
@@ -11,8 +13,6 @@
 #include <SDL3/SDL_log.h>
 #include <SDL3/SDL_stdinc.h>
 #include <SDL3/SDL_timer.h>
-
-#include "cgltf.h"
 
 typedef struct material
 {

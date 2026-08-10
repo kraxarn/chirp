@@ -4,12 +4,12 @@
 #include "logcategory.h"
 #include "model.h"
 #include "nkui.h"
-#include "vector.h"
 #include "ecs/components.h"
 #include "ecs/entities.h"
 #include "ecs/tags.h"
 
 #include "flecs.h"
+#include "chirp/vector.h"
 
 #include <SDL3/SDL_assert.h>
 #include <SDL3/SDL_error.h>

@@ -1,6 +1,6 @@
 #include "py.h"
-#include "vector.h"
 
+#include "chirp/vector.h"
 #include "pocketpy.h"
 
 static bool vector2_new(const int argc, py_TValue *argv)

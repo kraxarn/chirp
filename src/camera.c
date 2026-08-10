@@ -1,5 +1,6 @@
 #include "camera.h"
-#include "vector.h"
+
+#include "chirp/vector.h"
 
 camera_t camera_create_default()
 {

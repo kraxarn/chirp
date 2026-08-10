@@ -1,6 +1,6 @@
 #pragma once
 
-#include "vector.h"
+#include "chirp/vector.h"
 
 typedef struct camera_t
 {
