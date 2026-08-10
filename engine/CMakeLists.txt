@@ -11,6 +11,7 @@ include(../deps/box3d.cmake)
 include(../deps/flecs.cmake)
 include(../deps/nuklear.cmake)
 include(../deps/sdl3.cmake)
+include(../deps/qoi.cmake)
 
 target_link_libraries(${LIB_NAME} PRIVATE
 	SDL3::SDL3
@@ -20,6 +21,7 @@ target_link_libraries(${LIB_NAME} PRIVATE
 
 target_include_directories(${LIB_NAME} PRIVATE
 	"${nuklear_SOURCE_DIR}"
+	"${qoi_SOURCE_DIR}"
 )
 
 include(../cmake/resources.cmake)
