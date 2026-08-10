@@ -35,6 +35,8 @@ const char *system_info_cpu_name()
 
 bool system_info_cpu_supported()
 {
+	// TODO: This should only be required by Box3D in cases where BOX3D_DISABLE_SIMD isn't set
+
 #if CPUINFO_ARCH_X86_64 == 1 || CPUINFO_ARCH_X86 == 1
 	if (!SDL_HasSSE2())
 	{
