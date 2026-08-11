@@ -1,5 +1,4 @@
 #include "assethelper.h"
-#include "assets.h"
 #include "ecs.h"
 #include "model.h"
 #include "ecs/components.h"
@@ -7,8 +6,10 @@
 #include "ecs/tags.h"
 
 #include "flecs.h"
+#include "chirp/assets.h"
 #include "chirp/ecs.h"
 #include "chirp/logcategory.h"
+#include "chirp/ecs/components.h"
 #include "flecs/addons/system.h"
 
 #include <SDL3/SDL_assert.h>

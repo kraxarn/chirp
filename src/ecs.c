@@ -1,7 +1,6 @@
 #include "ecs.h"
 
 #include "args.h"
-#include "assets.h"
 #include "camera.h"
 #include "model.h"
 #include "nkui.h"
@@ -15,10 +14,12 @@
 #include "chirp/ecs.h"
 #include "flecs.h"
 #include "box3d/id.h"
+#include "chirp/assets.h"
 #include "chirp/ecsosapi.h"
 #include "chirp/input.h"
 #include "chirp/logcategory.h"
 #include "chirp/windowconfig.h"
+#include "chirp/ecs/components.h"
 #include "chirp/ecs/modules.h"
 
 #include <SDL3/SDL_assert.h>

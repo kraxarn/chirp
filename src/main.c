@@ -1,6 +1,5 @@
 #include "appstate.h"
 #include "args.h"
-#include "assets.h"
 #include "camera.h"
 #include "cast.h"
 #include "ecs.h"
@@ -23,10 +22,12 @@
 #include "box3d/id.h"
 #include "box3d/math_functions.h"
 #include "box3d/types.h"
+#include "chirp/assets.h"
 #include "chirp/ecs.h"
 #include "chirp/input.h"
 #include "chirp/logcategory.h"
 #include "chirp/vector.h"
+#include "chirp/ecs/components.h"
 #include "chirp/ecs/modules.h"
 
 #define SDL_MAIN_USE_CALLBACKS

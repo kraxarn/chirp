@@ -56,17 +56,6 @@ typedef struct model_descriptor
 typedef model_descriptor_t model_instance_t;
 typedef model_descriptor_t model_scene_t;
 
-typedef struct
-{
-	const char *name;
-	const char *version;
-	const char *identifier;
-	const char *creator;
-	const char *copyright;
-	const char *url;
-	const char *type;
-} metadata_t;
-
 typedef enum : Uint8
 {
 	PHASE_UPDATE_BEGIN,   // TODO

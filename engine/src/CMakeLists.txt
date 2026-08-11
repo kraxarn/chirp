@@ -2,6 +2,7 @@ add_subdirectory(ecs)
 
 target_sources(${LIB_NAME} PRIVATE
 	"${CMAKE_CURRENT_SOURCE_DIR}/array.c"
+	"${CMAKE_CURRENT_SOURCE_DIR}/assets.c"
 	"${CMAKE_CURRENT_SOURCE_DIR}/assetstream.c"
 	"${CMAKE_CURRENT_SOURCE_DIR}/ecs.c"
 	"${CMAKE_CURRENT_SOURCE_DIR}/ecsosapi.c"
@@ -11,6 +12,7 @@ target_sources(${LIB_NAME} PRIVATE
 	"${CMAKE_CURRENT_SOURCE_DIR}/image.c"
 	"${CMAKE_CURRENT_SOURCE_DIR}/input.c"
 	"${CMAKE_CURRENT_SOURCE_DIR}/inputconfig.c"
+	"${CMAKE_CURRENT_SOURCE_DIR}/json.c"
 	"${CMAKE_CURRENT_SOURCE_DIR}/logcategory.c"
 	"${CMAKE_CURRENT_SOURCE_DIR}/map.c"
 	"${CMAKE_CURRENT_SOURCE_DIR}/matrix.c"

@@ -6,15 +6,12 @@
 
 #include <SDL3/SDL_iostream.h>
 
-// TODO: Maybe move to ecs? (and remove map_t)
 typedef struct assets
 {
 	SDL_IOStream *stream;
 	window_config_t window_config;
 	map_t desc;
 } assets_t;
-
-typedef struct model model_t;
 
 bool assets_create(const char *path, input_t input, assets_t *assets);
 

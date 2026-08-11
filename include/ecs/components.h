@@ -4,8 +4,6 @@
 
 typedef Uint64 ecs_id_t;
 
-extern ecs_id_t EcsAssets;
-extern ecs_id_t EcsMetadata;
 extern ecs_id_t EcsInit;
 extern ecs_id_t EcsTimeStats;
 extern ecs_id_t EcsWindowConfig;

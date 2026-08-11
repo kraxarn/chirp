@@ -40,7 +40,6 @@ target_link_libraries(${PROJECT_NAME} PRIVATE chirp)
 
 include(deps/sdl3.cmake)
 include(deps/cpuinfo.cmake)
-include(deps/cgltf.cmake)
 include(deps/flecs.cmake)
 include(deps/pocketpy.cmake)
 include(deps/nuklear.cmake)
@@ -55,7 +54,6 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
 )
 
 target_include_directories(${PROJECT_NAME} PRIVATE
-	"${cgltf_SOURCE_DIR}"
 	"${nuklear_SOURCE_DIR}"
 )
 

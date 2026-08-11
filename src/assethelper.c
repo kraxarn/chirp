@@ -1,7 +1,7 @@
 #include "assethelper.h"
-#include "assets.h"
 #include "model.h"
 
+#include "chirp/assets.h"
 #include "chirp/image.h"
 
 #include <SDL3/SDL_iostream.h>

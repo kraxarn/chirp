@@ -1,7 +1,5 @@
 #include "ecs/components.h"
 
-ecs_id_t EcsAssets = 0;
-ecs_id_t EcsMetadata = 0;
 ecs_id_t EcsInit = 0;
 ecs_id_t EcsTimeStats = 0;
 ecs_id_t EcsWindowConfig = 0;

@@ -1,8 +1,8 @@
 #include "model.h"
-#include "assets.h"
 #include "uniformdata.h"
 
 #include "cgltf.h"
+#include "chirp/assets.h"
 #include "chirp/logcategory.h"
 #include "chirp/vector.h"
 

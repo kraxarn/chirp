@@ -1,9 +1,4 @@
-#include "assets.h"
-#include "ecs.h"
-#include "json.h"
-#include "ecs/components.h"
-
-#include "flecs.h"
+#include "chirp/assets.h"
 #include "chirp/array.h"
 #include "chirp/assetstream.h"
 #include "chirp/ecs.h"
@@ -12,10 +7,14 @@
 #include "chirp/gamepadbuttonlabel.h"
 #include "chirp/input.h"
 #include "chirp/inputconfig.h"
+#include "chirp/json.h"
 #include "chirp/logcategory.h"
 #include "chirp/map.h"
 #include "chirp/mousebutton.h"
 #include "chirp/windowconfig.h"
+#include "chirp/ecs/components.h"
+
+#include "flecs.h"
 
 #include <SDL3/SDL_error.h>
 #include <SDL3/SDL_gamepad.h>

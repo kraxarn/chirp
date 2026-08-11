@@ -1,4 +1,4 @@
-#include "json.h"
+#include "chirp/json.h"
 
 #define CGLTF_MALLOC(size) SDL_malloc(size)
 #define CGLTF_FREE(ptr)    SDL_free(ptr)

@@ -1,12 +1,13 @@
 #include "scriptengine.h"
 #include "assethelper.h"
-#include "assets.h"
 #include "ecs.h"
 #include "ecs/components.h"
 
 #include "flecs.h"
+#include "chirp/assets.h"
 #include "chirp/ecs.h"
 #include "chirp/logcategory.h"
+#include "chirp/ecs/components.h"
 
 #include <SDL3/SDL_error.h>
 #include <SDL3/SDL_iostream.h>

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "assets.h"
+#include "model.h"
 
 #include <SDL3/SDL_gpu.h>
 #include <SDL3/SDL_iostream.h>

@@ -1,9 +1,14 @@
-#include "assets.h"
 #include "ecs.h"
 #include "ecs/components.h"
 
 #include "flecs.h"
+#include "chirp/assets.h"
 #include "chirp/ecs.h"
+#include "chirp/windowconfig.h"
+#include "chirp/ecs/components.h"
+
+#include <SDL3/SDL_error.h>
+#include <SDL3/SDL_video.h>
 
 static void load_window_config(ecs_iter_t *iter)
 {
