@@ -20,6 +20,7 @@ typedef struct vertex
 typedef struct material material_t;
 typedef struct node node_t;
 typedef struct scene_camera scene_camera_t;
+typedef struct primitive_buffers primitive_buffers_t;
 
 typedef struct model
 {
@@ -33,6 +34,8 @@ typedef struct model
 
 	scene_camera_t *cameras;
 	size_t camera_count;
+
+	primitive_buffers_t **buffers;
 
 	SDL_GPUSampler *sampler;
 	SDL_GPUTexture *texture;

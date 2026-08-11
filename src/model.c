@@ -14,7 +14,7 @@
 #include <SDL3/SDL_stdinc.h>
 #include <SDL3/SDL_timer.h>
 
-typedef struct
+typedef struct primitive_buffers
 {
 	SDL_GPUBuffer *vertex;
 	SDL_GPUBuffer *index;
@@ -40,7 +40,6 @@ typedef struct node
 	char *name;
 
 	mesh_primitive_t *primitives;
-	primitive_buffers_t *primitive_buffers;
 	size_t primitive_count;
 
 	const matrix4x4_t world_transform;
@@ -403,6 +402,7 @@ static bool load_model_data(model_t *model, const cgltf_data *gltf_data)
 {
 	model->node_count = gltf_data->nodes_count;
 	model->nodes = SDL_calloc(sizeof(node_t), model->node_count);
+	model->buffers = SDL_calloc(sizeof(primitive_buffers_t*), model->node_count);
 
 	for (size_t nn = 0; nn < gltf_data->nodes_count; nn++)
 	{
@@ -432,7 +432,7 @@ static bool load_model_data(model_t *model, const cgltf_data *gltf_data)
 
 		node->primitive_count = gltf_mesh->primitives_count;
 		node->primitives = SDL_calloc(node->primitive_count, sizeof(mesh_primitive_t));
-		node->primitive_buffers = SDL_calloc(node->primitive_count, sizeof(primitive_buffers_t));
+		model->buffers[nn] = SDL_calloc(node->primitive_count, sizeof(primitive_buffers_t));
 
 		for (size_t pp = 0; pp < gltf_mesh->primitives_count; pp++)
 		{
@@ -758,7 +758,7 @@ static bool upload_model(const model_t *model)
 		for (size_t pp = 0; pp < node->primitive_count; pp++)
 		{
 			const mesh_primitive_t *primitive = node->primitives + pp;
-			primitive_buffers_t *buffers = node->primitive_buffers + pp;
+			primitive_buffers_t *buffers = model->buffers[nn] + pp;
 
 			if (!upload_mesh(model->device, primitive, buffers))
 			{
@@ -919,7 +919,7 @@ void model_destroy(const model_t *model)
 		for (size_t pp = 0; pp < node->primitive_count; pp++)
 		{
 			const mesh_primitive_t *primitive = node->primitives + pp;
-			const primitive_buffers_t *buffers = node->primitive_buffers + pp;
+			const primitive_buffers_t *buffers = model->buffers[nn] + pp;
 
 			SDL_ReleaseGPUBuffer(model->device, buffers->vertex);
 			SDL_ReleaseGPUBuffer(model->device, buffers->index);
@@ -961,13 +961,15 @@ static void mesh_draw(const model_t *model, const mesh_primitive_t *primitive, c
 		1, 0, 0, 0);
 }
 
-static void node_draw(const model_t *model, const node_t *node, SDL_GPURenderPass *render_pass,
+static void node_draw(const model_t *model, const size_t node_index, SDL_GPURenderPass *render_pass,
 	SDL_GPUCommandBuffer *command_buffer, const matrix4x4_t projection)
 {
+	const node_t *node = model->nodes + node_index;
+
 	for (size_t i = 0; i < node->primitive_count; i++)
 	{
 		const mesh_primitive_t *primitive = node->primitives + i;
-		const primitive_buffers_t *buffers = node->primitive_buffers + i;
+		const primitive_buffers_t *buffers = model->buffers[node_index] + i;
 
 		mesh_draw(model, primitive, buffers, render_pass, command_buffer, projection);
 	}
@@ -980,7 +982,7 @@ void model_draw(const model_t *model, SDL_GPURenderPass *render_pass,
 	{
 		const node_t *node = model->nodes + i;
 		const matrix4x4_t projection = matrix4x4_multiply(node->world_transform, view_projection);
-		node_draw(model, node, render_pass, command_buffer, projection);
+		node_draw(model, i, render_pass, command_buffer, projection);
 	}
 }
 
@@ -990,7 +992,7 @@ void model_draw_indexed(const model_t *model, const size_t index,
 {
 	SDL_assert(model != nullptr);
 	SDL_assert(index < model->node_count);
-	node_draw(model, model->nodes + index, render_pass, command_buffer, projection);
+	node_draw(model, index, render_pass, command_buffer, projection);
 }
 
 const char *model_node_name(const model_t *model, const size_t index)
