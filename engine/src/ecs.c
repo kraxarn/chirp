@@ -1,10 +1,14 @@
 #include "chirp/ecs.h"
 #include "chirp/logcategory.h"
+#include "chirp/ecs/modules.h"
 
 #include "flecs.h"
+#include "flecs/addons/module.h"
 
 #include <SDL3/SDL_log.h>
 #include <SDL3/SDL_stdinc.h>
+
+#include <stddef.h>
 
 static ecs_world_t *world = nullptr;
 
@@ -104,7 +108,14 @@ static void log_debug_info()
 	SDL_LogDebug(LOG_CATEGORY_ECS, "Addons: %s", temp);
 }
 
-void ecs_create_world()
+[[nodiscard]]
+static ecs_entity_t module(const char *name)
+{
+	return ecs_module_init(ecs_world(), name, &(ecs_component_desc_t){
+	});
+}
+
+void ecs_create_default()
 {
 	if (world != nullptr)
 	{
@@ -112,11 +123,15 @@ void ecs_create_world()
 	}
 
 	log_debug_info();
-
 	world = ecs_init();
+
+	EcsChirp = module("Chirp");
+	EcsChirpEvent = module("ChirpEvent");
+	EcsChirpInput = module("ChirpInput");
+	EcsChirpModule = module("ChirpModule");
 }
 
-void ecs_destroy_world()
+void ecs_destroy_default()
 {
 	ecs_fini(world);
 	world = nullptr;

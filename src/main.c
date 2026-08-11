@@ -15,7 +15,6 @@
 #include "timestats.h"
 #include "ecs/components.h"
 #include "ecs/events.h"
-#include "ecs/modules.h"
 #include "ui/debugoverlay.h"
 
 #include "flecs.h"
@@ -28,6 +27,7 @@
 #include "chirp/input.h"
 #include "chirp/logcategory.h"
 #include "chirp/vector.h"
+#include "chirp/ecs/modules.h"
 
 #define SDL_MAIN_USE_CALLBACKS
 #include <SDL3/SDL_main.h>

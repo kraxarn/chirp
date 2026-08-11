@@ -1,4 +1,4 @@
-#include "ecs/modules.h"
+#include "chirp/ecs/modules.h"
 
 ecs_entity_t EcsChirp = 0;
 ecs_entity_t EcsChirpEvent = 0;

@@ -7,7 +7,6 @@ target_sources(${PROJECT_NAME} PRIVATE
 	"${CMAKE_CURRENT_SOURCE_DIR}/input.c"
 	"${CMAKE_CURRENT_SOURCE_DIR}/logging.c"
 	"${CMAKE_CURRENT_SOURCE_DIR}/models.c"
-	"${CMAKE_CURRENT_SOURCE_DIR}/modules.c"
 	"${CMAKE_CURRENT_SOURCE_DIR}/nkui.c"
 	"${CMAKE_CURRENT_SOURCE_DIR}/physics.c"
 	"${CMAKE_CURRENT_SOURCE_DIR}/render.c"

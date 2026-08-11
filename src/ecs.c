@@ -1,6 +1,4 @@
 #include "ecs.h"
-#include "chirp/ecs.h"
-#include "ecs/modules.h"
 
 #include "args.h"
 #include "assets.h"
@@ -14,12 +12,14 @@
 #include "ecs/events.h"
 #include "ecs/tags.h"
 
+#include "chirp/ecs.h"
 #include "flecs.h"
 #include "box3d/id.h"
 #include "chirp/ecsosapi.h"
 #include "chirp/input.h"
 #include "chirp/logcategory.h"
 #include "chirp/windowconfig.h"
+#include "chirp/ecs/modules.h"
 
 #include <SDL3/SDL_assert.h>
 #include <SDL3/SDL_cpuinfo.h>
@@ -134,12 +134,6 @@ static ecs_entity_t tag(const char *name)
 	const ecs_entity_t entity = ecs_entity_init(ecs_world(), &entity_desc);
 	SDL_assert(entity != 0);
 	return entity;
-}
-
-static ecs_entity_t module(const char *name)
-{
-	return ecs_module_init(ecs_world(), name, &(ecs_component_desc_t){
-	});
 }
 
 #ifndef NDEBUG
@@ -373,12 +367,7 @@ static void on_init_set([[maybe_unused]] ecs_iter_t *iter)
 
 void ecs_create()
 {
-	ecs_create_world();
-
-	EcsChirp = module("Chirp");
-	EcsChirpEvent = module("ChirpEvent");
-	EcsChirpInput = module("ChirpInput");
-	EcsChirpModule = module("ChirpModule");
+	ecs_create_default();
 	add_modules();
 
 	// SDL has to initialise before we set up OS-specific stuff
@@ -394,7 +383,7 @@ void ecs_create()
 
 void ecs_destroy()
 {
-	ecs_destroy_world();
+	ecs_destroy_default();
 }
 
 ecs_entity_t ecs_phase(const phase_t phase)
