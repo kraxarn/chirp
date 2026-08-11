@@ -15,6 +15,7 @@
 #include "timestats.h"
 #include "ecs/components.h"
 #include "ecs/events.h"
+#include "ecs/modules.h"
 #include "ui/debugoverlay.h"
 
 #include "flecs.h"
@@ -321,7 +322,7 @@ SDL_AppResult SDL_AppInit(void **appstate, const int argc, char **argv)
 
 	ecs_create();
 
-	ecs_scope("ChirpModule")
+	ecs_scope(ecs_world(), EcsChirpModule)
 	{
 		ecs_add_gpu();
 		ecs_add_window();

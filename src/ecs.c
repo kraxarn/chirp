@@ -1,5 +1,6 @@
 #include "ecs.h"
 #include "chirp/ecs.h"
+#include "ecs/modules.h"
 
 #include "args.h"
 #include "assets.h"
@@ -18,11 +19,11 @@
 #include "chirp/ecsosapi.h"
 #include "chirp/input.h"
 #include "chirp/logcategory.h"
-#include "chirp/mousebutton.h"
 #include "chirp/windowconfig.h"
 
 #include <SDL3/SDL_assert.h>
 #include <SDL3/SDL_cpuinfo.h>
+#include <SDL3/SDL_events.h>
 #include <SDL3/SDL_log.h>
 #include <SDL3/SDL_stdinc.h>
 
@@ -135,6 +136,12 @@ static ecs_entity_t tag(const char *name)
 	return entity;
 }
 
+static ecs_entity_t module(const char *name)
+{
+	return ecs_module_init(ecs_world(), name, &(ecs_component_desc_t){
+	});
+}
+
 #ifndef NDEBUG
 
 #define reflect(e, ...)									\
@@ -149,18 +156,6 @@ static ecs_entity_t tag(const char *name)
 		.constants = {__VA_ARGS__},					\
 		.underlying_type = t,						\
 	});
-
-static ecs_entity_t reflect_string(const ecs_entity_t entity,
-	const ecs_meta_serialize_t serialize)
-{
-	return ecs_opaque_init(ecs_world(), &(ecs_opaque_desc_t){
-		.entity = entity,
-		.type = (EcsOpaque){
-			.as_type = ecs_id(ecs_string_t),
-			.serialize = serialize,
-		},
-	});
-}
 
 #endif
 
@@ -181,9 +176,9 @@ static void add_input()
 	EcsInput = component("Input", input_t);
 }
 
-static void module([[maybe_unused]] ecs_world_t *unused)
+static void add_modules()
 {
-	ecs_scope("Chirp")
+	ecs_scope(ecs_world(), EcsChirpModule)
 	{
 		EcsInstanceOf = entity("InstanceOf");
 
@@ -332,12 +327,12 @@ static void module([[maybe_unused]] ecs_world_t *unused)
 		create_pipeline();
 	}
 
-	ecs_scope("ChirpEvent")
+	ecs_scope(ecs_world(), EcsChirpEvent)
 	{
 		add_events();
 	}
 
-	ecs_scope("ChirpInput")
+	ecs_scope(ecs_world(), EcsChirpInput)
 	{
 		add_input();
 	};
@@ -379,7 +374,12 @@ static void on_init_set([[maybe_unused]] ecs_iter_t *iter)
 void ecs_create()
 {
 	ecs_create_world();
-	ecs_import(ecs_world(), module, "chirp");
+
+	EcsChirp = module("Chirp");
+	EcsChirpEvent = module("ChirpEvent");
+	EcsChirpInput = module("ChirpInput");
+	EcsChirpModule = module("ChirpModule");
+	add_modules();
 
 	// SDL has to initialise before we set up OS-specific stuff
 	ecs_observer_init(ecs_world(), &(ecs_observer_desc_t){

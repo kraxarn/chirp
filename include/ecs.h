@@ -89,12 +89,6 @@ ecs_entity_t ecs_phase(phase_t phase);
 
 ecs_entity_t ecs_set_error(const char *title, const char *message);
 
-#define ecs_scope(name)																				\
-	for (const ecs_entity_t mod = ecs_module_init(ecs_world(), name, &(ecs_component_desc_t){}),	\
-		scope = ecs_set_scope(ecs_world(), mod);													\
-		ecs_get_scope(ecs_world()) == mod;															\
-		ecs_set_scope(ecs_world(), scope))
-
 #define ecs_observer_init_all(o)					\
 	for (size_t i = 0; i < SDL_arraysize(o); i++)	\
 		ecs_observer_init(ecs_world(), o + i);
