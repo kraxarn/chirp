@@ -14,6 +14,12 @@
 #include <SDL3/SDL_stdinc.h>
 #include <SDL3/SDL_timer.h>
 
+typedef struct
+{
+	SDL_GPUBuffer *vertex;
+	SDL_GPUBuffer *index;
+} primitive_buffers_t;
+
 typedef struct material
 {
 	const char *name;
@@ -28,8 +34,7 @@ typedef struct mesh_primitive
 	mesh_index_t *indices;
 	size_t index_count;
 
-	SDL_GPUBuffer *vertex_buffer;
-	SDL_GPUBuffer *index_buffer;
+	primitive_buffers_t buffers;
 } mesh_primitive_t;
 
 typedef struct node
@@ -452,8 +457,8 @@ static bool load_model_data(model_t *model, const cgltf_data *gltf_data)
 			primitive->indices = nullptr;
 			primitive->index_count = 0;
 
-			primitive->vertex_buffer = nullptr;
-			primitive->index_buffer = nullptr;
+			primitive->buffers.vertex = nullptr;
+			primitive->buffers.index = nullptr;
 
 			if (gltf_primitive->indices != nullptr
 				&& !load_buffer_data(gltf_primitive->indices, primitive, prop_index))
@@ -648,8 +653,8 @@ static bool upload_mesh(SDL_GPUDevice *device, mesh_primitive_t *primitive)
 		.usage = SDL_GPU_BUFFERUSAGE_VERTEX,
 		.size = vertex_size,
 	};
-	primitive->vertex_buffer = SDL_CreateGPUBuffer(device, &vertex_buffer_info);
-	if (primitive->vertex_buffer == nullptr)
+	primitive->buffers.vertex = SDL_CreateGPUBuffer(device, &vertex_buffer_info);
+	if (primitive->buffers.vertex == nullptr)
 	{
 		return false;
 	}
@@ -658,11 +663,11 @@ static bool upload_mesh(SDL_GPUDevice *device, mesh_primitive_t *primitive)
 		.usage = SDL_GPU_BUFFERUSAGE_INDEX,
 		.size = index_size,
 	};
-	primitive->index_buffer = SDL_CreateGPUBuffer(device, &index_buffer_info);
-	if (primitive->index_buffer == nullptr)
+	primitive->buffers.index = SDL_CreateGPUBuffer(device, &index_buffer_info);
+	if (primitive->buffers.index == nullptr)
 	{
-		SDL_ReleaseGPUBuffer(device, primitive->vertex_buffer);
-		primitive->vertex_buffer = nullptr;
+		SDL_ReleaseGPUBuffer(device, primitive->buffers.vertex);
+		primitive->buffers.vertex = nullptr;
 		return false;
 	}
 
@@ -673,21 +678,21 @@ static bool upload_mesh(SDL_GPUDevice *device, mesh_primitive_t *primitive)
 	SDL_GPUTransferBuffer *transfer_buffer = SDL_CreateGPUTransferBuffer(device, &transfer_info);
 	if (transfer_buffer == nullptr)
 	{
-		SDL_ReleaseGPUBuffer(device, primitive->vertex_buffer);
-		SDL_ReleaseGPUBuffer(device, primitive->index_buffer);
-		primitive->vertex_buffer = nullptr;
-		primitive->index_buffer = nullptr;
+		SDL_ReleaseGPUBuffer(device, primitive->buffers.vertex);
+		SDL_ReleaseGPUBuffer(device, primitive->buffers.index);
+		primitive->buffers.vertex = nullptr;
+		primitive->buffers.index = nullptr;
 		return false;
 	}
 
 	void *transfer_data = SDL_MapGPUTransferBuffer(device, transfer_buffer, false);
 	if (transfer_data == nullptr)
 	{
-		SDL_ReleaseGPUBuffer(device, primitive->vertex_buffer);
-		SDL_ReleaseGPUBuffer(device, primitive->index_buffer);
+		SDL_ReleaseGPUBuffer(device, primitive->buffers.vertex);
+		SDL_ReleaseGPUBuffer(device, primitive->buffers.index);
 		SDL_ReleaseGPUTransferBuffer(device, transfer_buffer);
-		primitive->vertex_buffer = nullptr;
-		primitive->index_buffer = nullptr;
+		primitive->buffers.vertex = nullptr;
+		primitive->buffers.index = nullptr;
 		return false;
 	}
 
@@ -699,11 +704,11 @@ static bool upload_mesh(SDL_GPUDevice *device, mesh_primitive_t *primitive)
 	SDL_GPUCommandBuffer *command_buffer = SDL_AcquireGPUCommandBuffer(device);
 	if (command_buffer == nullptr)
 	{
-		SDL_ReleaseGPUBuffer(device, primitive->vertex_buffer);
-		SDL_ReleaseGPUBuffer(device, primitive->index_buffer);
+		SDL_ReleaseGPUBuffer(device, primitive->buffers.vertex);
+		SDL_ReleaseGPUBuffer(device, primitive->buffers.index);
 		SDL_ReleaseGPUTransferBuffer(device, transfer_buffer);
-		primitive->vertex_buffer = nullptr;
-		primitive->index_buffer = nullptr;
+		primitive->buffers.vertex = nullptr;
+		primitive->buffers.index = nullptr;
 		return false;
 	}
 
@@ -714,7 +719,7 @@ static bool upload_mesh(SDL_GPUDevice *device, mesh_primitive_t *primitive)
 		.offset = 0,
 	};
 	const SDL_GPUBufferRegion vertex_destination = {
-		.buffer = primitive->vertex_buffer,
+		.buffer = primitive->buffers.vertex,
 		.offset = 0,
 		.size = vertex_size,
 	};
@@ -725,7 +730,7 @@ static bool upload_mesh(SDL_GPUDevice *device, mesh_primitive_t *primitive)
 		.offset = vertex_size,
 	};
 	const SDL_GPUBufferRegion index_destination = {
-		.buffer = primitive->index_buffer,
+		.buffer = primitive->buffers.index,
 		.offset = 0,
 		.size = index_size,
 	};
@@ -736,10 +741,10 @@ static bool upload_mesh(SDL_GPUDevice *device, mesh_primitive_t *primitive)
 
 	if (!SDL_SubmitGPUCommandBuffer(command_buffer))
 	{
-		SDL_ReleaseGPUBuffer(device, primitive->vertex_buffer);
-		SDL_ReleaseGPUBuffer(device, primitive->index_buffer);
-		primitive->vertex_buffer = nullptr;
-		primitive->index_buffer = nullptr;
+		SDL_ReleaseGPUBuffer(device, primitive->buffers.vertex);
+		SDL_ReleaseGPUBuffer(device, primitive->buffers.index);
+		primitive->buffers.vertex = nullptr;
+		primitive->buffers.index = nullptr;
 		return false;
 	}
 
@@ -913,8 +918,8 @@ void model_destroy(const model_t *model)
 		for (size_t pp = 0; pp < node->primitive_count; pp++)
 		{
 			const mesh_primitive_t *primitive = node->primitives + pp;
-			SDL_ReleaseGPUBuffer(model->device, primitive->vertex_buffer);
-			SDL_ReleaseGPUBuffer(model->device, primitive->index_buffer);
+			SDL_ReleaseGPUBuffer(model->device, primitive->buffers.vertex);
+			SDL_ReleaseGPUBuffer(model->device, primitive->buffers.index);
 			SDL_free(primitive->vertices);
 			SDL_free(primitive->indices);
 		}
@@ -927,13 +932,13 @@ static void mesh_draw(const model_t *model, const node_t *node, const mesh_primi
 	SDL_GPURenderPass *render_pass, SDL_GPUCommandBuffer *command_buffer, const matrix4x4_t projection)
 {
 	const SDL_GPUBufferBinding vertex_binding = {
-		.buffer = primitive->vertex_buffer,
+		.buffer = primitive->buffers.vertex,
 		.offset = 0,
 	};
 	SDL_BindGPUVertexBuffers(render_pass, 0, &vertex_binding, 1);
 
 	const SDL_GPUBufferBinding index_binding = {
-		.buffer = primitive->index_buffer,
+		.buffer = primitive->buffers.index,
 		.offset = 0,
 	};
 	SDL_BindGPUIndexBuffer(render_pass, &index_binding, SDL_GPU_INDEXELEMENTSIZE_16BIT);
