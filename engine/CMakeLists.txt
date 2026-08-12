@@ -21,13 +21,9 @@ target_link_libraries(${LIB_NAME} PRIVATE
 )
 
 target_include_directories(${LIB_NAME} PRIVATE
+	"${cgltf_SOURCE_DIR}"
 	"${nuklear_SOURCE_DIR}"
 	"${qoi_SOURCE_DIR}"
-)
-
-# TODO: Make private after moving model parsing logic
-target_include_directories(${LIB_NAME} PUBLIC
-	"${cgltf_SOURCE_DIR}"
 )
 
 include(../cmake/resources.cmake)

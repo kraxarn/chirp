@@ -749,7 +749,7 @@ void SDL_AppQuit(void *appstate, [[maybe_unused]] SDL_AppResult result)
 	ecs_iter_t iter = ecs_query_iter(ecs_world(), query);
 	while (ecs_query_next(&iter))
 	{
-		const model_t *models = ecs_field(&iter, model_t, 0);
+		model_t *models = ecs_field(&iter, model_t, 0);
 		for (Sint32 i = 0; i < iter.count; i++)
 		{
 			model_destroy(models + i);

@@ -9,6 +9,7 @@
 #include "chirp/assets.h"
 #include "chirp/ecs.h"
 #include "chirp/logcategory.h"
+#include "chirp/modelinfo.h"
 #include "chirp/ecs/components.h"
 #include "flecs/addons/system.h"
 
@@ -17,6 +18,8 @@
 #include <SDL3/SDL_gpu.h>
 #include <SDL3/SDL_log.h>
 #include <SDL3/SDL_stdinc.h>
+
+#include <stddef.h>
 
 [[nodiscard]]
 static ecs_entity_t models_entity()
@@ -66,13 +69,13 @@ static ecs_entity_t load_model(const char *name)
 	ecs_set_id(ecs_world(), entity, EcsModel,
 		sizeof(model_t), &model);
 
-	for (size_t i = 0; i < model.node_count; i++)
+	for (size_t i = 0; i < model.info.node_count; i++)
 	{
-		char *node_name = SDL_strdup(model_node_name(&model, i));
+		char *node_name = SDL_strdup(model_node_name(&model.info, i));
 		if (fix_entity_name(node_name) > 0)
 		{
 			SDL_LogWarn(LOG_CATEGORY_MODEL, "Renamed invalid entity name '%s' to '%s' in '%s'",
-				model_node_name(&model, i), node_name, name);
+				model_node_name(&model.info, i), node_name, name);
 		}
 		const ecs_entity_t node = ecs_entity_init(ecs_world(), &(ecs_entity_desc_t){
 			.name = node_name,
@@ -81,11 +84,11 @@ static ecs_entity_t load_model(const char *name)
 
 		ecs_add_pair(ecs_world(), node, EcsChildOf, entity);
 
-		const position_t position = model_node_translation(&model, i);
+		const position_t position = model_node_translation(&model.info, i);
 		ecs_set_id(ecs_world(), node, EcsPosition,
 			sizeof(position_t), &position);
 
-		const world_transform_t world_transform = model_node_world_transform(&model, i);
+		const world_transform_t world_transform = model_node_world_transform(&model.info, i);
 		ecs_set_id(ecs_world(), node, EcsWorldTransform,
 			sizeof(world_transform_t), &world_transform);
 	}
