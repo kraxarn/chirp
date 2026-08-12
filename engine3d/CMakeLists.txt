@@ -22,13 +22,7 @@ target_compile_definitions(${EXEC_NAME} PRIVATE
 
 target_link_libraries(${EXEC_NAME} PRIVATE
 	chirp
-	box3d::box3d
-	flecs_static
 	pocketpy
-)
-
-target_include_directories(${EXEC_NAME} PRIVATE
-	"${nuklear_SOURCE_DIR}"
 )
 
 include(../cmake/resources.cmake)

@@ -9,17 +9,20 @@ target_include_directories(${LIB_NAME} PUBLIC
 
 target_link_libraries(${LIB_NAME} PUBLIC
 	SDL3::SDL3
+	box3d::box3d
+	flecs_static
 )
 
 target_link_libraries(${LIB_NAME} PRIVATE
-	box3d::box3d
 	cpuinfo
-	flecs_static
+)
+
+target_include_directories(${LIB_NAME} PUBLIC
+	"${nuklear_SOURCE_DIR}"
 )
 
 target_include_directories(${LIB_NAME} PRIVATE
 	"${cgltf_SOURCE_DIR}"
-	"${nuklear_SOURCE_DIR}"
 	"${qoi_SOURCE_DIR}"
 )
 
