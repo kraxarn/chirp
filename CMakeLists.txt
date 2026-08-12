@@ -4,8 +4,6 @@ project(chirp LANGUAGES C VERSION 0.1.0)
 set(CMAKE_C_STANDARD 23)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 
-option(ENABLE_TESTS "Build unit tests" OFF)
-
 set(ENABLE_SIMD_DEFAULT ON)
 if (ANDROID AND CMAKE_ANDROID_ARCH_ABI STREQUAL "armeabi-v7a")
 	set(ENABLE_SIMD_DEFAULT OFF)
@@ -23,7 +21,4 @@ include(deps/sdl3.cmake)
 
 add_subdirectory(engine)
 add_subdirectory(engine3d)
-
-if (ENABLE_TESTS)
-	add_subdirectory(tests)
-endif ()
+add_subdirectory(tests)

@@ -1,24 +1,24 @@
 include(CTest)
 enable_testing()
 
-set(TESTS_TARGET "${PROJECT_NAME}_tests")
+set(EXEC_NAME "chirp_tests")
 
-add_executable(${TESTS_TARGET}
+add_executable(${EXEC_NAME}
 	main.c
 	testarray.c
 )
 
-add_test(NAME test_array COMMAND ${TESTS_TARGET} 1)
+add_test(NAME test_array COMMAND ${EXEC_NAME} 1)
 
-target_link_libraries(${TESTS_TARGET} PRIVATE
+target_link_libraries(${EXEC_NAME} PRIVATE
 	SDL3::SDL3
 	chirp
 )
 
 if (TARGET SDL3-shared)
 	add_custom_command(
-		TARGET ${TESTS_TARGET} POST_BUILD
-		COMMAND "${CMAKE_COMMAND}" -E copy $<TARGET_FILE:SDL3::SDL3-shared> $<TARGET_FILE_DIR:${TESTS_TARGET}>
+		TARGET ${EXEC_NAME} POST_BUILD
+		COMMAND "${CMAKE_COMMAND}" -E copy $<TARGET_FILE:SDL3::SDL3-shared> $<TARGET_FILE_DIR:${EXEC_NAME}>
 		VERBATIM
 	)
 endif ()
