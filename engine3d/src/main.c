@@ -472,37 +472,37 @@ SDL_AppResult SDL_AppIterate(void *appstate)
 
 		if (input_axis(input, "move_forward", 0) > 0.F)
 		{
-			const vector3f_t velocity = camera_to_z(camera, move_speed * time_stats->dt);
+			const vector3f_t velocity = camera_to_z(camera, move_speed);
 			player_velocity = b3Add(player_velocity, cast(b3Vec3, velocity));
 		}
 
 		if (input_axis(input, "move_backward", 0) > 0.F)
 		{
-			const vector3f_t velocity = camera_to_z(camera, -(move_speed * time_stats->dt));
+			const vector3f_t velocity = camera_to_z(camera, -move_speed);
 			player_velocity = b3Add(player_velocity, cast(b3Vec3, velocity));
 		}
 
 		if (input_axis(input, "move_left", 0) > 0.F)
 		{
-			const vector3f_t velocity = camera_to_x(camera, -(move_speed * time_stats->dt));
+			const vector3f_t velocity = camera_to_x(camera, -move_speed);
 			player_velocity = b3Add(player_velocity, cast(b3Vec3, velocity));
 		}
 
 		if (input_axis(input, "move_right", 0) > 0.F)
 		{
-			const vector3f_t velocity = camera_to_x(camera, move_speed * time_stats->dt);
+			const vector3f_t velocity = camera_to_x(camera, move_speed);
 			player_velocity = b3Add(player_velocity, cast(b3Vec3, velocity));
 		}
 
 		if (input_is_down(input, "move_up", 0))
 		{
-			const vector3f_t velocity = camera_to_y(camera, move_speed * time_stats->dt);
+			const vector3f_t velocity = camera_to_y(camera, move_speed);
 			player_velocity = b3Add(player_velocity, cast(b3Vec3, velocity));
 		}
 
 		if (input_is_down(input, "move_down", 0))
 		{
-			const vector3f_t velocity = camera_to_y(camera, -(move_speed * time_stats->dt));
+			const vector3f_t velocity = camera_to_y(camera, -move_speed);
 			player_velocity = b3Add(player_velocity, cast(b3Vec3, velocity));
 		}
 
