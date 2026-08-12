@@ -1,6 +1,5 @@
 #include "ecs/components.h"
 
-ecs_id_t EcsInit = 0;
 ecs_id_t EcsTimeStats = 0;
 ecs_id_t EcsWindowConfig = 0;
 ecs_id_t EcsWindow = 0;
@@ -26,7 +25,6 @@ ecs_id_t EcsFragmentShader = 0;
 ecs_id_t EcsClearColor = 0;
 ecs_id_t EcsViewProjection = 0;
 ecs_id_t EcsWorldTransform = 0;
-ecs_id_t EcsError = 0;
 ecs_id_t EcsScriptEngine = 0;
 ecs_id_t EcsArgs = 0;
 ecs_id_t EcsModelInstance = 0;

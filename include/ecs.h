@@ -42,12 +42,6 @@ typedef struct
 	matrix4x4_t value;
 } projection_t;
 
-typedef struct
-{
-	char *title;
-	char *message;
-} error_t;
-
 typedef struct model_descriptor
 {
 	char *name;
@@ -76,8 +70,6 @@ void ecs_destroy();
 [[nodiscard]]
 ecs_entity_t ecs_phase(phase_t phase);
 
-ecs_entity_t ecs_set_error(const char *title, const char *message);
-
 #define ecs_observer_init_all(o)					\
 	for (size_t i = 0; i < SDL_arraysize(o); i++)	\
 		ecs_observer_init(ecs_world(), o + i);
@@ -89,5 +81,4 @@ void ecs_add_physics();
 void ecs_add_render();
 void ecs_add_script_engine();
 void ecs_add_models();
-void ecs_add_input();
 void ecs_add_logging();

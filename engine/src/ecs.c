@@ -1,5 +1,6 @@
 #include "chirp/ecs.h"
 #include "chirp/logcategory.h"
+#include "chirp/ecs/components.h"
 #include "chirp/ecs/modules.h"
 
 #include "flecs.h"
@@ -140,4 +141,19 @@ void ecs_destroy_default()
 ecs_world_t *ecs_world()
 {
 	return world;
+}
+
+ecs_entity_t ecs_set_error(const char *title, const char *message)
+{
+	const ecs_entity_t entity = ecs_new(ecs_world());
+
+	const error_t error = {
+		.title = SDL_strdup(title),
+		.message = SDL_strdup(message),
+	};
+
+	ecs_set_id(ecs_world(), entity, EcsError,
+		sizeof(error_t), &error);
+
+	return entity;
 }

@@ -3,7 +3,6 @@ target_sources(${PROJECT_NAME} PRIVATE
 	"${CMAKE_CURRENT_SOURCE_DIR}/entities.c"
 	"${CMAKE_CURRENT_SOURCE_DIR}/events.c"
 	"${CMAKE_CURRENT_SOURCE_DIR}/gpudevice.c"
-	"${CMAKE_CURRENT_SOURCE_DIR}/input.c"
 	"${CMAKE_CURRENT_SOURCE_DIR}/logging.c"
 	"${CMAKE_CURRENT_SOURCE_DIR}/models.c"
 	"${CMAKE_CURRENT_SOURCE_DIR}/nkui.c"

@@ -13,6 +13,12 @@ typedef struct
 	const char *type;
 } metadata_t;
 
+typedef struct
+{
+	char *title;
+	char *message;
+} error_t;
+
 /** Get/set data in singleton */
 #define ecs_singleton(component)	\
 	component, component
@@ -33,4 +39,7 @@ void ecs_destroy_default();
 [[nodiscard]]
 ecs_world_t *ecs_world();
 
+ecs_entity_t ecs_set_error(const char *title, const char *message);
+
 void ecs_add_assets();
+void ecs_add_input();

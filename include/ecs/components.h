@@ -4,7 +4,6 @@
 
 typedef Uint64 ecs_id_t;
 
-extern ecs_id_t EcsInit;
 extern ecs_id_t EcsTimeStats;
 extern ecs_id_t EcsWindowConfig;
 extern ecs_id_t EcsWindow;
@@ -30,7 +29,6 @@ extern ecs_id_t EcsFragmentShader;
 extern ecs_id_t EcsClearColor;
 extern ecs_id_t EcsViewProjection;
 extern ecs_id_t EcsWorldTransform;
-extern ecs_id_t EcsError;
 extern ecs_id_t EcsScriptEngine;
 extern ecs_id_t EcsArgs;
 extern ecs_id_t EcsModelInstance;
