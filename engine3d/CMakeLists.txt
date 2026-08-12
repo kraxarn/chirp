@@ -43,3 +43,6 @@ set_target_exec_properties(${EXEC_NAME}
 
 include(../cmake/lto.cmake)
 target_enable_lto(${EXEC_NAME})
+
+include(../cmake/copysdl3.cmake)
+target_copy_sdl3(${EXEC_NAME})

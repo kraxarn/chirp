@@ -15,10 +15,5 @@ target_link_libraries(${EXEC_NAME} PRIVATE
 	chirp
 )
 
-if (TARGET SDL3-shared)
-	add_custom_command(
-		TARGET ${EXEC_NAME} POST_BUILD
-		COMMAND "${CMAKE_COMMAND}" -E copy $<TARGET_FILE:SDL3::SDL3-shared> $<TARGET_FILE_DIR:${EXEC_NAME}>
-		VERBATIM
-	)
-endif ()
+include(../cmake/copysdl3.cmake)
+target_copy_sdl3(${EXEC_NAME})

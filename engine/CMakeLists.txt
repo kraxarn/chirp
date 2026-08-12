@@ -30,14 +30,6 @@ if (ENABLE_SIMD)
 	target_compile_definitions(${LIB_NAME} PUBLIC SIMD_ENABLED)
 endif ()
 
-if (TARGET SDL3-shared)
-	add_custom_command(
-		TARGET ${LIB_NAME} POST_BUILD
-		COMMAND "${CMAKE_COMMAND}" -E copy $<TARGET_FILE:SDL3::SDL3-shared> $<TARGET_FILE_DIR:${LIB_NAME}>
-		VERBATIM
-	)
-endif ()
-
 # Not all platforms define "NDEBUG"
 if (NOT CMAKE_BUILD_TYPE STREQUAL "Debug")
 	target_compile_definitions(${LIB_NAME} PUBLIC NDEBUG)
