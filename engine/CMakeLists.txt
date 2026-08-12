@@ -15,8 +15,11 @@ include(../deps/nuklear.cmake)
 include(../deps/qoi.cmake)
 include(../deps/sdl3.cmake)
 
-target_link_libraries(${LIB_NAME} PRIVATE
+target_link_libraries(${LIB_NAME} PUBLIC
 	SDL3::SDL3
+)
+
+target_link_libraries(${LIB_NAME} PRIVATE
 	box3d::box3d
 	cpuinfo
 	flecs_static

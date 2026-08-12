@@ -45,7 +45,6 @@ include(deps/nuklear.cmake)
 include(deps/box3d.cmake)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE
-	SDL3::SDL3
 	box3d::box3d
 	flecs_static
 	pocketpy
