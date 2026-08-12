@@ -8,15 +8,17 @@ target_include_directories(${LIB_NAME} PUBLIC
 )
 
 include(../deps/box3d.cmake)
+include(../deps/cgltf.cmake)
+include(../deps/cpuinfo.cmake)
 include(../deps/flecs.cmake)
 include(../deps/nuklear.cmake)
-include(../deps/sdl3.cmake)
 include(../deps/qoi.cmake)
-include(../deps/cgltf.cmake)
+include(../deps/sdl3.cmake)
 
 target_link_libraries(${LIB_NAME} PRIVATE
 	SDL3::SDL3
 	box3d::box3d
+	cpuinfo
 	flecs_static
 )
 

@@ -39,7 +39,6 @@ add_subdirectory(engine)
 target_link_libraries(${PROJECT_NAME} PRIVATE chirp)
 
 include(deps/sdl3.cmake)
-include(deps/cpuinfo.cmake)
 include(deps/flecs.cmake)
 include(deps/pocketpy.cmake)
 include(deps/nuklear.cmake)
@@ -48,7 +47,6 @@ include(deps/box3d.cmake)
 target_link_libraries(${PROJECT_NAME} PRIVATE
 	SDL3::SDL3
 	box3d::box3d
-	cpuinfo
 	flecs_static
 	pocketpy
 )
