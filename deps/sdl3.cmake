@@ -28,6 +28,8 @@ else ()
 	set(SDL_OPENGL OFF)
 	set(SDL_OPENGLES OFF)
 	set(SDL_TEST_LIBRARY OFF)
+	set(SDL_SHARED ON)
+	set(SDL_STATIC OFF)
 	FetchContent_MakeAvailable(sdl)
 endif ()
 
