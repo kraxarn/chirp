@@ -38,7 +38,6 @@ endif ()
 add_subdirectory(engine)
 target_link_libraries(${PROJECT_NAME} PRIVATE chirp)
 
-include(deps/sdl3.cmake)
 include(deps/flecs.cmake)
 include(deps/pocketpy.cmake)
 include(deps/nuklear.cmake)
