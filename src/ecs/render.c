@@ -1,5 +1,4 @@
 #include "camera.h"
-#include "degutil.h"
 #include "ecs.h"
 #include "model.h"
 #include "nkui.h"
@@ -8,6 +7,7 @@
 #include "ecs/tags.h"
 
 #include "flecs.h"
+#include "chirp/degutil.h"
 #include "chirp/ecs.h"
 #include "chirp/logcategory.h"
 #include "chirp/vector.h"

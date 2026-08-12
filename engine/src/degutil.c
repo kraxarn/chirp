@@ -1,4 +1,4 @@
-#include "degutil.h"
+#include "chirp/degutil.h"
 
 #include <SDL3/SDL_stdinc.h>
 
