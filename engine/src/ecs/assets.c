@@ -1,6 +1,3 @@
-#include "ecs.h"
-#include "ecs/components.h"
-
 #include "chirp/assets.h"
 #include "flecs.h"
 #include "chirp/ecs.h"

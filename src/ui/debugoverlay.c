@@ -16,6 +16,7 @@
 #include "chirp/logcategory.h"
 #include "chirp/map.h"
 #include "chirp/mousebutton.h"
+#include "chirp/ecs/components.h"
 
 #include <SDL3/SDL_assert.h>
 #include <SDL3/SDL_error.h>

@@ -82,7 +82,6 @@ ecs_entity_t ecs_set_error(const char *title, const char *message);
 	for (size_t i = 0; i < SDL_arraysize(o); i++)	\
 		ecs_observer_init(ecs_world(), o + i);
 
-void ecs_add_assets();
 void ecs_add_nkui();
 void ecs_add_window();
 void ecs_add_gpu();
