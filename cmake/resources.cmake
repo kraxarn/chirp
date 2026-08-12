@@ -1,5 +1,5 @@
 function (target_resources target)
-	set(RESOURCE_DIR "../resources")
+	set(RESOURCE_DIR "${PROJECT_SOURCE_DIR}/resources")
 
 	target_compile_definitions(${target} PRIVATE
 		# Fonts
