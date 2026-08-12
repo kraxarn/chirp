@@ -1,4 +1,7 @@
 #include "chirp/ecs.h"
+#include "chirp/assets.h"
+#include "chirp/ecsutils.h"
+#include "chirp/input.h"
 #include "chirp/logcategory.h"
 #include "chirp/ecs/components.h"
 #include "chirp/ecs/modules.h"
@@ -6,6 +9,7 @@
 #include "flecs.h"
 #include "flecs/addons/module.h"
 
+#include <SDL3/SDL_init.h>
 #include <SDL3/SDL_log.h>
 #include <SDL3/SDL_stdinc.h>
 
@@ -116,6 +120,22 @@ static ecs_entity_t module(const char *name)
 	});
 }
 
+static void add_modules()
+{
+	ecs_scope(ecs_world(), EcsChirpModule)
+	{
+		EcsAssets = component("Assets", assets_t);
+		EcsError = component("Error", error_t);
+		EcsInit = component("Init", SDL_InitFlags);
+		EcsMetadata = component("Metadata", metadata_t);
+	}
+
+	ecs_scope(ecs_world(), EcsChirpInput)
+	{
+		EcsInput = component("Input", input_t);
+	}
+}
+
 void ecs_create_default()
 {
 	if (world != nullptr)
@@ -130,6 +150,8 @@ void ecs_create_default()
 	EcsChirpEvent = module("ChirpEvent");
 	EcsChirpInput = module("ChirpInput");
 	EcsChirpModule = module("ChirpModule");
+
+	add_modules();
 }
 
 void ecs_destroy_default()

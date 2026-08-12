@@ -1,5 +1,4 @@
 #include "ecs.h"
-
 #include "args.h"
 #include "camera.h"
 #include "model.h"
@@ -14,9 +13,8 @@
 #include "chirp/ecs.h"
 #include "flecs.h"
 #include "box3d/id.h"
-#include "chirp/assets.h"
 #include "chirp/ecsosapi.h"
-#include "chirp/input.h"
+#include "chirp/ecsutils.h"
 #include "chirp/logcategory.h"
 #include "chirp/windowconfig.h"
 #include "chirp/ecs/components.h"
@@ -26,7 +24,6 @@
 #include <SDL3/SDL_cpuinfo.h>
 #include <SDL3/SDL_events.h>
 #include <SDL3/SDL_log.h>
-#include <SDL3/SDL_stdinc.h>
 
 static ecs_entity_t phases[PHASE_COUNT];
 
@@ -79,11 +76,6 @@ static void create_pipeline()
 	phase_depend(PHASE_RENDER_END, PHASE_RENDER);
 }
 
-static void ctor_zero(void *ptr, const Sint32 count, const ecs_type_info_t *type_info)
-{
-	SDL_memset(ptr, 0, (size_t) count * type_info->size);
-}
-
 [[nodiscard]]
 static ecs_entity_t entity(const char *name)
 {
@@ -91,40 +83,6 @@ static ecs_entity_t entity(const char *name)
 		.name = name,
 	});
 }
-
-[[nodiscard]]
-static ecs_id_t component_impl(const char *name, const char *symbol,
-	const ecs_size_t size, const ecs_size_t alignment,
-	const ecs_xtor_t ctor, const ecs_xtor_t dtor)
-{
-	const ecs_entity_desc_t entity_desc = {
-		.use_low_id = true,
-		.name = name,
-		.symbol = symbol,
-	};
-
-	const ecs_component_desc_t component_desc = {
-		.entity = ecs_entity_init(ecs_world(), &entity_desc),
-		.type = (ecs_type_info_t){
-			.size = size,
-			.alignment = alignment,
-		},
-	};
-
-	const ecs_id_t component = ecs_component_init(ecs_world(), &component_desc);
-	SDL_assert(component != 0);
-
-	const ecs_type_hooks_t hooks = {
-		.ctor = ctor,
-		.dtor = dtor,
-	};
-	ecs_set_hooks_id(ecs_world(), component, &hooks);
-
-	return component;
-}
-
-#define component(name, symbol)	\
-	component_impl(name, #symbol, ECS_SIZEOF(symbol), ECS_ALIGNOF(symbol), ctor_zero, nullptr)
 
 static ecs_entity_t tag(const char *name)
 {
@@ -166,11 +124,6 @@ static void add_events()
 	EcsWindowEvent = component("WindowEvent", SDL_WindowEvent);
 }
 
-static void add_input()
-{
-	EcsInput = component("Input", input_t);
-}
-
 static void add_modules()
 {
 	ecs_scope(ecs_world(), EcsChirpModule)
@@ -179,9 +132,6 @@ static void add_modules()
 
 		EcsScene = tag("Scene");
 
-		EcsAssets = component("Assets", assets_t);
-		EcsMetadata = component("Metadata", metadata_t);
-		EcsInit = component("Init", init_flags_t);
 		EcsTimeStats = component("TimeStats", time_stats_t);
 		EcsWindowConfig = component("WindowConfig", window_config_t);
 		EcsWindow = component("Window", window_t*);
@@ -207,7 +157,6 @@ static void add_modules()
 		EcsClearColor = component("ClearColor", clear_color_t);
 		EcsViewProjection = component("ViewProjection", view_projection_t);
 		EcsWorldTransform = component("WorldTransform", world_transform_t);
-		EcsError = component("Error", error_t);
 		EcsScriptEngine = component("ScriptEngine", py_vm_index_t);
 		EcsArgs = component("Args", args_t);
 		EcsModelInstance = component("ModelInstance", model_instance_t);
@@ -326,11 +275,6 @@ static void add_modules()
 	{
 		add_events();
 	}
-
-	ecs_scope(ecs_world(), EcsChirpInput)
-	{
-		add_input();
-	};
 }
 
 static void on_init_set([[maybe_unused]] ecs_iter_t *iter)

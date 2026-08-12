@@ -7,6 +7,7 @@ target_sources(${LIB_NAME} PRIVATE
 	"${CMAKE_CURRENT_SOURCE_DIR}/degutil.c"
 	"${CMAKE_CURRENT_SOURCE_DIR}/ecs.c"
 	"${CMAKE_CURRENT_SOURCE_DIR}/ecsosapi.c"
+	"${CMAKE_CURRENT_SOURCE_DIR}/ecsutils.c"
 	"${CMAKE_CURRENT_SOURCE_DIR}/gamepadaxis.c"
 	"${CMAKE_CURRENT_SOURCE_DIR}/gamepadbutton.c"
 	"${CMAKE_CURRENT_SOURCE_DIR}/gamepadbuttonlabel.c"
