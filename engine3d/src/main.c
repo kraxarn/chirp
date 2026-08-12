@@ -701,30 +701,32 @@ SDL_AppResult SDL_AppEvent([[maybe_unused]] void *appstate, SDL_Event *event)
 		nkui_handle_event(nkui_context, event);
 	}
 
-	if (event_type == SDL_EVENT_MOUSE_BUTTON_DOWN
-		|| event_type == SDL_EVENT_MOUSE_BUTTON_UP)
+	switch (event_type)
 	{
-		emit(EcsOnMouseButton, EcsMouseButtonEvent, &event->button);
-	}
+		case SDL_EVENT_MOUSE_BUTTON_DOWN:
+		case SDL_EVENT_MOUSE_BUTTON_UP:
+			emit(EcsOnMouseButton, EcsMouseButtonEvent, &event->button);
+			break;
 
-	if (event_type == SDL_EVENT_KEY_DOWN
-		|| event_type == SDL_EVENT_KEY_UP)
-	{
-		emit(EcsOnKey, EcsKeyboardEvent, &event->key);
-	}
+		case SDL_EVENT_KEY_DOWN:
+		case SDL_EVENT_KEY_UP:
+			emit(EcsOnKey, EcsKeyboardEvent, &event->key);
+			break;
 
-	if (event->type == SDL_EVENT_WINDOW_RESIZED)
-	{
-		emit(EcsOnWindowResized, EcsWindowEvent, &event->window);
-	}
+		case SDL_EVENT_WINDOW_RESIZED:
+			emit(EcsOnWindowResized, EcsWindowEvent, &event->window);
+			break;
 
-	if (event->type == SDL_EVENT_GAMEPAD_ADDED)
-	{
-		input_gamepad_open(event->gdevice.which);
-	}
-	else if (event->type == SDL_EVENT_GAMEPAD_REMOVED)
-	{
-		input_gamepad_close(event->gdevice.which);
+		case SDL_EVENT_GAMEPAD_ADDED:
+			input_gamepad_open(event->gdevice.which);
+			break;
+
+		case SDL_EVENT_GAMEPAD_REMOVED:
+			input_gamepad_close(event->gdevice.which);
+			break;
+
+		default:
+			break;
 	}
 
 	const input_t input = *(const input_t*) ecs_get_id(ecs_world(), ecs_singleton(EcsInput));
