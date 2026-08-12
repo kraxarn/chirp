@@ -1,6 +1,13 @@
-# chirp3d
+# chirp :bird:
 
-Modern, lightweight, and cross-platform 3D game engine.
+Modern, lightweight, and cross-platform game engine.
+
+# structure
+
+The engine is split into two separate front-ends:
+* ~~`engine2d/` 2D renderer of the engine.~~ *Soon!*
+* `engine3d/`: 3D renderer for the engine.
+* `engine/`: Shared engine logic.
 
 # status
 
@@ -20,14 +27,6 @@ Currently very early in development and not very usable quite yet.
 * It's easier to interface with lower-level libraries.
 * It compiles superfast.
 * I like shooting myself in the foot :3
-
-# platform support
-
-* Linux (x86_64, aarch64) through Vulkan 1.0.
-* Android (armeabi-v7a, arm64-v8a) through Vulkan 1.0.
-* macOS (x86_64, arm64) through Metal, or Vulkan 1.0 using MoltenVK.
-* iOS through Metal, or Vulkan 1.0 using MoltenVK.
-* Windows (x86, x86_64, arm64) through Direct3D 12 (FL 11_0, RBT 2), or Vulkan 1.0.
 
 # compiler support
 
