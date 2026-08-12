@@ -1,7 +1,7 @@
 function (target_enable_lto target)
 	if (CMAKE_BUILD_TYPE STREQUAL "Release")
 		include(CheckIPOSupported)
-		check_ipo_supported(RESULT ipo_supported OUTPUT ipo_error)
+		check_ipo_supported(RESULT ipo_supported OUTPUT ipo_error LANGUAGES C)
 		if (ipo_supported)
 			set_property(TARGET ${target} PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
 			message(STATUS "LTO enabled")
