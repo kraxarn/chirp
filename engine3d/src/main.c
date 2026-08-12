@@ -405,7 +405,6 @@ SDL_AppResult SDL_AppInit(void **appstate, const int argc, char **argv)
 			(ecs_term_t){.id = ecs_singleton_id(EcsCamera), .inout = EcsIn},
 			(ecs_term_t){.id = EcsPhysicsBody, .src.name = "$plr_bdy", .inout = EcsIn},
 			(ecs_term_t){.id = ecs_singleton_id(EcsWindow), .inout = EcsInOut},
-			(ecs_term_t){.id = ecs_singleton_id(EcsGpuDevice), .inout = EcsInOut},
 			(ecs_term_t){.id = ecs_singleton_id(EcsTimeStats), .inout = EcsIn},
 			(ecs_term_t){.id = ecs_singleton_id(EcsInput), .inout = EcsIn},
 			(ecs_term_t){

@@ -202,9 +202,8 @@ void draw_debug_overlay(ecs_iter_t *iter)
 	const camera_t *camera = ecs_field(iter, camera_t, 1);
 	const b3BodyId player_body_id = *ecs_field(iter, b3BodyId, 2);
 	SDL_Window *window = *ecs_field(iter, SDL_Window*, 3);
-	SDL_GPUDevice *device = *ecs_field(iter, SDL_GPUDevice*, 4);
-	const time_stats_t *time_stats = ecs_field(iter, time_stats_t, 5);
-	const input_t input = *ecs_field(iter, input_t, 6);
+	const time_stats_t *time_stats = ecs_field(iter, time_stats_t, 4);
+	const input_t input = *ecs_field(iter, input_t, 5);
 
 	constexpr auto padding = 16.F;
 	constexpr auto alpha = 0.75F;
@@ -359,29 +358,9 @@ void draw_debug_overlay(ecs_iter_t *iter)
 		}
 		nk_end(ctx);
 
-		if (nk_begin(ctx, "Build info", (nk_rect_t){
-			.x = window_x,
-			.y = (padding * 2.F) + 40.F,
-			.w = window_width,
-			.h = 120.F,
-		}, NK_WINDOW_BORDER | NK_WINDOW_TITLE))
-		{
-			nk_layout_row(ctx, NK_DYNAMIC, row_height, 2, (float[]){0.3F, 0.7F});
-
-			nk_label(ctx, "Date", NK_TEXT_LEFT);
-			nk_label(ctx, __DATE__ " " __TIME__, NK_TEXT_LEFT);
-
-			nk_label(ctx, "Compiler", NK_TEXT_LEFT);
-			nk_label(ctx, ENGINE_COMPILER, NK_TEXT_LEFT);
-
-			nk_label(ctx, "Type", NK_TEXT_LEFT);
-			nk_label(ctx, ENGINE_BUILD_TYPE, NK_TEXT_LEFT);
-		}
-		nk_end(ctx);
-
 		if (nk_begin(ctx, "Render config", (nk_rect_t){
 			.x = window_x,
-			.y = (padding * 3.F) + 40.F + 120.F,
+			.y = (padding * 2.F) + 40.F,
 			.w = window_width,
 			.h = 150.F,
 		}, NK_WINDOW_BORDER | NK_WINDOW_TITLE))
