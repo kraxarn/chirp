@@ -49,7 +49,7 @@ jobs:
         run: cmake -S . -B build -D ENABLE_TESTS=ON -G "${{env.CMAKE_GENERATOR}}" -D CMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -D CMAKE_C_FLAGS="${{matrix.compile-flags}}" -D CMAKE_CXX_FLAGS="${{matrix.compile-flags}}"
 
       - name: Build
-        run: cmake --build build
+        run: cmake --build build --target chirp3d
 
       - name: Test
         run: ctest --extra-verbose --test-dir build\tests

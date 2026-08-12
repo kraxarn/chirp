@@ -4,6 +4,11 @@
 
 #include <SDL3/SDL_stdinc.h>
 
+#ifdef SIMD_ENABLED
+#include <SDL3/SDL_cpuinfo.h>
+#include <SDL3/SDL_error.h>
+#endif
+
 #include <stddef.h>
 
 static constexpr size_t name_length = 64;

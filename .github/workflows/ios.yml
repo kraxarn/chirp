@@ -16,7 +16,7 @@ jobs:
         run: cmake -S . -B build -D CMAKE_BUILD_TYPE=$BUILD_TYPE -D CMAKE_OSX_DEPLOYMENT_TARGET="13" -D CMAKE_SYSTEM_NAME=iOS -D CMAKE_OSX_SYSROOT=iphoneos -D CMAKE_OSX_ARCHITECTURES=arm64
 
       - name: Build
-        run: cmake --build build
+        run: cmake --build build --target chirp3d
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4

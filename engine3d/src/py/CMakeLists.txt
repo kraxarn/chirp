@@ -1,4 +1,4 @@
-target_sources(${PROJECT_NAME} PRIVATE
+target_sources(${EXEC_NAME} PRIVATE
 	"${CMAKE_CURRENT_SOURCE_DIR}/ecs.c"
 	"${CMAKE_CURRENT_SOURCE_DIR}/math.c"
 )

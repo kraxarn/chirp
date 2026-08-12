@@ -8,13 +8,12 @@ add_executable(${TESTS_TARGET}
 	testarray.c
 )
 
-# add_subdirectory(../engine chirp) # TODO: Main CMake file already includes chirp
-target_link_libraries(${TESTS_TARGET} PRIVATE chirp)
-
 add_test(NAME test_array COMMAND ${TESTS_TARGET} 1)
 
-include(../deps/sdl3.cmake)
-target_link_libraries(${TESTS_TARGET} PRIVATE SDL3::SDL3)
+target_link_libraries(${TESTS_TARGET} PRIVATE
+	SDL3::SDL3
+	chirp
+)
 
 if (TARGET SDL3-shared)
 	add_custom_command(
