@@ -1,10 +1,10 @@
-#include "physics.h"
+#include "chirp/physics.h"
+#include "chirp/logcategory.h"
 
 #include "box3d/base.h"
 #include "box3d/box3d.h"
 #include "box3d/id.h"
 #include "box3d/types.h"
-#include "chirp/logcategory.h"
 
 #include <SDL3/SDL_assert.h>
 #include <SDL3/SDL_cpuinfo.h>
