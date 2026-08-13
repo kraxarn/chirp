@@ -144,15 +144,6 @@ static void add_modules()
 		EcsModelScene = component("ModelScene", model_scene_t);
 
 #ifndef NDEBUG
-		reflect(EcsMetadata,
-			(ecs_member_t){.name = "name", .type = ecs_id(ecs_string_t)},
-			(ecs_member_t){.name = "version", .type = ecs_id(ecs_string_t)},
-			(ecs_member_t){.name = "identifier", .type = ecs_id(ecs_string_t)},
-			(ecs_member_t){.name = "creator", .type = ecs_id(ecs_string_t)},
-			(ecs_member_t){.name = "copyright", .type = ecs_id(ecs_string_t)},
-			(ecs_member_t){.name = "url", .type = ecs_id(ecs_string_t)},
-			(ecs_member_t){.name = "type", .type = ecs_id(ecs_string_t)},
-		);
 
 		reflect(EcsInit,
 			(ecs_member_t){.name = "flags", .type = ecs_id(ecs_u32_t)},

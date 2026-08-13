@@ -130,7 +130,6 @@ static void add_modules()
 		EcsAssets = component("Assets", assets_t);
 		EcsError = component("Error", error_t);
 		EcsInit = component("Init", SDL_InitFlags);
-		EcsMetadata = component("Metadata", metadata_t);
 		EcsPhysicsBody = component("PhysicsBody", b3BodyId);
 		EcsPhysicsWorld = component("PhysicsWorld", b3WorldId);
 	}
