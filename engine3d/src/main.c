@@ -464,56 +464,55 @@ SDL_AppResult SDL_AppIterate(void *appstate)
 		camera_rotate_x(camera, -(mouse.x * mouse_sensitivity));
 		camera_rotate_y(camera, -(mouse.y * mouse_sensitivity));
 
-		const float move_speed = physics_config->move_speed;
-		const float jump_speed = physics_config->jump_speed;
-
 		b3Vec3 player_velocity = b3Body_GetLinearVelocity(*player_body_id);
+		b3Vec3 movement = {.x = 0.F, .y = 0.F};
 
 		if (input_axis(input, "move_forward", 0) > 0.F)
 		{
-			const vector3f_t velocity = camera_to_z(camera, move_speed);
-			player_velocity = b3Add(player_velocity, cast(b3Vec3, velocity));
+			movement.z += 1.F;
 		}
 
 		if (input_axis(input, "move_backward", 0) > 0.F)
 		{
-			const vector3f_t velocity = camera_to_z(camera, -move_speed);
-			player_velocity = b3Add(player_velocity, cast(b3Vec3, velocity));
+			movement.z -= 1.F;
 		}
 
 		if (input_axis(input, "move_left", 0) > 0.F)
 		{
-			const vector3f_t velocity = camera_to_x(camera, -move_speed);
-			player_velocity = b3Add(player_velocity, cast(b3Vec3, velocity));
+			movement.x -= 1.F;
 		}
 
 		if (input_axis(input, "move_right", 0) > 0.F)
 		{
-			const vector3f_t velocity = camera_to_x(camera, move_speed);
-			player_velocity = b3Add(player_velocity, cast(b3Vec3, velocity));
+			movement.x += 1.F;
 		}
 
 		if (input_is_down(input, "move_up", 0))
 		{
-			const vector3f_t velocity = camera_to_y(camera, move_speed);
-			player_velocity = b3Add(player_velocity, cast(b3Vec3, velocity));
+			movement.y -= 1.F;
 		}
 
 		if (input_is_down(input, "move_down", 0))
 		{
-			const vector3f_t velocity = camera_to_y(camera, -move_speed);
-			player_velocity = b3Add(player_velocity, cast(b3Vec3, velocity));
+			movement.y += 1.F;
 		}
 
 		if (input_is_pressed(input, "jump", 0))
 		{
 			if (player_velocity.y > -0.1F && player_velocity.y < 0.1F)
 			{
-				const b3Vec3 velocity = {.y = jump_speed};
-				player_velocity = b3Add(player_velocity, cast(b3Vec3, velocity));
+				movement.y += physics_config->jump_speed;
 			}
 		}
 
+		const float maxSpeed = physics_config->move_speed;
+		b3Vec3 target_velocity = b3Add(
+			b3MulSV(maxSpeed * movement.z, vector3f_to_b3vec3(camera_forward(camera))),
+			b3MulSV(maxSpeed * movement.x, vector3f_to_b3vec3(camera_right(camera)))
+		);
+		target_velocity.y = movement.y;
+
+		player_velocity = b3Add(player_velocity, target_velocity);
 		b3Body_SetLinearVelocity(*player_body_id, player_velocity);
 
 		if (input_is_pressed(input, "shoot", 0))
