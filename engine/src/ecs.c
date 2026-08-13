@@ -7,7 +7,10 @@
 #include "chirp/ecs/modules.h"
 
 #include "flecs.h"
+#include "box3d/id.h"
 #include "flecs/addons/module.h"
+#include "flecs/private/addons.h"
+#include "flecs/private/api_defines.h"
 
 #include <SDL3/SDL_init.h>
 #include <SDL3/SDL_log.h>
@@ -128,12 +131,29 @@ static void add_modules()
 		EcsError = component("Error", error_t);
 		EcsInit = component("Init", SDL_InitFlags);
 		EcsMetadata = component("Metadata", metadata_t);
+		EcsPhysicsBody = component("PhysicsBody", b3BodyId);
+		EcsPhysicsWorld = component("PhysicsWorld", b3WorldId);
 	}
 
 	ecs_scope(ecs_world(), EcsChirpInput)
 	{
 		EcsInput = component("Input", input_t);
 	}
+
+#ifndef NDEBUG
+
+	reflect(EcsPhysicsWorld,
+		(ecs_member_t){.name = "index", .type = ecs_id(ecs_u16_t)},
+		(ecs_member_t){.name = "generation", .type = ecs_id(ecs_u16_t)},
+	);
+
+	reflect(EcsPhysicsBody,
+		(ecs_member_t){.name = "index", .type = ecs_id(ecs_i32_t)},
+		(ecs_member_t){.name = "world", .type = ecs_id(ecs_u16_t)},
+		(ecs_member_t){.name = "generation", .type = ecs_id(ecs_u16_t)},
+	);
+
+#endif
 }
 
 void ecs_create_default()

@@ -95,23 +95,6 @@ static ecs_entity_t tag(const char *name)
 	return entity;
 }
 
-#ifndef NDEBUG
-
-#define reflect(e, ...)									\
-	ecs_struct_init(ecs_world(), &(ecs_struct_desc_t) {	\
-		.entity = e,									\
-		.members = {__VA_ARGS__},						\
-	});
-
-#define reflect_enum(e, t, ...)						\
-	ecs_enum_init(ecs_world(), &(ecs_enum_desc_t){	\
-		.entity = e,								\
-		.constants = {__VA_ARGS__},					\
-		.underlying_type = t,						\
-	});
-
-#endif
-
 static void add_events()
 {
 	EcsOnMouseButton = entity("OnMouseButton");
@@ -144,8 +127,6 @@ static void add_modules()
 		EcsSwapchainTextureSize = component("SwapchainTextureSize", swapchain_texture_size_t);
 		EcsCamera = component("Camera", camera_t);
 		EcsPhysicsConfig = component("PhysicsConfig", physics_config_t);
-		EcsPhysicsWorld = component("PhysicsWorld", b3WorldId);
-		EcsPhysicsBody = component("PhysicsBody", b3BodyId);
 		EcsModel = component("Model", model_t);
 		EcsRotation = component("Rotation", rotation_t);
 		EcsPosition = component("Position", position_t);
@@ -205,17 +186,6 @@ static void add_modules()
 			(ecs_member_t){.name = "max_move_speed", .type = ecs_id(ecs_f32_t)},
 			(ecs_member_t){.name = "gravity_y", .type = ecs_id(ecs_f32_t)},
 			(ecs_member_t){.name = "jump_speed", .type = ecs_id(ecs_f32_t)},
-		);
-
-		reflect(EcsPhysicsWorld,
-			(ecs_member_t){.name = "index", .type = ecs_id(ecs_u16_t)},
-			(ecs_member_t){.name = "generation", .type = ecs_id(ecs_u16_t)},
-		);
-
-		reflect(EcsPhysicsBody,
-			(ecs_member_t){.name = "index", .type = ecs_id(ecs_i32_t)},
-			(ecs_member_t){.name = "world", .type = ecs_id(ecs_u16_t)},
-			(ecs_member_t){.name = "generation", .type = ecs_id(ecs_u16_t)},
 		);
 
 		reflect(EcsRotation,
