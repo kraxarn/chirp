@@ -1,6 +1,5 @@
 #include "ui/debugoverlay.h"
 #include "camera.h"
-#include "ecs.h"
 #include "nkui.h"
 #include "timestats.h"
 #include "ecs/components.h"
@@ -16,6 +15,7 @@
 #include "chirp/logcategory.h"
 #include "chirp/map.h"
 #include "chirp/mousebutton.h"
+#include "chirp/vector.h"
 #include "chirp/ecs/components.h"
 
 #include <SDL3/SDL_assert.h>
@@ -32,13 +32,16 @@
 
 static void draw_camera_info(nk_context_t *ctx, const camera_t *camera)
 {
+	const b3Vec3 position = vector3f_to_b3vec3(camera->position);
+	const b3Vec3 target = vector3f_to_b3vec3(camera->target);
+
 	nk_label(ctx, "Camera", NK_TEXT_LEFT);
-	nk_labelf(ctx, NK_TEXT_LEFT, "%-6.2f %-6.2f %-6.2f",
-		camera->position.x, camera->position.y, camera->position.z);
+	nk_labelf(ctx, NK_TEXT_LEFT, "%-6.2f %-6.2f %-6.2f %-6.2f",
+		position.x, position.y, position.z, b3Length(position));
 
 	nk_label(ctx, "Target", NK_TEXT_LEFT);
-	nk_labelf(ctx, NK_TEXT_LEFT, "%-6.2f %-6.2f %-6.2f",
-		camera->target.x, camera->target.y, camera->target.z);
+	nk_labelf(ctx, NK_TEXT_LEFT, "%-6.2f %-6.2f %-6.2f %-6.2f",
+		target.x, target.y, target.z, b3Length(target));
 }
 
 static void draw_physics_info(nk_context_t *ctx, const b3BodyId body_id)
@@ -48,16 +51,16 @@ static void draw_physics_info(nk_context_t *ctx, const b3BodyId body_id)
 	const b3Quat rotation = b3Body_GetRotation(body_id);
 
 	nk_label(ctx, "Position", NK_TEXT_LEFT);
-	nk_labelf(ctx, NK_TEXT_LEFT, "%-6.2f %-6.2f %-6.2f",
-		position.x, position.y, position.z);
+	nk_labelf(ctx, NK_TEXT_LEFT, "%-6.2f %-6.2f %-6.2f %-6.2f",
+		position.x, position.y, position.z, b3Length(position));
 
 	nk_label(ctx, "Velocity", NK_TEXT_LEFT);
-	nk_labelf(ctx, NK_TEXT_LEFT, "%-6.2f %-6.2f %-6.2f",
-		velocity.x, velocity.y, velocity.z);
+	nk_labelf(ctx, NK_TEXT_LEFT, "%-6.2f %-6.2f %-6.2f %-6.2F",
+		velocity.x, velocity.y, velocity.z, b3Length(velocity));
 
 	nk_label(ctx, "Rotation", NK_TEXT_LEFT);
-	nk_labelf(ctx, NK_TEXT_LEFT, "%-6.2f %-6.2f %-6.2f",
-		rotation.v.x, rotation.v.y, rotation.v.z);
+	nk_labelf(ctx, NK_TEXT_LEFT, "%-6.2f %-6.2f %-6.2f %-6.2f",
+		rotation.v.x, rotation.v.y, rotation.v.z, rotation.s);
 }
 
 static void draw_render_config(nk_context_t *ctx, const float row_height)
@@ -218,12 +221,14 @@ void draw_debug_overlay(ecs_iter_t *iter)
 
 	nk_style_push_style_item(ctx, window_style, nk_style_item_color(color));
 
-	if (nk_begin(ctx, "Debug overlay", (nk_rect_t){
+	nk_rect_t bounds = {
 		.x = padding,
 		.y = padding,
-		.w = 300.F,
+		.w = 350.F,
 		.h = 195.F,
-	}, NK_WINDOW_BORDER))
+	};
+
+	if (nk_begin(ctx, "Debug overlay", bounds, NK_WINDOW_BORDER))
 	{
 		constexpr auto ms_s = 1'000.F;
 
@@ -245,12 +250,10 @@ void draw_debug_overlay(ecs_iter_t *iter)
 	nk_end(ctx);
 
 #ifdef FLECS_STATS
-	if (nk_begin(ctx, "World overlay", (nk_rect_t){
-		.w = 300.F,
-		.h = 150.F,
-		.x = padding,
-		.y = (padding * 2) + 195.F,
-	}, NK_WINDOW_BORDER))
+	bounds.y += padding + bounds.h;
+	bounds.h = 150.F;
+
+	if (nk_begin(ctx, "World overlay", bounds, NK_WINDOW_BORDER))
 	{
 		const EcsWorldSummary *world_summary = ecs_get_id(ecs_world(),
 			EcsWorld, ecs_id(EcsWorldSummary));
@@ -284,12 +287,10 @@ void draw_debug_overlay(ecs_iter_t *iter)
 	nk_end(ctx);
 #endif
 
-	if (nk_begin(ctx, "Input overlay", (nk_rect_t){
-		.w = 300.F,
-		.h = 310.F,
-		.x = padding,
-		.y = (padding * 3) + 195.F + 150.F,
-	}, NK_WINDOW_BORDER))
+	bounds.y += padding + bounds.h;
+	bounds.h = 310.F;
+
+	if (nk_begin(ctx, "Input overlay", bounds, NK_WINDOW_BORDER))
 	{
 		static int selected = 0;
 		static const char *sources[] = {
