@@ -1,6 +1,7 @@
 #include "chirp/assetstream.h"
 
 #include <SDL3/SDL_iostream.h>
+#include <SDL3/SDL_stdinc.h>
 
 typedef struct
 {
@@ -17,7 +18,7 @@ static Sint64 stream_size(void *userdata)
 
 static Sint64 stream_seek(void *userdata, const Sint64 offset, const SDL_IOWhence whence)
 {
-	const auto info = (stream_info_t*) userdata;
+	stream_info_t *info = userdata;
 
 	switch (whence)
 	{
@@ -39,7 +40,7 @@ static Sint64 stream_seek(void *userdata, const Sint64 offset, const SDL_IOWhenc
 
 static size_t stream_read(void *userdata, void *ptr, const size_t size, SDL_IOStatus *status)
 {
-	const auto info = (stream_info_t*) userdata;
+	const stream_info_t *info = userdata;
 
 	const size_t read_size = (info->current + size) > info->size
 		? info->size - info->current
