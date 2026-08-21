@@ -1,11 +1,15 @@
 #include "chirp/assetstream.h"
 
 #include <SDL3/SDL_iostream.h>
+#include <SDL3/SDL_mutex.h>
 #include <SDL3/SDL_stdinc.h>
+
+#include <stddef.h>
 
 typedef struct
 {
 	SDL_IOStream *stream;
+	SDL_Mutex *read_mutex;
 	Sint64 offset;
 	Sint64 size;
 	Sint64 current;
@@ -46,14 +50,18 @@ static size_t stream_read(void *userdata, void *ptr, const size_t size, SDL_IOSt
 		? info->size - info->current
 		: size;
 
+	SDL_LockMutex(info->read_mutex);
+
 	SDL_SeekIO(info->stream, info->offset + info->current, SDL_IO_SEEK_SET);
 
 	if (SDL_ReadIO(info->stream, ptr, read_size) != read_size)
 	{
+		SDL_UnlockMutex(info->read_mutex);
 		*status = SDL_IO_STATUS_ERROR;
 		return 0;
 	}
 
+	SDL_UnlockMutex(info->read_mutex);
 	return read_size;
 }
 
@@ -76,7 +84,7 @@ static bool stream_close(void *userdata)
 	return true;
 }
 
-SDL_IOStream *asset_stream_open_io(SDL_IOStream *stream,
+SDL_IOStream *asset_stream_open_io(SDL_IOStream *stream, SDL_Mutex *read_mutex,
 	const Sint64 offset, const Sint64 size)
 {
 	const SDL_IOStreamInterface interface = {
@@ -91,6 +99,7 @@ SDL_IOStream *asset_stream_open_io(SDL_IOStream *stream,
 
 	stream_info_t *info = SDL_malloc(sizeof(stream_info_t));
 	info->stream = stream;
+	info->read_mutex = read_mutex;
 	info->offset = offset;
 	info->size = size;
 	info->current = 0;

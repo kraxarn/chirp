@@ -5,10 +5,12 @@
 #include "chirp/windowconfig.h"
 
 #include <SDL3/SDL_iostream.h>
+#include <SDL3/SDL_mutex.h>
 
 typedef struct assets
 {
 	SDL_IOStream *stream;
+	SDL_Mutex *read_mutex;
 	window_config_t window_config;
 	map_t desc;
 } assets_t;

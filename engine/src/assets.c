@@ -1,7 +1,6 @@
 #include "chirp/assets.h"
 #include "chirp/array.h"
 #include "chirp/assetstream.h"
-#include "chirp/ecs.h"
 #include "chirp/gamepadaxis.h"
 #include "chirp/gamepadbutton.h"
 #include "chirp/gamepadbuttonlabel.h"
@@ -12,9 +11,6 @@
 #include "chirp/map.h"
 #include "chirp/mousebutton.h"
 #include "chirp/windowconfig.h"
-#include "chirp/ecs/components.h"
-
-#include "flecs.h"
 
 #include <SDL3/SDL_error.h>
 #include <SDL3/SDL_gamepad.h>
@@ -23,6 +19,7 @@
 #include <SDL3/SDL_keyboard.h>
 #include <SDL3/SDL_keycode.h>
 #include <SDL3/SDL_log.h>
+#include <SDL3/SDL_mutex.h>
 #include <SDL3/SDL_stdinc.h>
 
 typedef struct
@@ -360,7 +357,8 @@ SDL_IOStream *assets_load(const assets_t *assets, const char *name)
 		return nullptr;
 	}
 
-	return asset_stream_open_io(assets->stream, desc->offset, desc->size);
+	return asset_stream_open_io(assets->stream, assets->read_mutex,
+		desc->offset, desc->size);
 }
 
 [[nodiscard]]
@@ -413,8 +411,15 @@ bool assets_create(const char *path, const input_t input, assets_t *assets)
 	}
 
 	assets->stream = stream;
+	assets->read_mutex = SDL_CreateMutex();
 	assets->window_config = window_config_default();
 	assets->desc = map_create();
+
+	if (assets->read_mutex == nullptr)
+	{
+		assets_destroy(assets);
+		return false;
+	}
 
 	if (assets->desc == 0)
 	{
@@ -473,6 +478,7 @@ void assets_destroy(const assets_t *assets)
 	SDL_free((void*) assets->window_config.title);
 
 	SDL_CloseIO(assets->stream);
+	SDL_DestroyMutex(assets->read_mutex);
 	map_destroy(assets->desc);
 }
 
