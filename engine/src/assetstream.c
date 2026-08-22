@@ -44,7 +44,7 @@ static Sint64 stream_seek(void *userdata, const Sint64 offset, const SDL_IOWhenc
 
 static size_t stream_read(void *userdata, void *ptr, const size_t size, SDL_IOStatus *status)
 {
-	const stream_info_t *info = userdata;
+	stream_info_t *info = userdata;
 
 	const size_t read_size = (info->current + size) > info->size
 		? info->size - info->current
@@ -62,6 +62,8 @@ static size_t stream_read(void *userdata, void *ptr, const size_t size, SDL_IOSt
 	}
 
 	SDL_UnlockMutex(info->read_mutex);
+
+	info->current += (Sint64) read_size;
 	return read_size;
 }
 
