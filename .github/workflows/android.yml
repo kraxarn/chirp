@@ -29,7 +29,7 @@ jobs:
           echo "$KEYSTORE_PROPERTIES" > "android/keystore.properties"
 
       - name: Build
-        working-directory: ${{runner.workspace}}/chirp3d/android
+        working-directory: ${{runner.workspace}}/chirp/android
         run: ./gradlew --info assembleRelease
 
       - name: Upload Artifact

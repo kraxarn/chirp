@@ -80,5 +80,5 @@ jobs:
         with:
           name: chirp3d-linux-${{ matrix.arch }}
           path: |
-            ${{runner.workspace}}/chirp3d/build/engine3d/chirp3d
-            ${{runner.workspace}}/chirp3d/build/engine3d/libSDL3.so*
+            ${{runner.workspace}}/chirp/build/engine3d/chirp3d
+            ${{runner.workspace}}/chirp/build/engine3d/libSDL3.so*
