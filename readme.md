@@ -19,7 +19,7 @@ Currently very early in development and not very usable quite yet.
 
 # goals (non-final)
 
-* The entire engine should be lightweight, and smaller than 10 MB.
+* The entire engine should be lightweight, and without any unnecessary bloat.
 * The engine should be directly native for each supported platform.
 
 # why c?
