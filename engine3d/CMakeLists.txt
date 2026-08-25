@@ -20,10 +20,7 @@ target_compile_definitions(${EXEC_NAME} PRIVATE
 	ENGINE_COMPILER="${CMAKE_C_COMPILER_ID} ${CMAKE_C_COMPILER_VERSION}"
 )
 
-target_link_libraries(${EXEC_NAME} PRIVATE
-	chirp
-	pocketpy
-)
+target_link_libraries(${EXEC_NAME} PRIVATE chirp)
 
 include(../cmake/resources.cmake)
 target_resources(${EXEC_NAME})

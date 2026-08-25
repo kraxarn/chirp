@@ -1,5 +1,4 @@
 add_subdirectory(ecs)
-add_subdirectory(py)
 add_subdirectory(ui)
 
 target_sources(${EXEC_NAME} PRIVATE
@@ -15,7 +14,6 @@ target_sources(${EXEC_NAME} PRIVATE
 	"${CMAKE_CURRENT_SOURCE_DIR}/nkui.c"
 	"${CMAKE_CURRENT_SOURCE_DIR}/physicsconfig.c"
 	"${CMAKE_CURRENT_SOURCE_DIR}/resources.c"
-	"${CMAKE_CURRENT_SOURCE_DIR}/scriptengine.c"
 	"${CMAKE_CURRENT_SOURCE_DIR}/shader.c"
 	"${CMAKE_CURRENT_SOURCE_DIR}/systeminfo.c"
 )

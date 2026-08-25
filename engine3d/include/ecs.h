@@ -79,6 +79,5 @@ void ecs_add_window();
 void ecs_add_gpu();
 void ecs_add_physics();
 void ecs_add_render();
-void ecs_add_script_engine();
 void ecs_add_models();
 void ecs_add_logging();

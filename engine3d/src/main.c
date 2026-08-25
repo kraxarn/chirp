@@ -7,7 +7,6 @@
 #include "nkui.h"
 #include "physicsconfig.h"
 #include "prefabs.h"
-#include "scriptengine.h"
 #include "termcolors.h"
 #include "timestats.h"
 #include "ecs/components.h"
@@ -330,7 +329,6 @@ SDL_AppResult SDL_AppInit(void **appstate, const int argc, char **argv)
 		ecs_add_assets();
 		ecs_add_physics();
 		ecs_add_render();
-		ecs_add_script_engine();
 		ecs_add_models();
 		ecs_add_nkui();
 		ecs_add_input();
@@ -758,7 +756,6 @@ void SDL_AppQuit(void *appstate, [[maybe_unused]] SDL_AppResult result)
 	ecs_query_fini(query);
 
 	assets_destroy(ecs_get_id(ecs_world(), ecs_singleton(EcsAssets)));
-	script_engine_destroy();
 	physics_destroy(*(b3WorldId*) ecs_get_id(ecs_world(), ecs_singleton(EcsPhysicsWorld)));
 
 	SDL_Window *window = *(SDL_Window**) ecs_get_mut_id(ecs_world(),
