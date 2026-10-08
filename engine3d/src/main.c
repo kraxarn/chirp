@@ -436,7 +436,7 @@ static SDL_AppResult check_error(const app_state_t *state, SDL_Window *window)
 		return SDL_APP_FAILURE;
 	}
 
-	return SDL_APP_SUCCESS;
+	return SDL_APP_CONTINUE;
 }
 
 SDL_AppResult SDL_AppIterate(void *appstate)
