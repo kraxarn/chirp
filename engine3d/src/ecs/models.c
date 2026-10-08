@@ -147,7 +147,7 @@ static void instance_model(ecs_iter_t *iter)
 	const ecs_entity_t model = ecs_lookup_child(ecs_world(), models_entity(), name);
 	if (model == 0)
 	{
-		const assets_t *assets = ecs_field(iter, assets_t, 2);
+		const assets_t *assets = ecs_field(iter, assets_t, 1);
 		if (load_model(assets, name) == 0)
 		{
 			// Don't try to load indefinitely
