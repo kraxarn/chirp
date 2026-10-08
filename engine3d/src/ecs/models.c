@@ -44,11 +44,9 @@ static Uint16 fix_entity_name(const char *name)
 	return changes;
 }
 
-static ecs_entity_t load_model(const char *name)
+static ecs_entity_t load_model(const assets_t *assets, const char *name)
 {
 	SDL_LogInfo(LOG_CATEGORY_ECS, "Loading model: '%s'", name);
-
-	const assets_t *assets = ecs_get_id(ecs_world(), ecs_singleton(EcsAssets));
 
 	SDL_GPUDevice *gpu_device = *((SDL_GPUDevice**) ecs_get_mut_id(ecs_world(),
 		ecs_singleton(EcsGpuDevice)));
@@ -149,7 +147,8 @@ static void instance_model(ecs_iter_t *iter)
 	const ecs_entity_t model = ecs_lookup_child(ecs_world(), models_entity(), name);
 	if (model == 0)
 	{
-		if (load_model(name) == 0)
+		const assets_t *assets = ecs_field(iter, assets_t, 2);
+		if (load_model(assets, name) == 0)
 		{
 			// Don't try to load indefinitely
 			ecs_remove_id(ecs_world(), entity, EcsModelInstance);
@@ -181,6 +180,7 @@ void ecs_add_models()
 		.query.terms = {
 			(ecs_term_t){.id = EcsModelInstance, .oper = EcsOr, .inout = EcsInOut},
 			(ecs_term_t){.id = EcsModelScene, .inout = EcsInOut},
+			(ecs_term_t){.id = ecs_singleton_id(EcsAssets), .inout = EcsIn},
 		},
 		.callback = instance_model,
 	});

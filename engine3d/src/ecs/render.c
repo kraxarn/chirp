@@ -194,6 +194,11 @@ static void render_model(ecs_iter_t *iter)
 
 static void end_render(ecs_iter_t *iter)
 {
+	if (!ecs_field_is_set(iter, 4))
+	{
+		return;
+	}
+
 	SDL_GPURenderPass *render_pass = *ecs_field(iter, gpu_render_pass_t*, 0);
 	SDL_GPUCommandBuffer *command_buffer = *ecs_field(iter, gpu_command_buffer_t*, 1);
 	SDL_GPUTexture *swapchain_texture = *ecs_field(iter, swapchain_texture_t*, 2);

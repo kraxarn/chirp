@@ -18,6 +18,7 @@ static void on_file_opened(void *userdata,
 {
 	if (filelist == nullptr || filelist[0] == nullptr)
 	{
+		ecs_set_error("Assets error", "No game found");
 		return;
 	}
 

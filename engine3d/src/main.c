@@ -419,6 +419,26 @@ SDL_AppResult SDL_AppInit(void **appstate, const int argc, char **argv)
 	return SDL_APP_CONTINUE;
 }
 
+[[nodiscard]]
+static SDL_AppResult check_error(const app_state_t *state, SDL_Window *window)
+{
+	ecs_iter_t iter = ecs_query_iter(ecs_world(), state->status_query);
+	if (ecs_query_next(&iter))
+	{
+		const error_t *error = ecs_field(&iter, error_t, 0);
+		SDL_LogCritical(LOG_CATEGORY_CORE, "%s: %s", error->title, error->message);
+		if (fatal_error_message_box())
+		{
+			SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR,
+				error->title, error->message, window);
+		}
+		ecs_iter_fini(&iter);
+		return SDL_APP_FAILURE;
+	}
+
+	return SDL_APP_SUCCESS;
+}
+
 SDL_AppResult SDL_AppIterate(void *appstate)
 {
 	app_state_t *state = appstate;
@@ -440,6 +460,11 @@ SDL_AppResult SDL_AppIterate(void *appstate)
 	}
 
 	ecs_progress(ecs_world(), time_stats->dt);
+
+	if (!ecs_has_id(ecs_world(), ecs_singleton(EcsWindow)))
+	{
+		return check_error(state, nullptr);
+	}
 
 	const physics_config_t *physics_config = ecs_get_id(ecs_world(),
 		ecs_singleton(EcsPhysicsConfig));
@@ -646,21 +671,7 @@ SDL_AppResult SDL_AppIterate(void *appstate)
 		projections[0].rebuild = true; // TODO: Maybe do this in an observer or something
 	}
 
-	iter = ecs_query_iter(ecs_world(), state->status_query);
-	if (ecs_query_next(&iter))
-	{
-		const error_t *error = ecs_field(&iter, error_t, 0);
-		SDL_LogCritical(LOG_CATEGORY_CORE, "%s: %s", error->title, error->message);
-		if (fatal_error_message_box())
-		{
-			SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR,
-				error->title, error->message, window);
-		}
-		ecs_iter_fini(&iter);
-		return SDL_APP_FAILURE;
-	}
-
-	return SDL_APP_CONTINUE;
+	return check_error(state, window);
 }
 
 static void emit(const ecs_entity_t event, const ecs_id_t value_type, void *value)
@@ -758,33 +769,31 @@ void SDL_AppQuit(void *appstate, [[maybe_unused]] SDL_AppResult result)
 	assets_destroy(ecs_get_id(ecs_world(), ecs_singleton(EcsAssets)));
 	physics_destroy(*(b3WorldId*) ecs_get_id(ecs_world(), ecs_singleton(EcsPhysicsWorld)));
 
-	SDL_Window *window = *(SDL_Window**) ecs_get_mut_id(ecs_world(),
-		ecs_singleton(EcsWindow));
+	if (ecs_has_id(ecs_world(), ecs_singleton(EcsGpuDevice)))
+	{
+		SDL_GPUDevice *gpu_device = *(SDL_GPUDevice**) ecs_get_mut_id(ecs_world(),
+			ecs_singleton(EcsGpuDevice));
 
-	SDL_GPUDevice *gpu_device = *(SDL_GPUDevice**) ecs_get_mut_id(ecs_world(),
-		ecs_singleton(EcsGpuDevice));
+#define release(func, component)								\
+	if (ecs_has_id(ecs_world(), ecs_singleton(component))) {	\
+		func(gpu_device, *(void**) ecs_get_mut_id(ecs_world(),	\
+			ecs_singleton(component)));							\
+	}
+		release(SDL_ReleaseGPUShader, EcsVertexShader);
+		release(SDL_ReleaseGPUShader, EcsFragmentShader);
+		release(SDL_ReleaseGPUTexture, EcsDepthTexture);
+		release(SDL_ReleaseGPUGraphicsPipeline, EcsGpuGraphicsPipeline);
+		release(SDL_ReleaseWindowFromGPUDevice, EcsWindow);
+#undef release
 
-	SDL_GPUGraphicsPipeline *pipeline = *(SDL_GPUGraphicsPipeline**) ecs_get_mut_id(ecs_world(),
-		ecs_singleton(EcsGpuGraphicsPipeline));
+		SDL_DestroyGPUDevice(gpu_device);
+	}
 
-	SDL_GPUTexture *depth_texture = *(SDL_GPUTexture**) ecs_get_mut_id(ecs_world(),
-		ecs_singleton(EcsDepthTexture));
-
-	SDL_GPUShader *vertex_shader = *(SDL_GPUShader**) ecs_get_mut_id(ecs_world(),
-		ecs_singleton(EcsVertexShader));
-
-	SDL_GPUShader *fragment_shader = *(SDL_GPUShader**) ecs_get_mut_id(ecs_world(),
-		ecs_singleton(EcsFragmentShader));
-
-	SDL_ReleaseGPUShader(gpu_device, vertex_shader);
-	SDL_ReleaseGPUShader(gpu_device, fragment_shader);
-
-	SDL_ReleaseGPUTexture(gpu_device, depth_texture);
-	SDL_ReleaseGPUGraphicsPipeline(gpu_device, pipeline);
-	SDL_ReleaseWindowFromGPUDevice(gpu_device, window);
-
-	SDL_DestroyWindow(window);
-	SDL_DestroyGPUDevice(gpu_device);
+	if (ecs_has_id(ecs_world(), ecs_singleton(EcsWindow)))
+	{
+		SDL_DestroyWindow(*(SDL_Window**) ecs_get_mut_id(ecs_world(),
+			ecs_singleton(EcsWindow)));
+	}
 
 	ecs_destroy();
 	SDL_free(appstate);
