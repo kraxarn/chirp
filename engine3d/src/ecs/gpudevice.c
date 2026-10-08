@@ -198,13 +198,11 @@ static void load_default_shaders(ecs_iter_t *iter)
 		return;
 	}
 
-	const ecs_entity_t entity = ecs_new(ecs_world());
+	ecs_set_id(ecs_world(), ecs_singleton(EcsVertexShader),
+		sizeof(SDL_GPUShader**), (const void*) &vertex_shader);
 
-	ecs_set_id(ecs_world(), entity, EcsVertexShader,
-		sizeof(SDL_GPUShader*), (const void*) &vertex_shader);
-
-	ecs_set_id(ecs_world(), entity, EcsFragmentShader,
-		sizeof(SDL_GPUShader*), (const void*) &fragment_shader);
+	ecs_set_id(ecs_world(), ecs_singleton(EcsFragmentShader),
+		sizeof(SDL_GPUShader**), (const void*) &fragment_shader);
 }
 
 static void create_default_pipeline(ecs_iter_t *iter)
@@ -286,10 +284,6 @@ static void create_default_pipeline(ecs_iter_t *iter)
 
 	SDL_GPUGraphicsPipeline *pipeline = SDL_CreateGPUGraphicsPipeline(device, &create_info);
 
-	// TODO: Delete entity instead
-	SDL_ReleaseGPUShader(device, vertex_shader);
-	SDL_ReleaseGPUShader(device, fragment_shader);
-
 	if (pipeline == nullptr)
 	{
 		ecs_set_error("Pipeline error", SDL_GetError());
@@ -362,8 +356,8 @@ void ecs_add_gpu()
 			.query.terms = {
 				(ecs_term_t){.id = ecs_singleton_id(EcsWindow), .inout = EcsIn},
 				(ecs_term_t){.id = ecs_singleton_id(EcsGpuDevice), .inout = EcsIn},
-				(ecs_term_t){.id = EcsVertexShader, .inout = EcsIn},
-				(ecs_term_t){.id = EcsFragmentShader, .inout = EcsIn},
+				(ecs_term_t){.id = ecs_singleton_id(EcsVertexShader), .inout = EcsIn},
+				(ecs_term_t){.id = ecs_singleton_id(EcsFragmentShader), .inout = EcsIn},
 			},
 			.events = {EcsOnSet},
 			.callback = create_default_pipeline,

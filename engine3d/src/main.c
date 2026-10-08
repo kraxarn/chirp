@@ -770,6 +770,15 @@ void SDL_AppQuit(void *appstate, [[maybe_unused]] SDL_AppResult result)
 	SDL_GPUTexture *depth_texture = *(SDL_GPUTexture**) ecs_get_mut_id(ecs_world(),
 		ecs_singleton(EcsDepthTexture));
 
+	SDL_GPUShader *vertex_shader = *(SDL_GPUShader**) ecs_get_mut_id(ecs_world(),
+		ecs_singleton(EcsVertexShader));
+
+	SDL_GPUShader *fragment_shader = *(SDL_GPUShader**) ecs_get_mut_id(ecs_world(),
+		ecs_singleton(EcsFragmentShader));
+
+	SDL_ReleaseGPUShader(gpu_device, vertex_shader);
+	SDL_ReleaseGPUShader(gpu_device, fragment_shader);
+
 	SDL_ReleaseGPUTexture(gpu_device, depth_texture);
 	SDL_ReleaseGPUGraphicsPipeline(gpu_device, pipeline);
 	SDL_ReleaseWindowFromGPUDevice(gpu_device, window);
