@@ -3,7 +3,7 @@
 #include <SDL3/SDL_platform_defines.h>
 
 // Assume this only works on unix systems
-#ifdef SDL_PLATFORM_UNIX
+#if defined(SDL_PLATFORM_UNIX) || defined(SDL_PLATFORM_MACOS)
 
 #define COLOR_FG_RESET "\x1b[0m"
 
