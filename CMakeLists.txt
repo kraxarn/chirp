@@ -15,8 +15,6 @@ include(deps/cgltf.cmake)
 include(deps/cpuinfo.cmake)
 include(deps/flecs.cmake)
 include(deps/nuklear.cmake)
-include(deps/pocketpy.cmake)
-include(deps/qoi.cmake)
 include(deps/sdl3.cmake)
 
 add_subdirectory(engine)
