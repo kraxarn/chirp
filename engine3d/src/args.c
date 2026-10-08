@@ -43,7 +43,7 @@ static void print_help()
 	}
 	SDL_strlcat(audio_drivers, "]", audio_drivers_len);
 
-	constexpr size_t gpu_drivers_len = 32;
+	constexpr size_t gpu_drivers_len = 64;
 	char gpu_drivers[gpu_drivers_len];
 	gpu_drivers[0] = '\0';
 	for (int i = 0; i < SDL_GetNumGPUDrivers(); i++)
