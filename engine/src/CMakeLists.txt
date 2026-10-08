@@ -11,7 +11,6 @@ target_sources(${LIB_NAME} PRIVATE
 	"${CMAKE_CURRENT_SOURCE_DIR}/gamepadaxis.c"
 	"${CMAKE_CURRENT_SOURCE_DIR}/gamepadbutton.c"
 	"${CMAKE_CURRENT_SOURCE_DIR}/gamepadbuttonlabel.c"
-	"${CMAKE_CURRENT_SOURCE_DIR}/image.c"
 	"${CMAKE_CURRENT_SOURCE_DIR}/input.c"
 	"${CMAKE_CURRENT_SOURCE_DIR}/inputconfig.c"
 	"${CMAKE_CURRENT_SOURCE_DIR}/json.c"

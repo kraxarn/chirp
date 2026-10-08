@@ -2,7 +2,6 @@
 #include "model.h"
 
 #include "chirp/assets.h"
-#include "chirp/image.h"
 
 #include <SDL3/SDL_iostream.h>
 #include <SDL3/SDL_stdinc.h>
@@ -24,7 +23,7 @@ SDL_Surface *assets_load_texture(const assets_t *assets, const char *name)
 		return nullptr;
 	}
 
-	return load_qoi(stream, true);
+	return SDL_LoadPNG_IO(stream, true);
 }
 
 bool assets_load_model(const assets_t *assets, SDL_GPUDevice *device, const char *name, model_t *model)
