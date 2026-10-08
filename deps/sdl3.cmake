@@ -2,7 +2,7 @@ include(FetchContent)
 
 FetchContent_Declare(sdl
 	GIT_REPOSITORY https://github.com/libsdl-org/SDL.git
-	GIT_TAG release-3.4.14
+	GIT_TAG release-3.4.18
 )
 
 option(USE_VENDORED_SDL "Force vendored SDL, even if available in system" OFF)
