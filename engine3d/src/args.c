@@ -4,6 +4,7 @@
 
 #include <SDL3/SDL_audio.h>
 #include <SDL3/SDL_cpuinfo.h>
+#include <SDL3/SDL_gpu.h>
 #include <SDL3/SDL_log.h>
 #include <SDL3/SDL_stdinc.h>
 #include <SDL3/SDL_video.h>
@@ -42,6 +43,16 @@ static void print_help()
 	}
 	SDL_strlcat(audio_drivers, "]", audio_drivers_len);
 
+	constexpr size_t gpu_drivers_len = 32;
+	char gpu_drivers[gpu_drivers_len];
+	gpu_drivers[0] = '\0';
+	for (int i = 0; i < SDL_GetNumGPUDrivers(); i++)
+	{
+		SDL_strlcat(gpu_drivers, i == 0 ? "--gpu-driver [" : "/", gpu_drivers_len);
+		SDL_strlcat(gpu_drivers, SDL_GetGPUDriver(i), gpu_drivers_len);
+	}
+	SDL_strlcat(gpu_drivers, "]", gpu_drivers_len);
+
 	const int cpu_cores = SDL_GetNumLogicalCPUCores();
 
 	constexpr size_t threads_len = 24;
@@ -76,6 +87,10 @@ static void print_help()
 		(arg_command_t){
 			.command = audio_drivers,
 			.description = "Force specific audio driver",
+		},
+		(arg_command_t){
+			.command = gpu_drivers,
+			.description = "Force specific GPU driver",
 		},
 		(arg_command_t){
 			.command = "--(no-)allow-screensaver",
@@ -150,6 +165,8 @@ bool args_parse(const int argc, char **argv, args_t *args)
 		.gpu_debug_mode = OPT_NOT_SET,
 		.log_priorities = {0},
 		.video_driver = nullptr,
+		.audio_driver = nullptr,
+		.gpu_driver = nullptr,
 		.threads = 0,
 		.task_threads = 0,
 	};
@@ -226,6 +243,11 @@ bool args_parse(const int argc, char **argv, args_t *args)
 		else if (SDL_strcmp(arg, "--audio-driver") == 0 && i + 1 < argc)
 		{
 			args->audio_driver = argv[++i];
+		}
+
+		else if (SDL_strcmp(arg, "--gpu-driver") == 0 && i + 1 < argc)
+		{
+			args->gpu_driver = argv[++i];
 		}
 
 		else if (SDL_strcmp(arg, "--allow-screensaver") == 0)

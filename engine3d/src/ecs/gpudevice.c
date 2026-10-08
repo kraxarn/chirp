@@ -58,6 +58,8 @@ static void create_gpu_device(ecs_iter_t *iter)
 			args.prefer_low_power == OPT_ENABLE);
 	}
 
+	SDL_SetStringProperty(props, SDL_PROP_GPU_DEVICE_CREATE_NAME_STRING, args.gpu_driver);
+
 	SDL_SetBooleanProperty(props, SDL_PROP_GPU_DEVICE_CREATE_DEBUGMODE_BOOLEAN,
 		debug_mode(args.gpu_debug_mode));
 

@@ -52,6 +52,13 @@ typedef struct
 	const char *audio_driver;
 
 	/**
+	 * --gpu-driver vulkan/metal/direct3d12
+	 *
+	 * Override the default GPU driver with the specified one
+	 */
+	const char *gpu_driver;
+
+	/**
 	 * --allow-screensaver / --no-allow-screensaver
 	 *
 	 * Set the "allow screensaver" hint
