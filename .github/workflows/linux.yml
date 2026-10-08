@@ -44,7 +44,7 @@ jobs:
         uses: egor-tensin/setup-clang@v2
         with:
           # 'latest' is latest available in repos, not latest clang version
-          version: '22'
+          version: '23'
           cc: '1'
 
       - name: Install SDL3
