@@ -555,8 +555,8 @@ bool nkui_render_draw(nkui_context_t *context, SDL_Window *window,
 		SDL_SetGPUScissor(render_pass, &(SDL_Rect){
 			.x = SDL_max((int) command->clip_rect.x - 1, 0),
 			.y = SDL_max((int) command->clip_rect.y - 1, 0),
-			.w = (int) command->clip_rect.w + 2,
-			.h = (int) command->clip_rect.h + 2,
+			.w = SDL_min((int) command->clip_rect.w + 2, width),
+			.h = SDL_min((int) command->clip_rect.h + 2, height),
 		});
 
 		SDL_GPUTexture *texture = command->texture.ptr;
