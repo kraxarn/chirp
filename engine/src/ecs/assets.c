@@ -27,7 +27,11 @@ static void on_file_opened(void *userdata,
 	{
 		ecs_set_id(ecs_world(), ecs_singleton(EcsAssets),
 			sizeof(assets_t), &assets);
+
+		return;
 	}
+
+	ecs_set_error("Assets error", SDL_GetError());
 }
 
 static void create_assets(ecs_iter_t *iter)
