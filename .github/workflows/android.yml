@@ -32,9 +32,16 @@ jobs:
         working-directory: ${{runner.workspace}}/chirp/android
         run: ./gradlew --info assembleRelease
 
-      - name: Upload Artifact
+      - name: Upload Artifact (arm64-v8a)
         uses: actions/upload-artifact@v7
         with:
           name: chirp3d-android-arm64-v8a
           path: android/app/build/outputs/apk/release/*-arm64-v8a.apk
+          archive: false
+
+      - name: Upload Artifact (armeabi-v7a)
+        uses: actions/upload-artifact@v7
+        with:
+          name: chirp3d-android-armeabi-v7a
+          path: android/app/build/outputs/apk/release/*-armeabi-v7a.apk
           archive: false
