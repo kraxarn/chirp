@@ -16,7 +16,13 @@
 static void on_file_opened(void *userdata,
 	const char *const *filelist, [[maybe_unused]] int filter)
 {
-	if (filelist == nullptr || filelist[0] == nullptr)
+	if (filelist == nullptr)
+	{
+		ecs_set_error("Assets error", SDL_GetError());
+		return;
+	}
+
+	if (filelist[0] == nullptr)
 	{
 		ecs_set_error("Assets error", "No game found");
 		return;
