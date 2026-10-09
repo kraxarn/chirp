@@ -222,7 +222,9 @@ static void set_log_priorities(const SDL_LogPriority *priorities)
 	const SDL_LogPriority priority_all = priorities[LOG_CATEGORY_COUNT];
 	if (priority_all == SDL_LOG_PRIORITY_INVALID)
 	{
-#ifdef NDEBUG
+#ifdef SDL_PLATFORM_ANDROID
+		SDL_SetLogPriorities(SDL_LOG_PRIORITY_VERBOSE);
+#elifdef NDEBUG
 		SDL_SetLogPriorities(SDL_LOG_PRIORITY_INFO);
 #else
 		SDL_SetLogPriorities(SDL_LOG_PRIORITY_VERBOSE);
