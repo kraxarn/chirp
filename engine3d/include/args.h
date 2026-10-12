@@ -19,6 +19,18 @@ typedef enum
 	TYPE_VALUE, // --arg [value]
 } arg_type_t;
 
+#define arg_help                    "help"
+#define arg_prefer_low_power        "prefer-low-power"
+#define arg_gpu_debug_mode          "gpu-debug-mode"
+#define arg_log_priority            "log-priority"
+#define arg_video_driver            "video-driver"
+#define arg_audio_driver            "audio-driver"
+#define arg_gpu_driver              "gpu-driver"
+#define arg_allow_screensaver       "allow-screensaver"
+#define arg_fatal_error_message_box "fatal-error-message-box"
+#define arg_threads                 "threads"
+#define arg_task_threads            "task-threads"
+
 typedef struct
 {
 	/**

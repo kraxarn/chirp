@@ -74,62 +74,62 @@ static arg_command_t *commands(size_t *len)
 	const arg_command_t items[] = {
 		(arg_command_t){
 			.type = TYPE_NONE,
-			.command = "help",
+			.command = arg_help,
 			.description = "Show this"
 		},
 		(arg_command_t){
 			.type = TYPE_FLAG,
-			.command = "prefer-low-power",
+			.command = arg_prefer_low_power,
 			.description = "Prefer integrated GPU over dedicated GPU",
 		},
 		(arg_command_t){
 			.type = TYPE_FLAG,
-			.command = "gpu-debug-mode",
+			.command = arg_gpu_debug_mode,
 			.description = "Enable GPU validations and more verbose GPU logging",
 		},
 		(arg_command_t){
 			.type = TYPE_VALUE,
-			.command = "log-priority",
+			.command = arg_log_priority,
 			.values = log_priority_values,
 			.description = "Set global logging verbosity",
 		},
 		(arg_command_t){
 			.type = TYPE_VALUE,
-			.command = "video-driver",
+			.command = arg_video_driver,
 			.values = video_driver_values,
 			.description = "Force specific video driver",
 		},
 		(arg_command_t){
 			.type = TYPE_VALUE,
-			.command = "audio-driver",
+			.command = arg_audio_driver,
 			.values = audio_driver_values,
 			.description = "Force specific audio driver",
 		},
 		(arg_command_t){
 			.type = TYPE_VALUE,
-			.command = "gpu-driver",
+			.command = arg_gpu_driver,
 			.values = gpu_driver_values,
 			.description = "Force specific GPU driver",
 		},
 		(arg_command_t){
 			.type = TYPE_FLAG,
-			.command = "allow-screensaver",
+			.command = arg_allow_screensaver,
 			.description = "Enable screensaver while running",
 		},
 		(arg_command_t){
 			.type = TYPE_FLAG,
-			.command = "fatal-error-message-box",
+			.command = arg_fatal_error_message_box,
 			.description = "Show a message box on fatal error",
 		},
 		(arg_command_t){
 			.type = TYPE_VALUE,
-			.command = "threads",
+			.command = arg_threads,
 			.values = thread_values,
 			.description = "Set number of threads to use",
 		},
 		(arg_command_t){
 			.type = TYPE_VALUE,
-			.command = "task-threads",
+			.command = arg_task_threads,
 			.values = task_thread_values,
 			.description = "Set number of task threads to use",
 		},
@@ -229,7 +229,7 @@ bool args_parse(const int argc, char **argv, args_t *args)
 	{
 		const char *arg = argv[i];
 
-		if (SDL_strcmp(arg, "--help") == 0)
+		if (SDL_strcmp(arg, "--"arg_help) == 0)
 		{
 			size_t items_size = 0;
 			arg_command_t *items = commands(&items_size);
@@ -238,25 +238,25 @@ bool args_parse(const int argc, char **argv, args_t *args)
 			return false;
 		}
 
-		if (SDL_strcmp(arg, "--prefer-low-power") == 0)
+		if (SDL_strcmp(arg, "--"arg_prefer_low_power) == 0)
 		{
 			args->prefer_low_power = OPT_ENABLE;
 		}
-		else if (SDL_strcmp(arg, "--no-prefer-low-power") == 0)
+		else if (SDL_strcmp(arg, "--no-"arg_prefer_low_power) == 0)
 		{
 			args->prefer_low_power = OPT_DISABLE;
 		}
 
-		else if (SDL_strcmp(arg, "--gpu-debug-mode") == 0)
+		else if (SDL_strcmp(arg, "--"arg_gpu_debug_mode) == 0)
 		{
 			args->gpu_debug_mode = OPT_ENABLE;
 		}
-		else if (SDL_strcmp(arg, "--no-gpu-debug-mode") == 0)
+		else if (SDL_strcmp(arg, "--no-"arg_gpu_debug_mode) == 0)
 		{
 			args->gpu_debug_mode = OPT_DISABLE;
 		}
 
-		else if (SDL_strcmp(arg, "--log-priority") == 0 && i + 1 < argc)
+		else if (SDL_strcmp(arg, "--"arg_log_priority) == 0 && i + 1 < argc)
 		{
 			const char *value = argv[++i];
 
@@ -292,44 +292,44 @@ bool args_parse(const int argc, char **argv, args_t *args)
 			}
 		}
 
-		else if (SDL_strcmp(arg, "--video-driver") == 0 && i + 1 < argc)
+		else if (SDL_strcmp(arg, "--"arg_video_driver) == 0 && i + 1 < argc)
 		{
 			args->video_driver = argv[++i];
 		}
 
-		else if (SDL_strcmp(arg, "--audio-driver") == 0 && i + 1 < argc)
+		else if (SDL_strcmp(arg, "--"arg_audio_driver) == 0 && i + 1 < argc)
 		{
 			args->audio_driver = argv[++i];
 		}
 
-		else if (SDL_strcmp(arg, "--gpu-driver") == 0 && i + 1 < argc)
+		else if (SDL_strcmp(arg, "--"arg_gpu_driver) == 0 && i + 1 < argc)
 		{
 			args->gpu_driver = argv[++i];
 		}
 
-		else if (SDL_strcmp(arg, "--allow-screensaver") == 0)
+		else if (SDL_strcmp(arg, "--"arg_allow_screensaver) == 0)
 		{
 			args->allow_screensaver = OPT_ENABLE;
 		}
-		else if (SDL_strcmp(arg, "--no-allow-screensaver") == 0)
+		else if (SDL_strcmp(arg, "--no-"arg_allow_screensaver) == 0)
 		{
 			args->allow_screensaver = OPT_DISABLE;
 		}
 
-		else if (SDL_strcmp(arg, "--fatal-error-message-box") == 0)
+		else if (SDL_strcmp(arg, "--"arg_fatal_error_message_box) == 0)
 		{
 			args->fatal_error_message_box = OPT_ENABLE;
 		}
-		else if (SDL_strcmp(arg, "--no-fatal-error-message-box") == 0)
+		else if (SDL_strcmp(arg, "--no-"arg_fatal_error_message_box) == 0)
 		{
 			args->fatal_error_message_box = OPT_DISABLE;
 		}
 
-		else if (SDL_strcmp(arg, "--worker-threads") == 0 && i + 1 < argc)
+		else if (SDL_strcmp(arg, "--"arg_threads) == 0 && i + 1 < argc)
 		{
 			args->threads = SDL_atoi(argv[++i]);
 		}
-		else if (SDL_strcmp(arg, "--worker-task-threads") == 0 && i + 1 < argc)
+		else if (SDL_strcmp(arg, "--"arg_task_threads) == 0 && i + 1 < argc)
 		{
 			args->task_threads = SDL_atoi(argv[++i]);
 		}
