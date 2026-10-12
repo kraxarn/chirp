@@ -12,6 +12,13 @@ typedef enum : Uint8
 	OPT_ENABLE,  // Explicitly enabled
 } arg_option_t;
 
+typedef enum
+{
+	TYPE_NONE,  // --arg
+	TYPE_FLAG,  // --arg / --no-arg
+	TYPE_VALUE, // --arg [value]
+} arg_type_t;
+
 typedef struct
 {
 	/**

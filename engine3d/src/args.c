@@ -9,13 +9,140 @@
 #include <SDL3/SDL_stdinc.h>
 #include <SDL3/SDL_video.h>
 
+#include <stddef.h>
+
+typedef void (*arg_callback_t)(char *buffer, size_t buffer_len);
+
 typedef struct
 {
+	arg_type_t type;
 	const char *command;
+	arg_callback_t values;
 	const char *description;
 } arg_command_t;
 
-static void print_help()
+static void log_priority_values(char *buffer, const size_t buffer_len)
+{
+	SDL_snprintf(buffer, buffer_len, "debug/info/warn/error");
+}
+
+static void video_driver_values(char *buffer, const size_t buffer_len)
+{
+	SDL_snprintf(buffer, buffer_len, "%s", SDL_GetVideoDriver(0));
+	for (int i = 1; i < SDL_GetNumVideoDrivers(); i++)
+	{
+		SDL_strlcat(buffer, "/", buffer_len);
+		SDL_strlcat(buffer, SDL_GetVideoDriver(i), buffer_len);
+	}
+}
+
+static void audio_driver_values(char *buffer, const size_t buffer_len)
+{
+	SDL_snprintf(buffer, buffer_len, "%s", SDL_GetAudioDriver(0));
+	for (int i = 1; i < SDL_GetNumAudioDrivers(); i++)
+	{
+		SDL_strlcat(buffer, "/", buffer_len);
+		SDL_strlcat(buffer, SDL_GetAudioDriver(i), buffer_len);
+	}
+}
+
+static void gpu_driver_values(char *buffer, const size_t buffer_len)
+{
+	SDL_snprintf(buffer, buffer_len, "%s", SDL_GetGPUDriver(0));
+	for (int i = 0; i < SDL_GetNumGPUDrivers(); i++)
+	{
+		SDL_strlcat(buffer, "/", buffer_len);
+		SDL_strlcat(buffer, SDL_GetGPUDriver(i), buffer_len);
+	}
+}
+
+static void thread_values(char *buffer, const size_t buffer_len)
+{
+	const int cpu_cores = SDL_GetNumLogicalCPUCores();
+	SDL_snprintf(buffer, buffer_len, "1-%d", cpu_cores);
+}
+
+static void task_thread_values(char *buffer, const size_t buffer_len)
+{
+	const int cpu_cores = SDL_GetNumLogicalCPUCores();
+	SDL_snprintf(buffer, buffer_len, "1-%d", cpu_cores);
+}
+
+[[nodiscard]]
+static arg_command_t *commands(size_t *len)
+{
+	const arg_command_t items[] = {
+		(arg_command_t){
+			.type = TYPE_NONE,
+			.command = "help",
+			.description = "Show this"
+		},
+		(arg_command_t){
+			.type = TYPE_FLAG,
+			.command = "prefer-low-power",
+			.description = "Prefer integrated GPU over dedicated GPU",
+		},
+		(arg_command_t){
+			.type = TYPE_FLAG,
+			.command = "gpu-debug-mode",
+			.description = "Enable GPU validations and more verbose GPU logging",
+		},
+		(arg_command_t){
+			.type = TYPE_VALUE,
+			.command = "log-priority",
+			.values = log_priority_values,
+			.description = "Set global logging verbosity",
+		},
+		(arg_command_t){
+			.type = TYPE_VALUE,
+			.command = "video-driver",
+			.values = video_driver_values,
+			.description = "Force specific video driver",
+		},
+		(arg_command_t){
+			.type = TYPE_VALUE,
+			.command = "audio-driver",
+			.values = audio_driver_values,
+			.description = "Force specific audio driver",
+		},
+		(arg_command_t){
+			.type = TYPE_VALUE,
+			.command = "gpu-driver",
+			.values = gpu_driver_values,
+			.description = "Force specific GPU driver",
+		},
+		(arg_command_t){
+			.type = TYPE_FLAG,
+			.command = "allow-screensaver",
+			.description = "Enable screensaver while running",
+		},
+		(arg_command_t){
+			.type = TYPE_FLAG,
+			.command = "fatal-error-message-box",
+			.description = "Show a message box on fatal error",
+		},
+		(arg_command_t){
+			.type = TYPE_VALUE,
+			.command = "threads",
+			.values = thread_values,
+			.description = "Set number of threads to use",
+		},
+		(arg_command_t){
+			.type = TYPE_VALUE,
+			.command = "task-threads",
+			.values = task_thread_values,
+			.description = "Set number of task threads to use",
+		},
+	};
+
+	*len = SDL_arraysize(items);
+	arg_command_t *result = SDL_calloc(*len, sizeof(arg_command_t));
+	SDL_memcpy(result, items, *len * sizeof(arg_command_t));
+
+	return result;
+}
+
+static void print_help(const arg_command_t *commands, const size_t size)
 {
 	// To avoid custom log formatting
 	// (no need to clean-up since we should exit immediately afterwards)
@@ -23,109 +150,36 @@ static void print_help()
 	SDL_SetLogPriorityPrefix(SDL_LOG_PRIORITY_INFO, "");
 	const SDL_LogOutputFunction log_func = SDL_GetDefaultLogOutputFunction();
 
-	constexpr size_t video_drivers_len = 256;
-	char video_drivers[video_drivers_len];
-	video_drivers[0] = '\0';
-	for (int i = 0; i < SDL_GetNumVideoDrivers(); i++)
-	{
-		SDL_strlcat(video_drivers, i == 0 ? "--video-driver [" : "/", video_drivers_len);
-		SDL_strlcat(video_drivers, SDL_GetVideoDriver(i), video_drivers_len);
-	}
-	SDL_strlcat(video_drivers, "]", video_drivers_len);
-
-	constexpr size_t audio_drivers_len = 256;
-	char audio_drivers[audio_drivers_len];
-	audio_drivers[0] = '\0';
-	for (int i = 0; i < SDL_GetNumAudioDrivers(); i++)
-	{
-		SDL_strlcat(audio_drivers, i == 0 ? "--audio-driver [" : "/", audio_drivers_len);
-		SDL_strlcat(audio_drivers, SDL_GetAudioDriver(i), audio_drivers_len);
-	}
-	SDL_strlcat(audio_drivers, "]", audio_drivers_len);
-
-	constexpr size_t gpu_drivers_len = 64;
-	char gpu_drivers[gpu_drivers_len];
-	gpu_drivers[0] = '\0';
-	for (int i = 0; i < SDL_GetNumGPUDrivers(); i++)
-	{
-		SDL_strlcat(gpu_drivers, i == 0 ? "--gpu-driver [" : "/", gpu_drivers_len);
-		SDL_strlcat(gpu_drivers, SDL_GetGPUDriver(i), gpu_drivers_len);
-	}
-	SDL_strlcat(gpu_drivers, "]", gpu_drivers_len);
-
-	const int cpu_cores = SDL_GetNumLogicalCPUCores();
-
-	constexpr size_t threads_len = 24;
-	char threads[threads_len];
-	SDL_snprintf(threads, threads_len, "--threads [1-%d]", cpu_cores);
-
-	constexpr size_t task_threads_len = 24;
-	char task_threads[task_threads_len];
-	SDL_snprintf(task_threads, task_threads_len, "--task-threads [1-%d]", cpu_cores);
-
-	const arg_command_t commands[] = {
-		(arg_command_t){
-			.command = "--help",
-			.description = "Show this"
-		},
-		(arg_command_t){
-			.command = "--(no-)prefer-low-power",
-			.description = "Prefer integrated GPU over dedicated GPU",
-		},
-		(arg_command_t){
-			.command = "--(no-)gpu-debug-mode",
-			.description = "Enable GPU validations and more verbose GPU logging",
-		},
-		(arg_command_t){
-			.command = "--log-priority [debug/info/warn/error]",
-			.description = "Set global logging verbosity",
-		},
-		(arg_command_t){
-			.command = video_drivers,
-			.description = "Force specific video driver",
-		},
-		(arg_command_t){
-			.command = audio_drivers,
-			.description = "Force specific audio driver",
-		},
-		(arg_command_t){
-			.command = gpu_drivers,
-			.description = "Force specific GPU driver",
-		},
-		(arg_command_t){
-			.command = "--(no-)allow-screensaver",
-			.description = "Enable screensaver while running",
-		},
-		(arg_command_t){
-			.command = "--(no-)fatal-error-message-box",
-			.description = "Show a message box on fatal error",
-		},
-		(arg_command_t){
-			.command = threads,
-			.description = "Set number of threads to use",
-		},
-		(arg_command_t){
-			.command = task_threads,
-			.description = "Set number of task threads to use",
-		},
-	};
-
 	log_func(nullptr, SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_INFO,
 		"Usage: " ENGINE_NAME " [options]");
 
 	int command_length = 0;
-	for (size_t i = 0; i < SDL_arraysize(commands); i++)
+	for (size_t i = 0; i < size; i++)
 	{
 		command_length = SDL_max(command_length, SDL_strlen(commands[i].command));
 	}
 
-	for (size_t i = 0; i < SDL_arraysize(commands); i++)
+	constexpr size_t buffer_len = 256;
+	char buffer[buffer_len];
+
+	for (size_t i = 0; i < size; i++)
 	{
 		const arg_command_t cmd = commands[i];
-		char *temp = nullptr;
-		SDL_asprintf(&temp, "  %-*s %s", command_length, cmd.command, cmd.description);
-		log_func(nullptr, SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_INFO, temp);
-		SDL_free(temp);
+
+		SDL_snprintf(buffer, buffer_len, "  %s%-*s %s",
+			cmd.type == TYPE_FLAG ? "--(no-)" : "--",
+			command_length + (cmd.type == TYPE_FLAG ? 0 : 5),
+			cmd.command, cmd.description
+		);
+
+		if (cmd.type == TYPE_VALUE)
+		{
+			const size_t len = SDL_strlcat(buffer, " [", buffer_len);
+			cmd.values(buffer + len, buffer_len - len);
+			SDL_strlcat(buffer, "]", buffer_len);
+		}
+
+		log_func(nullptr, SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_INFO, buffer);
 	}
 }
 
@@ -177,7 +231,10 @@ bool args_parse(const int argc, char **argv, args_t *args)
 
 		if (SDL_strcmp(arg, "--help") == 0)
 		{
-			print_help();
+			size_t items_size = 0;
+			arg_command_t *items = commands(&items_size);
+			print_help(items, items_size);
+			SDL_free(items);
 			return false;
 		}
 
