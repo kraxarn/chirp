@@ -32,28 +32,30 @@ const char *map_key_sint32(Sint32 key);
 		Sint32:       map_key_sint32	\
 	)(value)
 
-#define map_get(map, name, fallback)		\
-	_Generic((fallback),					\
-		void*:      SDL_GetPointerProperty,	\
-		nullptr_t:  SDL_GetPointerProperty,	\
-		char*:      SDL_GetStringProperty,	\
-		Sint64:     SDL_GetNumberProperty,	\
-		int:        SDL_GetNumberProperty,	\
-		Uint32:     SDL_GetNumberProperty,	\
-		float:      SDL_GetFloatProperty,	\
-		bool:       SDL_GetBooleanProperty	\
+#define map_get(map, name, fallback)			\
+	_Generic((fallback),						\
+		void*:       SDL_GetPointerProperty,	\
+		nullptr_t:   SDL_GetPointerProperty,	\
+		char*:       SDL_GetStringProperty,		\
+		const char*: SDL_GetStringProperty,		\
+		Sint64:      SDL_GetNumberProperty,		\
+		int:         SDL_GetNumberProperty,		\
+		Uint32:      SDL_GetNumberProperty,		\
+		float:       SDL_GetFloatProperty,		\
+		bool:        SDL_GetBooleanProperty		\
 	)(map, map_key(name), fallback)
 
-#define map_set(map, name, value)			\
-	_Generic((value),						\
-		void*:      SDL_SetPointerProperty,	\
-		nullptr_t:  SDL_SetPointerProperty,	\
-		char*:      SDL_SetStringProperty,	\
-		Sint64:     SDL_SetNumberProperty,	\
-		int:        SDL_SetNumberProperty,	\
-		Uint32:     SDL_SetNumberProperty,	\
-		float:      SDL_SetFloatProperty,	\
-		bool:       SDL_SetBooleanProperty	\
+#define map_set(map, name, value)				\
+	_Generic((value),							\
+		void*:       SDL_SetPointerProperty,	\
+		nullptr_t:   SDL_SetPointerProperty,	\
+		char*:       SDL_SetStringProperty,		\
+		const char*: SDL_SetStringProperty,		\
+		Sint64:      SDL_SetNumberProperty,		\
+		int:         SDL_SetNumberProperty,		\
+		Uint32:      SDL_SetNumberProperty,		\
+		float:       SDL_SetFloatProperty,		\
+		bool:        SDL_SetBooleanProperty		\
 	)(map, map_key(name), value)
 
 bool map_set_with_cleanup(map_t map, const char *name,
