@@ -12,6 +12,8 @@ void args_destroy(args_t_ *args);
 
 bool args_parse_(const args_t_ *args, int argc, char **argv);
 
+bool args_print_help(const args_t_ *args, const char *name);
+
 bool args_add(const args_t_ *args, const char *name,
 	const char *description, bool *value);
 

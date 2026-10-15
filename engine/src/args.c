@@ -7,6 +7,8 @@
 #include <SDL3/SDL_properties.h>
 #include <SDL3/SDL_stdinc.h>
 
+#include <stddef.h>
+
 typedef enum : Uint8
 {
 	TYPE_NONE,  // --arg
@@ -149,6 +151,54 @@ bool args_parse_(const args_t_ *args, const int argc, char **argv)
 	}
 
 	return true;
+}
+
+static void print(const char *message)
+{
+	const SDL_LogOutputFunction log_func = SDL_GetDefaultLogOutputFunction();
+	log_func(nullptr, SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_INFO, message);
+}
+
+static void name_length(void *userdata, [[maybe_unused]] const SDL_PropertiesID props, const char *name)
+{
+	int *length = userdata;
+	*length = SDL_max(*length, SDL_strlen(name));
+}
+
+static void print_command(void *userdata, const SDL_PropertiesID props, const char *name)
+{
+	constexpr size_t buffer_len = 256;
+	char buffer[buffer_len];
+
+	const int length = *(int*) userdata;
+
+	const arg_command_t *cmd = SDL_GetPointerProperty(props, name, nullptr);
+	SDL_assert(cmd != nullptr);
+
+	SDL_snprintf(buffer, buffer_len, "  %s%-*s %s",
+		cmd->type == TYPE_FLAG ? "--(no-)" : "--",
+		length + (cmd->type == TYPE_FLAG ? 0 : 5),
+		name, cmd->description
+	);
+
+	print(buffer);
+}
+
+bool args_print_help(const args_t_ *args, const char *name)
+{
+	// To avoid custom log formatting
+	// (no need to clean-up since we should exit immediately afterwards)
+	SDL_SetLogPriority(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_INFO);
+	SDL_SetLogPriorityPrefix(SDL_LOG_PRIORITY_INFO, "");
+
+	constexpr size_t buffer_len = 64;
+	char buffer[buffer_len];
+	SDL_snprintf(buffer, buffer_len, "Usage: %s [options]", name);
+	print(buffer);
+
+	int length = 0;
+	return (bool) (SDL_EnumerateProperties(args->commands, name_length, &length)
+		&& SDL_EnumerateProperties(args->commands, print_command, &length));
 }
 
 static void cleanup_command([[maybe_unused]] void *userdata, void *value)
