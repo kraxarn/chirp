@@ -220,7 +220,8 @@ static void set_log_priorities(const char *priorities)
 	SDL_SetLogPriorities(SDL_LOG_PRIORITY_VERBOSE);
 #endif
 
-	if (!log_priority_set_from_string(priorities))
+	if (priorities != nullptr
+		&& !log_priority_set_from_string(priorities))
 	{
 		SDL_LogError(LOG_CATEGORY_CORE, "Failed to set log priority: %s", SDL_GetError());
 	}
