@@ -16,6 +16,7 @@ target_sources(${LIB_NAME} PRIVATE
 	"${CMAKE_CURRENT_SOURCE_DIR}/inputconfig.c"
 	"${CMAKE_CURRENT_SOURCE_DIR}/json.c"
 	"${CMAKE_CURRENT_SOURCE_DIR}/logcategory.c"
+	"${CMAKE_CURRENT_SOURCE_DIR}/logpriority.c"
 	"${CMAKE_CURRENT_SOURCE_DIR}/map.c"
 	"${CMAKE_CURRENT_SOURCE_DIR}/matrix.c"
 	"${CMAKE_CURRENT_SOURCE_DIR}/modelinfo.c"

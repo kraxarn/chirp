@@ -10,6 +10,7 @@
 #include "chirp/ecs.h"
 #include "chirp/logcategory.h"
 
+#include <SDL3/SDL_error.h>
 #include <SDL3/SDL_gpu.h>
 #include <SDL3/SDL_log.h>
 #include <SDL3/SDL_properties.h>
@@ -17,33 +18,10 @@
 
 #include <stddef.h>
 
-[[nodiscard]]
-static bool debug_mode(const arg_option_t option)
-{
-	switch (option)
-	{
-		case OPT_NOT_SET:
-#ifdef NDEBUG
-			return false;
-#else
-			return true;
-#endif
-
-		case OPT_DISABLE:
-			return false;
-
-		case OPT_ENABLE:
-			return true;
-
-		default:
-			return false;
-	}
-}
-
 static void create_gpu_device(ecs_iter_t *iter)
 {
 	SDL_Window *window = *ecs_field(iter, window_t*, 0);
-	const args_t args = *ecs_field(iter, args_t, 1);
+	const arg_values_t args = *ecs_field(iter, arg_values_t, 1);
 
 	const SDL_PropertiesID props = SDL_CreateProperties();
 	if (props == 0)
@@ -52,19 +30,10 @@ static void create_gpu_device(ecs_iter_t *iter)
 		return;
 	}
 
-	if (args.prefer_low_power != OPT_NOT_SET)
-	{
-		SDL_SetBooleanProperty(props, SDL_PROP_GPU_DEVICE_CREATE_PREFERLOWPOWER_BOOLEAN,
-			args.prefer_low_power == OPT_ENABLE);
-	}
-
 	SDL_SetStringProperty(props, SDL_PROP_GPU_DEVICE_CREATE_NAME_STRING, args.gpu_driver);
-
-	SDL_SetBooleanProperty(props, SDL_PROP_GPU_DEVICE_CREATE_DEBUGMODE_BOOLEAN,
-		debug_mode(args.gpu_debug_mode));
-
-	SDL_SetBooleanProperty(props, SDL_PROP_GPU_DEVICE_CREATE_VERBOSE_BOOLEAN,
-		debug_mode(args.gpu_debug_mode));
+	SDL_SetBooleanProperty(props, SDL_PROP_GPU_DEVICE_CREATE_PREFERLOWPOWER_BOOLEAN, args.prefer_low_power);
+	SDL_SetBooleanProperty(props, SDL_PROP_GPU_DEVICE_CREATE_DEBUGMODE_BOOLEAN, args.gpu_debug_mode);
+	SDL_SetBooleanProperty(props, SDL_PROP_GPU_DEVICE_CREATE_VERBOSE_BOOLEAN, args.gpu_debug_mode);
 
 	SDL_SetBooleanProperty(props, SDL_PROP_GPU_DEVICE_CREATE_SHADERS_SPIRV_BOOLEAN, true);
 	SDL_SetBooleanProperty(props, SDL_PROP_GPU_DEVICE_CREATE_SHADERS_DXIL_BOOLEAN, true);

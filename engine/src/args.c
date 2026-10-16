@@ -24,11 +24,6 @@ typedef struct
 	void *value;
 } arg_command_t;
 
-typedef struct args
-{
-	map_t commands;
-} args_t_;
-
 typedef enum : Uint8
 {
 	RESULT_INVALID,      // No result set
@@ -44,22 +39,14 @@ typedef struct
 	args_parse_result_t result;
 } args_parse_context_t;
 
-args_t_ *args_create()
+args_t args_create()
 {
-	args_t_ *args = SDL_malloc(sizeof(args_t_));
-	args->commands = map_create();
-	return args;
+	return map_create();
 }
 
-void args_destroy(args_t_ *args)
+void args_destroy(const args_t args)
 {
-	if (args == nullptr)
-	{
-		return;
-	}
-
-	SDL_DestroyProperties(args->commands);
-	SDL_free(args);
+	SDL_DestroyProperties(args);
 }
 
 static void parse(void *userdata, const SDL_PropertiesID props, const char *name)
@@ -128,7 +115,7 @@ static void parse(void *userdata, const SDL_PropertiesID props, const char *name
 	ctx->result = RESULT_NOT_FOUND;
 }
 
-bool args_parse_(const args_t_ *args, const int argc, char **argv)
+bool args_parse(const args_t args, const int argc, char **argv)
 {
 	for (int i = 1; i < argc; i++)
 	{
@@ -139,7 +126,7 @@ bool args_parse_(const args_t_ *args, const int argc, char **argv)
 			.result = RESULT_INVALID,
 		};
 
-		if (!SDL_EnumerateProperties(args->commands, parse, &context))
+		if (!SDL_EnumerateProperties(args, parse, &context))
 		{
 			return false;
 		}
@@ -184,7 +171,7 @@ static void print_command(void *userdata, const SDL_PropertiesID props, const ch
 	print(buffer);
 }
 
-bool args_print_help(const args_t_ *args, const char *name)
+bool args_print_help(const args_t args, const char *name)
 {
 	// To avoid custom log formatting
 	// (no need to clean-up since we should exit immediately afterwards)
@@ -197,8 +184,8 @@ bool args_print_help(const args_t_ *args, const char *name)
 	print(buffer);
 
 	int length = 0;
-	return (bool) (SDL_EnumerateProperties(args->commands, name_length, &length)
-		&& SDL_EnumerateProperties(args->commands, print_command, &length));
+	return (bool) (SDL_EnumerateProperties(args, name_length, &length)
+		&& SDL_EnumerateProperties(args, print_command, &length));
 }
 
 static void cleanup_command([[maybe_unused]] void *userdata, void *value)
@@ -209,7 +196,7 @@ static void cleanup_command([[maybe_unused]] void *userdata, void *value)
 	SDL_free(command);
 }
 
-static bool add_command(const args_t_ *args, const char *name,
+static bool add_command(const args_t args, const char *name,
 	const arg_type_t command_type, const SDL_PropertyType value_type,
 	const char *description, void *value)
 {
@@ -219,7 +206,7 @@ static bool add_command(const args_t_ *args, const char *name,
 	command->value_type = value_type;
 	command->value = value;
 
-	if (!SDL_SetPointerPropertyWithCleanup(args->commands, name,
+	if (!SDL_SetPointerPropertyWithCleanup(args, name,
 		command, cleanup_command, nullptr))
 	{
 		cleanup_command(nullptr, command);
@@ -229,28 +216,28 @@ static bool add_command(const args_t_ *args, const char *name,
 	return true;
 }
 
-bool args_add(const args_t_ *args, const char *name,
+bool args_add(const args_t args, const char *name,
 	const char *description, bool *value)
 {
 	return add_command(args, name, TYPE_NONE,
 		SDL_PROPERTY_TYPE_BOOLEAN, description, value);
 }
 
-bool args_add_flag(const args_t_ *args, const char *name,
+bool args_add_flag(const args_t args, const char *name,
 	const char *description, bool *value)
 {
 	return add_command(args, name, TYPE_FLAG,
 		SDL_PROPERTY_TYPE_BOOLEAN, description, value);
 }
 
-bool args_add_string(const args_t_ *args, const char *name,
+bool args_add_string(const args_t args, const char *name,
 	const char *description, char **value)
 {
 	return add_command(args, name, TYPE_VALUE,
 		SDL_PROPERTY_TYPE_STRING, description, value);
 }
 
-bool args_add_int(const args_t_ *args, const char *name,
+bool args_add_int(const args_t args, const char *name,
 	const char *description, Sint64 *value)
 {
 	return add_command(args, name, TYPE_VALUE,

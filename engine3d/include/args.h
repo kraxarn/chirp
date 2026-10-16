@@ -1,35 +1,6 @@
 #pragma once
 
-#include "chirp/logcategory.h"
-
-#include <SDL3/SDL_log.h>
 #include <SDL3/SDL_stdinc.h>
-
-typedef enum : Uint8
-{
-	OPT_NOT_SET, // Not explicitly set
-	OPT_DISABLE, // Explicitly disabled
-	OPT_ENABLE,  // Explicitly enabled
-} arg_option_t;
-
-typedef enum
-{
-	TYPE_NONE,  // --arg
-	TYPE_FLAG,  // --arg / --no-arg
-	TYPE_VALUE, // --arg [value]
-} arg_type_t;
-
-#define arg_help                    "help"
-#define arg_prefer_low_power        "prefer-low-power"
-#define arg_gpu_debug_mode          "gpu-debug-mode"
-#define arg_log_priority            "log-priority"
-#define arg_video_driver            "video-driver"
-#define arg_audio_driver            "audio-driver"
-#define arg_gpu_driver              "gpu-driver"
-#define arg_allow_screensaver       "allow-screensaver"
-#define arg_fatal_error_message_box "fatal-error-message-box"
-#define arg_threads                 "threads"
-#define arg_task_threads            "task-threads"
 
 typedef struct
 {
@@ -38,14 +9,14 @@ typedef struct
 	 *
 	 * Create the GPU device with the "prefer low power" hint
 	 */
-	arg_option_t prefer_low_power;
+	bool prefer_low_power;
 
 	/**
 	 * --gpu-debug-mode / --no-gpu-debug-mode
 	 *
 	 * Create the GPU device with the "debug mode" and "verbose" hints
 	 */
-	arg_option_t gpu_debug_mode;
+	bool gpu_debug_mode;
 
 	/**
 	 * --log-priority debug/info/warn/error
@@ -54,63 +25,57 @@ typedef struct
 	 *
 	 * Set level of all log categories or within a specific log category only
 	 */
-	SDL_LogPriority log_priorities[LOG_CATEGORY_COUNT + 1];
+	char *log_priorities;
 
 	/**
 	 * --video-driver wayland/x11/...
 	 *
 	 * Override the default video driver with the specified one
 	 */
-	const char *video_driver;
+	char *video_driver;
 
 	/**
 	 * --audio-driver pipewire/pulseaudio/...
 	 *
 	 * Override the default audio driver with the specified one
 	 */
-	const char *audio_driver;
+	char *audio_driver;
 
 	/**
 	 * --gpu-driver vulkan/metal/direct3d12
 	 *
 	 * Override the default GPU driver with the specified one
 	 */
-	const char *gpu_driver;
+	char *gpu_driver;
 
 	/**
 	 * --allow-screensaver / --no-allow-screensaver
 	 *
 	 * Set the "allow screensaver" hint
 	 */
-	arg_option_t allow_screensaver;
+	bool allow_screensaver;
 
 	/**
 	 * --fatal-error-message-box / --no-fatal-error-message-box
 	 *
 	 * Show a message box on fatal error
 	 */
-	arg_option_t fatal_error_message_box;
+	bool fatal_error_message_box;
 
 	/**
 	 * --threads [0-]
 	 *
 	 * Enable ECS threads and set number of worker threads
 	 */
-	Sint32 threads;
+	Sint64 threads;
 
 	/**
 	 * --task-threads [0-]
 	 *
 	 * Enable ECS task threads and set number of worker task threads
 	 */
-	Sint32 task_threads;
-} args_t;
+	Sint64 task_threads;
+} arg_values_t;
 
 [[nodiscard]]
-bool args_parse(int argc, char **argv, args_t *args);
-
-/**
- * Format enabled as "1" and disabled as "0"
- */
-[[nodiscard]]
-const char *arg_option_str(arg_option_t option);
+bool arg_values_parse(int argc, char **argv, arg_values_t *values);

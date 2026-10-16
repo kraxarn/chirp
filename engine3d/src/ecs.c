@@ -24,6 +24,7 @@
 #include <SDL3/SDL_cpuinfo.h>
 #include <SDL3/SDL_events.h>
 #include <SDL3/SDL_log.h>
+#include <SDL3/SDL_stdinc.h>
 
 static ecs_entity_t phases[PHASE_COUNT];
 
@@ -139,7 +140,7 @@ static void add_modules()
 		EcsViewProjection = component("ViewProjection", view_projection_t);
 		EcsWorldTransform = component("WorldTransform", world_transform_t);
 		EcsScriptEngine = component("ScriptEngine", py_vm_index_t);
-		EcsArgs = component("Args", args_t);
+		EcsArgs = component("Args", arg_values_t);
 		EcsModelInstance = component("ModelInstance", model_instance_t);
 		EcsModelScene = component("ModelScene", model_scene_t);
 
@@ -240,20 +241,20 @@ static void add_modules()
 
 static void on_init_set([[maybe_unused]] ecs_iter_t *iter)
 {
-	const args_t *args = ecs_field(iter, args_t, 1);
+	const arg_values_t *args = ecs_field(iter, arg_values_t, 1);
 
 	ecs_os_api_t os_api = ecs_os_api_create();
 	ecs_os_set_api(&os_api);
 
 	if (args->threads > 0)
 	{
-		ecs_set_threads(ecs_world(), args->threads);
-		SDL_LogInfo(LOG_CATEGORY_ECS, "Using %d threads", args->threads);
+		ecs_set_threads(ecs_world(), (Sint32) args->threads);
+		SDL_LogInfo(LOG_CATEGORY_ECS, "Using %lld threads", args->threads);
 	}
 	else if (args->task_threads > 0)
 	{
-		ecs_set_task_threads(ecs_world(), args->task_threads);
-		SDL_LogInfo(LOG_CATEGORY_ECS, "Using %d task threads", args->task_threads);
+		ecs_set_task_threads(ecs_world(), (Sint32) args->task_threads);
+		SDL_LogInfo(LOG_CATEGORY_ECS, "Using %lld task threads", args->task_threads);
 	}
 	else
 	{

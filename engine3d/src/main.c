@@ -22,6 +22,7 @@
 #include "chirp/ecs.h"
 #include "chirp/input.h"
 #include "chirp/logcategory.h"
+#include "chirp/logpriority.h"
 #include "chirp/physics.h"
 #include "chirp/systeminfo.h"
 #include "chirp/termcolors.h"
@@ -53,16 +54,8 @@ static constexpr auto mouse_sensitivity = 0.0015F;
 [[nodiscard]]
 static bool fatal_error_message_box()
 {
-	const args_t *args = ecs_get_id(ecs_world(), EcsArgs, EcsArgs);
-	if (args == nullptr || args->fatal_error_message_box == OPT_NOT_SET)
-	{
-#ifdef NDEBUG
-		return false;
-#else
-		return true;
-#endif
-	}
-	return args->fatal_error_message_box == OPT_ENABLE;
+	const arg_values_t *args = ecs_get_id(ecs_world(), EcsArgs, EcsArgs);
+	return (bool) (args == nullptr || args->fatal_error_message_box);
 }
 
 static SDL_AppResult fatal_error(const char *message)
@@ -217,31 +210,19 @@ static void set_default_metadata()
 	SDL_SetAppMetadataProperty(SDL_PROP_APP_METADATA_IDENTIFIER_STRING, ENGINE_IDENTIFIER);
 }
 
-static void set_log_priorities(const SDL_LogPriority *priorities)
+static void set_log_priorities(const char *priorities)
 {
-	const SDL_LogPriority priority_all = priorities[LOG_CATEGORY_COUNT];
-	if (priority_all == SDL_LOG_PRIORITY_INVALID)
-	{
 #ifdef SDL_PLATFORM_ANDROID
-		SDL_SetLogPriorities(SDL_LOG_PRIORITY_VERBOSE);
+	SDL_SetLogPriorities(SDL_LOG_PRIORITY_VERBOSE);
 #elifdef NDEBUG
-		SDL_SetLogPriorities(SDL_LOG_PRIORITY_INFO);
+	SDL_SetLogPriorities(SDL_LOG_PRIORITY_INFO);
 #else
-		SDL_SetLogPriorities(SDL_LOG_PRIORITY_VERBOSE);
+	SDL_SetLogPriorities(SDL_LOG_PRIORITY_VERBOSE);
 #endif
-	}
-	else
-	{
-		SDL_SetLogPriorities(priority_all);
-	}
 
-	for (int i = 0; i < LOG_CATEGORY_COUNT; i++)
+	if (!log_priority_set_from_string(priorities))
 	{
-		const SDL_LogPriority priority = priorities[i];
-		if (priority != SDL_LOG_PRIORITY_INVALID)
-		{
-			SDL_SetLogPriority(i, priority);
-		}
+		SDL_LogError(LOG_CATEGORY_CORE, "Failed to set log priority: %s", SDL_GetError());
 	}
 }
 
@@ -276,8 +257,8 @@ SDL_AppResult SDL_AppInit(void **appstate, const int argc, char **argv)
 	SDL_SetLogPriorityPrefix(SDL_LOG_PRIORITY_CRITICAL, COLOR_FG_RED("fatal "));
 	SDL_SetLogOutputFunction(log_callback, nullptr);
 
-	args_t args;
-	if (!args_parse(argc, argv, &args))
+	arg_values_t args;
+	if (!arg_values_parse(argc, argv, &args))
 	{
 		return SDL_APP_SUCCESS;
 	}
@@ -308,9 +289,8 @@ SDL_AppResult SDL_AppInit(void **appstate, const int argc, char **argv)
 		SDL_LogError(LOG_CATEGORY_CORE, "Failed to set hint: %s", SDL_GetError());
 	}
 
-	if (args.allow_screensaver != OPT_NOT_SET
-		&& !SDL_SetHint(SDL_HINT_VIDEO_ALLOW_SCREENSAVER,
-			arg_option_str(args.allow_screensaver)))
+	if (!SDL_SetHint(SDL_HINT_VIDEO_ALLOW_SCREENSAVER,
+		(int) args.allow_screensaver ? "1" : "0"))
 	{
 		SDL_LogWarn(LOG_CATEGORY_CORE, "Failed to set hint: %s", SDL_GetError());
 	}
@@ -338,7 +318,7 @@ SDL_AppResult SDL_AppInit(void **appstate, const int argc, char **argv)
 	}
 
 	ecs_set_id(ecs_world(), ecs_singleton(EcsArgs),
-		sizeof(args_t), &args);
+		sizeof(arg_values_t), &args);
 
 	ecs_observer_init(ecs_world(), &(ecs_observer_desc_t){
 		.query.terms = {
