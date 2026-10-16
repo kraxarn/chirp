@@ -2,6 +2,13 @@
 
 #include <SDL3/SDL_stdinc.h>
 
+typedef enum : Uint8
+{
+	PARSE_RESULT_SUCCESS,
+	PARSE_RESULT_ERROR,
+	PARSE_RESULT_EXIT,
+} arg_parse_result_t;
+
 typedef struct
 {
 	/**
@@ -85,4 +92,4 @@ typedef struct
 } arg_values_t;
 
 [[nodiscard]]
-bool arg_values_parse(int argc, char **argv, arg_values_t *values);
+arg_parse_result_t arg_values_parse(int argc, char **argv, arg_values_t *values);

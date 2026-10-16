@@ -10,7 +10,7 @@
 #include <SDL3/SDL_stdinc.h>
 #include <SDL3/SDL_video.h>
 
-bool arg_values_parse(const int argc, char **argv, arg_values_t *values)
+arg_parse_result_t arg_values_parse(const int argc, char **argv, arg_values_t *values)
 {
 	*values = (arg_values_t){
 		.prefer_low_power = false,
@@ -115,15 +115,17 @@ bool arg_values_parse(const int argc, char **argv, arg_values_t *values)
 	{
 		SDL_LogError(SDL_LOG_CATEGORY_APPLICATION,
 			"Parse error: %s", SDL_GetError());
+		args_destroy(args);
+		return PARSE_RESULT_ERROR;
 	}
 
 	if (help)
 	{
 		args_print_help(args, ENGINE_NAME);
 		args_destroy(args);
-		return false;
+		return PARSE_RESULT_EXIT;
 	}
 
 	args_destroy(args);
-	return true;
+	return PARSE_RESULT_SUCCESS;
 }

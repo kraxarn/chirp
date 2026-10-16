@@ -259,9 +259,12 @@ SDL_AppResult SDL_AppInit(void **appstate, const int argc, char **argv)
 	SDL_SetLogOutputFunction(log_callback, nullptr);
 
 	arg_values_t args;
-	if (!arg_values_parse(argc, argv, &args))
+	const arg_parse_result_t arg_parse_result = arg_values_parse(argc, argv, &args);
+	if (arg_parse_result != PARSE_RESULT_SUCCESS)
 	{
-		return SDL_APP_SUCCESS;
+		return arg_parse_result == PARSE_RESULT_EXIT
+			? SDL_APP_SUCCESS
+			: SDL_APP_FAILURE;
 	}
 
 	set_log_priorities(args.log_priorities);
