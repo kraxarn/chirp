@@ -246,21 +246,26 @@ static void on_init_set([[maybe_unused]] ecs_iter_t *iter)
 	ecs_os_api_t os_api = ecs_os_api_create();
 	ecs_os_set_api(&os_api);
 
-	if (args->threads > 0)
+	const Sint32 threads = args->ecs_threads > 0
+		? (Sint32) args->ecs_threads
+		: SDL_GetNumLogicalCPUCores();
+
+	if (SDL_strcasecmp(args->ecs_threading, "threads") == 0)
 	{
-		ecs_set_threads(ecs_world(), (Sint32) args->threads);
-		SDL_LogInfo(LOG_CATEGORY_ECS, "Using %lld threads", args->threads);
+		ecs_set_threads(ecs_world(), threads);
+		SDL_LogInfo(LOG_CATEGORY_ECS, "Using %d threads", threads);
 	}
-	else if (args->task_threads > 0)
+	else if (SDL_strcasecmp(args->ecs_threading, "tasks") == 0)
 	{
-		ecs_set_task_threads(ecs_world(), (Sint32) args->task_threads);
-		SDL_LogInfo(LOG_CATEGORY_ECS, "Using %lld task threads", args->task_threads);
+		ecs_set_task_threads(ecs_world(), threads);
+		SDL_LogInfo(LOG_CATEGORY_ECS, "Using %d task threads", threads);
 	}
 	else
 	{
-		const int cores = SDL_GetNumLogicalCPUCores();
-		ecs_set_threads(ecs_world(), cores);
-		SDL_LogInfo(LOG_CATEGORY_ECS, "Using %d threads", cores);
+		constexpr size_t buffer_len = 64;
+		char buffer[buffer_len];
+		SDL_snprintf(buffer, buffer_len, "Unknown threading type '%s'", args->ecs_threading);
+		ecs_set_error("ECS initialisation failed", buffer);
 	}
 
 #ifdef FLECS_REST

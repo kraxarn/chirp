@@ -63,18 +63,25 @@ typedef struct
 	bool fatal_error_message_box;
 
 	/**
-	 * --threads [0-]
+	 * --ecs-threading threads/tasks
 	 *
-	 * Enable ECS threads and set number of worker threads
+	 * Use threads or task threads for ECS
 	 */
-	Sint64 threads;
+	char *ecs_threading;
 
 	/**
-	 * --task-threads [0-]
+	 * --ecs-threads 0-...
 	 *
-	 * Enable ECS task threads and set number of worker task threads
+	 * Set number of ECS threads
 	 */
-	Sint64 task_threads;
+	Sint64 ecs_threads;
+
+	/**
+	 * --physics-threads 0-...
+	 *
+	 * Set number of physics threads/workers
+	 */
+	Sint64 physics_threads;
 } arg_values_t;
 
 [[nodiscard]]

@@ -19,8 +19,9 @@ bool arg_values_parse(const int argc, char **argv, arg_values_t *values)
 		.audio_driver = nullptr,
 		.gpu_driver = nullptr,
 		.allow_screensaver = false,
-		.threads = 0,
-		.task_threads = 0,
+		.ecs_threading = "threads",
+		.ecs_threads = 0,
+		.physics_threads = 0,
 #ifdef NDEBUG
 		.gpu_debug_mode = false,
 		.fatal_error_message_box = true,
@@ -63,6 +64,11 @@ bool arg_values_parse(const int argc, char **argv, arg_values_t *values)
 		"Show a message box on fatal error",
 		&values->fatal_error_message_box
 	);
+	args_add_string(args,
+		"ecs-threading",
+		"Set threading type for ECS [threads/tasks]",
+		&values->ecs_threading
+	);
 
 	constexpr size_t buffer_len = 256;
 	char buffer[buffer_len];
@@ -99,11 +105,11 @@ bool arg_values_parse(const int argc, char **argv, arg_values_t *values)
 
 	const int cpu_cores = SDL_GetNumLogicalCPUCores();
 
-	SDL_snprintf(buffer, buffer_len, "Number of threads to use [1-%d]", cpu_cores);
-	args_add_int(args, "threads", buffer, &values->threads);
+	SDL_snprintf(buffer, buffer_len, "Number of threads to use for ECS [1-%d]", cpu_cores);
+	args_add_int(args, "ecs-threads", buffer, &values->ecs_threads);
 
-	SDL_snprintf(buffer, buffer_len, "Number of task threads to use [1-%d]", cpu_cores);
-	args_add_int(args, "task-threads", buffer, &values->task_threads);
+	SDL_snprintf(buffer, buffer_len, "Number of threads to use for physics [1-%d]", cpu_cores);
+	args_add_int(args, "physics-threads", buffer, &values->physics_threads);
 
 	if (!args_parse(args, argc, argv))
 	{

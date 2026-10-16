@@ -7,7 +7,6 @@
 #include "box3d/types.h"
 
 #include <SDL3/SDL_assert.h>
-#include <SDL3/SDL_cpuinfo.h>
 #include <SDL3/SDL_error.h>
 #include <SDL3/SDL_log.h>
 #include <SDL3/SDL_stdinc.h>
@@ -94,7 +93,7 @@ static void finish_task(void *task, [[maybe_unused]] void *context)
 	}
 }
 
-bool physics_create(b3WorldId *world)
+bool physics_create(b3WorldId *world, const Uint32 workers)
 {
 	SDL_assert(b3GetWorldCount() == 0);
 
@@ -103,8 +102,7 @@ bool physics_create(b3WorldId *world)
 
 	b3WorldDef world_def = b3DefaultWorldDef();
 
-	// TODO: Do we want to respect --threads here?
-	world_def.workerCount = SDL_GetNumLogicalCPUCores();
+	world_def.workerCount = workers;
 	world_def.enqueueTask = enqueue_task;
 	world_def.finishTask = finish_task;
 
@@ -115,7 +113,7 @@ bool physics_create(b3WorldId *world)
 	}
 
 	// Should be the same as world_def.workerCount
-	SDL_LogInfo(LOG_CATEGORY_PHYSICS, "Using %d workers",
+	SDL_LogInfo(LOG_CATEGORY_PHYSICS, "Using %d threads",
 		b3World_GetWorkerCount(*world));
 
 	return true;

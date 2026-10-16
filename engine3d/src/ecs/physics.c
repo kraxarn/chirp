@@ -1,3 +1,4 @@
+#include "args.h"
 #include "cast.h"
 #include "ecs.h"
 #include "ecs/components.h"
@@ -10,10 +11,19 @@
 #include "chirp/ecs/components.h"
 #include "flecs/addons/flecs_c.h"
 
-static void init_physics([[maybe_unused]] ecs_iter_t *iter)
+#include <SDL3/SDL_cpuinfo.h>
+#include <SDL3/SDL_stdinc.h>
+
+static void init_physics(ecs_iter_t *iter)
 {
+	const arg_values_t *args = ecs_field(iter, arg_values_t, 0);
+
+	const Uint32 workers = args->physics_threads > 0
+		? args->physics_threads
+		: SDL_GetNumLogicalCPUCores();
+
 	b3WorldId world = {0};
-	if (!physics_create(&world))
+	if (!physics_create(&world, workers))
 	{
 		ecs_set_error("Physics error", SDL_GetError());
 		return;
@@ -53,7 +63,7 @@ void ecs_add_physics()
 {
 	ecs_observer_init(ecs_world(), &(ecs_observer_desc_t){
 		.query.terms = {
-			(ecs_term_t){.id = EcsInit, .inout = EcsInOutFilter},
+			(ecs_term_t){.id = EcsArgs, .inout = EcsIn},
 		},
 		.events = {EcsOnSet},
 		.callback = init_physics,
