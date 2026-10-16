@@ -33,7 +33,7 @@ jobs:
             compile-flags: '-march=x86-64-v3'
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
 
       - name: Set up clang
         if: ${{ matrix.compiler == 'clang' }}
@@ -63,7 +63,7 @@ jobs:
 
       - name: Upload Artifact
         if: ${{ matrix.compiler == 'clang' }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: chirp3d-linux-${{ matrix.arch }}
           path: |

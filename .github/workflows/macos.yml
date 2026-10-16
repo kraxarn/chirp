@@ -19,7 +19,7 @@ jobs:
           - arch: arm64
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
 
       - name: Configure CMake
         run: cmake -S . -B build -D CMAKE_BUILD_TYPE=$BUILD_TYPE -D CMAKE_OSX_DEPLOYMENT_TARGET="10.14" -D CMAKE_OSX_ARCHITECTURES="${{ matrix.arch }}" -D CMAKE_C_FLAGS="${{ matrix.compile-flags }}"
@@ -31,7 +31,7 @@ jobs:
         run: ctest --extra-verbose --test-dir build/tests
 
       - name: Upload Artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: chirp3d-macos-${{ matrix.arch }}
           path: ${{runner.workspace}}/chirp/build/engine3d/chirp3d.app

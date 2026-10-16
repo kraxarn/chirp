@@ -26,7 +26,7 @@ jobs:
             arch: 'arm64'
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
 
       - name: Set up compiler
         if: ${{ matrix.arch == 'x86_64' || matrix.arch == 'x86' }}
@@ -55,7 +55,7 @@ jobs:
         run: ctest --extra-verbose --test-dir build\tests
 
       - name: Upload Artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: chirp3d-windows-${{ matrix.arch }}
           path: |
