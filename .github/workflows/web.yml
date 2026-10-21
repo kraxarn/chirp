@@ -17,7 +17,7 @@ jobs:
           version: 'latest'
 
       - name: Configure CMake
-        run: emcmake cmake -S . -B build -D CMAKE_BUILD_TYPE=$BUILD_TYPE -DSDL_PTHREADS=ON
+        run: emcmake cmake -S . -B build -D CMAKE_BUILD_TYPE=$BUILD_TYPE -D SDL_PTHREADS=ON
 
       - name: Build
         run: cmake --build build --target chirp3d
