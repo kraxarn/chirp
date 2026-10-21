@@ -35,7 +35,7 @@ const char *system_info_cpu_name()
 bool system_info_cpu_supported()
 {
 #ifdef SIMD_ENABLED
-#if CPUINFO_ARCH_X86_64 == 1 || CPUINFO_ARCH_X86 == 1
+#if CPUINFO_ARCH_X86_64 == 1 || CPUINFO_ARCH_X86 == 1 || CPUINFO_ARCH_WASM == 1
 	if (!SDL_HasSSE2())
 	{
 		return SDL_SetError("CPU doesn't support required SSE2 features");
