@@ -566,7 +566,7 @@ bool model_info_create(const assets_t *assets, SDL_IOStream *stream,
 	}
 
 	const Uint64 parse_end = SDL_GetTicks();
-	SDL_LogDebug(LOG_CATEGORY_MODEL, "Parsed model in %lu ms", parse_end - begin);
+	SDL_LogDebug(LOG_CATEGORY_MODEL, "Parsed model in %llu ms", parse_end - begin);
 
 	result = cgltf_load_buffers(&options, gltf_data, ".");
 	if (result != cgltf_result_success)
@@ -578,7 +578,7 @@ bool model_info_create(const assets_t *assets, SDL_IOStream *stream,
 	}
 
 	const Uint64 buffer_end = SDL_GetTicks();
-	SDL_LogDebug(LOG_CATEGORY_MODEL, "Loaded buffers in %lu ms", buffer_end - parse_end);
+	SDL_LogDebug(LOG_CATEGORY_MODEL, "Loaded buffers in %llu ms", buffer_end - parse_end);
 
 	log_debug_info(gltf_data);
 
@@ -595,7 +595,7 @@ bool model_info_create(const assets_t *assets, SDL_IOStream *stream,
 	SDL_free(file_data);
 
 	const Uint64 model_end = SDL_GetTicks();
-	SDL_LogDebug(LOG_CATEGORY_MODEL, "Loaded model data in %lu ms", model_end - buffer_end);
+	SDL_LogDebug(LOG_CATEGORY_MODEL, "Loaded model data in %llu ms", model_end - buffer_end);
 
 	return true;
 }
