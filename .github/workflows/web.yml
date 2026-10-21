@@ -27,4 +27,5 @@ jobs:
         with:
           name: chirp3d-wasm
           path: |
-            ${{runner.workspace}}/chirp/build/engine3d
+            ${{runner.workspace}}/chirp/build/engine3d/chirp3d.js
+            ${{runner.workspace}}/chirp/build/engine3d/chirp3d.wasm
