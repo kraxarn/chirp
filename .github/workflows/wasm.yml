@@ -1,4 +1,4 @@
-name: Emscripten (WASM)
+name: Emscripten
 
 on: [ push, pull_request ]
 
