@@ -10,6 +10,10 @@ if (ANDROID AND CMAKE_ANDROID_ARCH_ABI STREQUAL "armeabi-v7a")
 endif ()
 option(ENABLE_SIMD "Enable SSE2/NEON instructions" ${ENABLE_SIMD_DEFAULT})
 
+if (EMSCRIPTEN)
+	set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -s ALLOW_MEMORY_GROWTH")
+endif ()
+
 include(deps/box3d.cmake)
 include(deps/cgltf.cmake)
 include(deps/cpuinfo.cmake)
