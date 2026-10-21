@@ -3,7 +3,7 @@ name: Emscripten (WASM)
 on: [ push, pull_request ]
 
 env:
-  BUILD_TYPE: Release
+  BUILD_TYPE: MinSizeRel
 
 jobs:
   build:
