@@ -67,6 +67,9 @@ static void create_assets(ecs_iter_t *iter)
 		SDL_GetError()
 	);
 
+#ifdef SDL_PLATFORM_EMSCRIPTEN
+	ecs_set_error("Assets error", "No game found");
+#else
 	const SDL_DialogFileFilter filters[] = {
 		(SDL_DialogFileFilter){
 			.name = "Packed assets",
@@ -76,6 +79,7 @@ static void create_assets(ecs_iter_t *iter)
 
 	SDL_ShowOpenFileDialog(on_file_opened, (void*) input, nullptr,
 		filters, SDL_arraysize(filters), nullptr, false);
+#endif
 }
 
 void ecs_add_assets()
