@@ -246,6 +246,8 @@ static void on_init_set([[maybe_unused]] ecs_iter_t *iter)
 	ecs_os_api_t os_api = ecs_os_api_create();
 	ecs_os_set_api(&os_api);
 
+	// TODO: Currently broken
+#ifndef SDL_PLATFORM_EMSCRIPTEN
 	const Sint32 threads = args->ecs_threads > 0
 		? (Sint32) args->ecs_threads
 		: SDL_GetNumLogicalCPUCores();
@@ -267,6 +269,7 @@ static void on_init_set([[maybe_unused]] ecs_iter_t *iter)
 		SDL_snprintf(buffer, buffer_len, "Unknown threading type '%s'", args->ecs_threading);
 		ecs_set_error("ECS initialisation failed", buffer);
 	}
+#endif
 
 #ifdef FLECS_REST
 	ecs_singleton_set(ecs_world(), EcsRest, {0});
