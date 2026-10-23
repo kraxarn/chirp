@@ -4,6 +4,6 @@
 
 #include <SDL3/SDL_stdinc.h>
 
-bool physics_create(b3WorldId *world, Uint32 workers);
+bool physics_create(Uint32 workers, b3WorldId *world);
 
 void physics_destroy(b3WorldId world);

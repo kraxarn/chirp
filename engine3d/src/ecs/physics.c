@@ -28,7 +28,7 @@ static void init_physics(ecs_iter_t *iter)
 #endif
 
 	b3WorldId world = {0};
-	if (!physics_create(&world, workers))
+	if (!physics_create(workers, &world))
 	{
 		ecs_set_error("Physics error", SDL_GetError());
 		return;

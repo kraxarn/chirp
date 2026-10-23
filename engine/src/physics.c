@@ -93,7 +93,7 @@ static void finish_task(void *task, [[maybe_unused]] void *context)
 	}
 }
 
-bool physics_create(b3WorldId *world, const Uint32 workers)
+bool physics_create(const Uint32 workers, b3WorldId *world)
 {
 	SDL_assert(b3GetWorldCount() == 0);
 
