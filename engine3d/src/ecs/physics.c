@@ -18,9 +18,14 @@ static void init_physics(ecs_iter_t *iter)
 {
 	const arg_values_t *args = ecs_field(iter, arg_values_t, 0);
 
+	// TODO: Currently broken
+#ifdef SDL_PLATFORM_EMSCRIPTEN
+	const Uint32 workers = 1;
+#else
 	const Uint32 workers = args->physics_threads > 0
 		? args->physics_threads
 		: SDL_GetNumLogicalCPUCores();
+#endif
 
 	b3WorldId world = {0};
 	if (!physics_create(&world, workers))
