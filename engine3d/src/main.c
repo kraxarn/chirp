@@ -214,6 +214,8 @@ static void set_log_priorities(const char *priorities)
 {
 #ifdef SDL_PLATFORM_ANDROID
 	SDL_SetLogPriorities(SDL_LOG_PRIORITY_VERBOSE);
+#elifdef SDL_PLATFORM_EMSCRIPTEN
+	SDL_SetLogPriorities(SDL_LOG_PRIORITY_VERBOSE);
 #elifdef NDEBUG
 	SDL_SetLogPriorities(SDL_LOG_PRIORITY_INFO);
 #else
