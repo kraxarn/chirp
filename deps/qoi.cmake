@@ -2,7 +2,7 @@ include(FetchContent)
 
 FetchContent_Declare(qoi
 	GIT_REPOSITORY https://github.com/phoboslab/qoi.git
-	GIT_TAG 97bacc86a9c4abf5a2d452102dc26546c4c670b9
+	GIT_TAG ffb2d2cb74a1de60819b21b939f7209aa53e91c1
 )
 
 message(STATUS "Downloading qoi")
