@@ -26,7 +26,7 @@ include(../cmake/resources.cmake)
 target_resources(${EXEC_NAME})
 
 include(../cmake/warnings.cmake)
-enable_warnings(${EXEC_NAME})
+target_enable_warnings(${EXEC_NAME})
 
 include(../cmake/execproperties.cmake)
 set_target_exec_properties(${EXEC_NAME}

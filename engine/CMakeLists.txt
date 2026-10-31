@@ -30,7 +30,7 @@ include(../cmake/resources.cmake)
 target_resources(${LIB_NAME})
 
 include(../cmake/warnings.cmake)
-enable_warnings(${LIB_NAME})
+target_enable_warnings(${LIB_NAME})
 
 if (ENABLE_SIMD)
 	target_compile_definitions(${LIB_NAME} PUBLIC SIMD_ENABLED)

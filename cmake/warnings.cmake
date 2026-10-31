@@ -1,4 +1,4 @@
-function(enable_warnings target)
+function(target_enable_warnings target)
 	if (ENABLE_WARNINGS_AS_ERRORS)
 		target_compile_options(${target} PRIVATE -Wall -Wextra -Wpedantic -Werror)
 		if (CMAKE_C_COMPILER_ID STREQUAL "Clang" OR CMAKE_C_COMPILER_ID STREQUAL "AppleClang")
