@@ -13,6 +13,7 @@
 #include <SDL3/SDL_log.h>
 #include <SDL3/SDL_stdinc.h>
 
+#ifndef SDL_PLATFORM_EMSCRIPTEN
 static void on_file_opened(void *userdata,
 	const char *const *filelist, [[maybe_unused]] int filter)
 {
@@ -39,6 +40,7 @@ static void on_file_opened(void *userdata,
 
 	ecs_set_error("Assets error", SDL_GetError());
 }
+#endif
 
 static void create_assets(ecs_iter_t *iter)
 {
