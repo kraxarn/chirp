@@ -478,33 +478,46 @@ SDL_AppResult SDL_AppIterate(void *appstate)
 		b3Vec3 player_velocity = b3Body_GetLinearVelocity(*player_body_id);
 		b3Vec3 movement = {.x = 0.F, .y = 0.F};
 
+#define move_axis(axis, dir)																\
+	do {																					\
+		const vector3f_t scaled = camera_to_##axis(camera, 20.F * time_stats->dt * (dir));	\
+		camera->position = vector3f_add(camera->position, scaled);							\
+		camera->target = vector3f_add(camera->target, scaled);								\
+	} while (false)
+
 		if (input_axis(input, "move_forward", 0) > 0.F)
 		{
+			move_axis(z, 1);
 			movement.z += 1.F;
 		}
 
 		if (input_axis(input, "move_backward", 0) > 0.F)
 		{
+			move_axis(z, -1);
 			movement.z -= 1.F;
 		}
 
 		if (input_axis(input, "move_left", 0) > 0.F)
 		{
+			move_axis(x, -1);
 			movement.x -= 1.F;
 		}
 
 		if (input_axis(input, "move_right", 0) > 0.F)
 		{
+			move_axis(x, 1);
 			movement.x += 1.F;
 		}
 
 		if (input_is_down(input, "move_up", 0))
 		{
+			move_axis(y, 1);
 			movement.y -= 1.F;
 		}
 
 		if (input_is_down(input, "move_down", 0))
 		{
+			move_axis(y, -1);
 			movement.y += 1.F;
 		}
 
@@ -516,15 +529,18 @@ SDL_AppResult SDL_AppIterate(void *appstate)
 			}
 		}
 
-		const float maxSpeed = physics_config->move_speed;
-		b3Vec3 target_velocity = b3Add(
-			b3MulSV(maxSpeed * movement.z, vector3f_to_b3vec3(camera_forward(camera))),
-			b3MulSV(maxSpeed * movement.x, vector3f_to_b3vec3(camera_right(camera)))
-		);
-		target_velocity.y = movement.y;
+#undef move_axis
 
-		player_velocity = b3Add(player_velocity, target_velocity);
-		b3Body_SetLinearVelocity(*player_body_id, player_velocity);
+		// TODO
+		// const float maxSpeed = physics_config->move_speed;
+		// b3Vec3 target_velocity = b3Add(
+		// 	b3MulSV(maxSpeed * movement.z, vector3f_to_b3vec3(camera_forward(camera))),
+		// 	b3MulSV(maxSpeed * movement.x, vector3f_to_b3vec3(camera_right(camera)))
+		// );
+		// target_velocity.y = movement.y;
+		//
+		// player_velocity = b3Add(player_velocity, target_velocity);
+		// b3Body_SetLinearVelocity(*player_body_id, player_velocity);
 
 		if (input_is_pressed(input, "shoot", 0))
 		{
@@ -603,9 +619,10 @@ SDL_AppResult SDL_AppIterate(void *appstate)
 	b3Body_SetLinearVelocity(*player_body_id, clamped_velocity);
 
 	// TODO: There should be a better way to do this, right?
-	const b3Vec3 player_position = b3Body_GetPosition(*player_body_id);
-	camera->target = vector3f_add(camera->target, vector3f_sub(cast(vector3f_t, player_position), camera->position));
-	camera->position = cast(vector3f_t, player_position);
+	// TODO
+	// const b3Vec3 player_position = b3Body_GetPosition(*player_body_id);
+	// camera->target = vector3f_add(camera->target, vector3f_sub(cast(vector3f_t, player_position), camera->position));
+	// camera->position = cast(vector3f_t, player_position);
 
 	const vector3f_t forward_n = vector3f_normalize(vector3f_sub(camera->target, camera->position));
 	const vector3f_t right_n = vector3f_normalize(vector3f_cross(forward_n, camera->up));
