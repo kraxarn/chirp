@@ -38,6 +38,7 @@ if (ENABLE_WARNINGS_AS_ERRORS)
 		-Wall -Wextra -Wpedantic
 		-Werror
 		# void* arithmetics in arrays
+		-Wno-pointer-arith
 		-Wno-gnu-pointer-arith
 		# Some hacky casting in ECS threads
 		-Wno-cast-function-type-mismatch
