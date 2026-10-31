@@ -5,6 +5,7 @@ function(target_enable_warnings target)
 			target_compile_options(${target} PRIVATE
 				-Wno-gnu-pointer-arith				# void* arithmetics in arrays
 				-Wno-cast-function-type-mismatch	# Some hacky casting in ECS threads
+				-Wno-format							# Format strings, probably temporary
 			)
 		elseif (CMAKE_C_COMPILER_ID STREQUAL "GNU")
 			target_compile_options(${target} PRIVATE
