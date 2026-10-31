@@ -10,7 +10,13 @@ if (ANDROID AND CMAKE_ANDROID_ARCH_ABI STREQUAL "armeabi-v7a")
 endif ()
 option(ENABLE_SIMD "Enable SSE2/NEON instructions" ${ENABLE_SIMD_DEFAULT})
 
-option(ENABLE_WARNINGS_AS_ERRORS "Enable all warnings and treat them as errors" ON)
+set(ENABLE_WARNINGS_AS_ERRORS_DEFAULT ON)
+if (WIN32)
+	# TODO: Windows "deprecates" a lot of standard C stuff
+	set(ENABLE_WARNINGS_AS_ERRORS_DEFAULT OFF)
+endif ()
+option(ENABLE_WARNINGS_AS_ERRORS "Enable all warnings and treat them as errors"
+	${ENABLE_WARNINGS_AS_ERRORS_DEFAULT})
 
 if (EMSCRIPTEN)
 	set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -pthread")
