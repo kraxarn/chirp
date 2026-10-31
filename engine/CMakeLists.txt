@@ -33,6 +33,17 @@ if (ENABLE_SIMD)
 	target_compile_definitions(${LIB_NAME} PUBLIC SIMD_ENABLED)
 endif ()
 
+if (ENABLE_WARNINGS_AS_ERRORS)
+	target_compile_options(${LIB_NAME} PUBLIC
+		-Wall -Wextra -Wpedantic
+		-Werror
+		# void* arithmetics in arrays
+		-Wno-gnu-pointer-arith
+		# Some hacky casting in ECS threads
+		-Wno-cast-function-type-mismatch
+	)
+endif ()
+
 # Not all platforms define "NDEBUG"
 if (NOT CMAKE_BUILD_TYPE STREQUAL "Debug")
 	target_compile_definitions(${LIB_NAME} PUBLIC NDEBUG)

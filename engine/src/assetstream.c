@@ -46,7 +46,7 @@ static size_t stream_read(void *userdata, void *ptr, const size_t size, SDL_IOSt
 {
 	stream_info_t *info = userdata;
 
-	const size_t read_size = (info->current + size) > info->size
+	const size_t read_size = (info->current + size) > (size_t) info->size
 		? info->size - info->current
 		: size;
 

@@ -53,5 +53,6 @@ const char *map_key_sint32(const Sint32 key)
 bool map_set_with_cleanup(const map_t map, const char *name, void *value,
 	const map_cleanup_callback_t callback)
 {
-	return SDL_SetPointerPropertyWithCleanup(map, name, value, cleanup, callback);
+	return SDL_SetPointerPropertyWithCleanup(map, name, value,
+		cleanup, (void*) callback);
 }

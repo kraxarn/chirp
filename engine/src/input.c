@@ -61,7 +61,7 @@ static void update_gamepad_button_event(const input_t input, const SDL_GamepadBu
 	}
 
 	const int index = SDL_GetGamepadPlayerIndex(gamepad);
-	if (index < 0 || index >= input_gamepad_count)
+	if (index < 0 || index >= (int) input_gamepad_count)
 	{
 		SDL_LogError(LOG_CATEGORY_INPUT, "Invalid player index: %d", index);
 		return;
@@ -261,7 +261,7 @@ input_state_t input_state(const input_t input, const char *name,
 	const int index, const bool reset_pressed)
 {
 	SDL_assert(index >= 0);
-	SDL_assert(index < input_gamepad_count);
+	SDL_assert(index < (int) input_gamepad_count);
 
 	const input_map_t *input_map = map_get(input.name_map, name, nullptr);
 	if (input_map == nullptr)

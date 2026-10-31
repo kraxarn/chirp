@@ -36,7 +36,7 @@ matrix4x4_t matrix4x4_multiply_n(const matrix4x4_t *mat, const size_t len)
 
 	matrix4x4_t result = mat[0];
 
-	for (auto i = 1; i < len; i++)
+	for (size_t i = 1; i < len; i++)
 	{
 		result = matrix4x4_multiply(result, mat[i]);
 	}

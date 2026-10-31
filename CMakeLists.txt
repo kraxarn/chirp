@@ -10,6 +10,8 @@ if (ANDROID AND CMAKE_ANDROID_ARCH_ABI STREQUAL "armeabi-v7a")
 endif ()
 option(ENABLE_SIMD "Enable SSE2/NEON instructions" ${ENABLE_SIMD_DEFAULT})
 
+option(ENABLE_WARNINGS_AS_ERRORS "Enable all warnings and treat them as errors" ON)
+
 if (EMSCRIPTEN)
 	set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -pthread")
 	set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -s ALLOW_MEMORY_GROWTH")

@@ -149,7 +149,7 @@ static void print(const char *message)
 static void name_length(void *userdata, [[maybe_unused]] const SDL_PropertiesID props, const char *name)
 {
 	int *length = userdata;
-	*length = SDL_max(*length, SDL_strlen(name));
+	*length = SDL_max(*length, (int) SDL_strlen(name));
 }
 
 static void print_command(void *userdata, const SDL_PropertiesID props, const char *name)

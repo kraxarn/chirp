@@ -28,7 +28,7 @@ static const char *category_names[LOG_CATEGORY_COUNT] = {
 
 const char *log_category_name(const int category)
 {
-	SDL_assert(category >= 0 && category < SDL_arraysize(category_names));
+	SDL_assert(category >= 0 && category < (int) SDL_arraysize(category_names));
 	return category_names[category];
 }
 
