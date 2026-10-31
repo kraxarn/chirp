@@ -1,5 +1,4 @@
 #include "args.h"
-#include "cast.h"
 #include "ecs.h"
 #include "ecs/components.h"
 
@@ -8,6 +7,7 @@
 #include "box3d/box3d.h"
 #include "box3d/id.h"
 #include "chirp/ecs.h"
+#include "chirp/vector.h"
 #include "chirp/ecs/components.h"
 #include "flecs/addons/flecs_c.h"
 
@@ -56,7 +56,7 @@ static void sync_physics(ecs_iter_t *iter)
 	for (Sint32 i = 0; i < iter->count; i++)
 	{
 		const b3Pos b3_pos = b3Body_GetPosition(body_ids[i]);
-		positions[i] = cast(vector3f_t, b3_pos);
+		positions[i] = vector3f_from_b3vec3(b3_pos);
 
 		// TODO: Fix rotation
 

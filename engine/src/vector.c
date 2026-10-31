@@ -136,6 +136,11 @@ b3Vec3 vector3f_to_b3vec3(const vector3f_t vec)
 	return (b3Vec3){.x = vec.x, .y = vec.y, .z = vec.z};
 }
 
+vector3f_t vector3f_from_b3vec3(const b3Vec3 vec)
+{
+	return (vector3f_t){.x = vec.x, .y = vec.y, .z = vec.z};
+}
+
 vector4f_t vector4f_one()
 {
 	return (vector4f_t){

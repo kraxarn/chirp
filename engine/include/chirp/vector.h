@@ -93,6 +93,9 @@ vector3f_t vector3f_clamp(vector3f_t vec, vector3f_t min, vector3f_t max);
 b3Vec3 vector3f_to_b3vec3(vector3f_t vec);
 
 [[nodiscard]]
+vector3f_t vector3f_from_b3vec3(b3Vec3 vec);
+
+[[nodiscard]]
 vector4f_t vector4f_one();
 
 [[nodiscard]]

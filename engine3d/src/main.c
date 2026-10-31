@@ -1,7 +1,6 @@
 #include "appstate.h"
 #include "args.h"
 #include "camera.h"
-#include "cast.h"
 #include "ecs.h"
 #include "model.h"
 #include "nkui.h"
@@ -586,8 +585,8 @@ SDL_AppResult SDL_AppIterate(void *appstate)
 			// TODO: Fix rotation
 
 			b3BodyDef body_def = b3DefaultBodyDef();
-			body_def.position = cast(b3Pos, position);
-			body_def.linearVelocity = cast(b3Vec3, velocity);
+			body_def.position = vector3f_to_b3vec3(position);
+			body_def.linearVelocity = vector3f_to_b3vec3(velocity);
 			body_def.type = b3_dynamicBody;
 			b3BodyId body = b3CreateBody(*physics_world, &body_def);
 			b3BoxHull box = b3MakeCubeHull(1.F);
