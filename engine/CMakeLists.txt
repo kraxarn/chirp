@@ -29,24 +29,11 @@ target_include_directories(${LIB_NAME} PRIVATE
 include(../cmake/resources.cmake)
 target_resources(${LIB_NAME})
 
+include(../cmake/warnings.cmake)
+enable_warnings(${LIB_NAME})
+
 if (ENABLE_SIMD)
 	target_compile_definitions(${LIB_NAME} PUBLIC SIMD_ENABLED)
-endif ()
-
-if (ENABLE_WARNINGS_AS_ERRORS)
-	target_compile_options(${LIB_NAME} PUBLIC -Wall -Wextra -Wpedantic -Werror)
-	if (CMAKE_C_COMPILER_ID STREQUAL "Clang" OR CMAKE_C_COMPILER_ID STREQUAL "AppleClang")
-		target_compile_options(${LIB_NAME} PUBLIC
-			-Wno-gnu-pointer-arith				# void* arithmetics in arrays
-			-Wno-cast-function-type-mismatch	# Some hacky casting in ECS threads
-		)
-	elseif (CMAKE_C_COMPILER_ID STREQUAL "GNU")
-		target_compile_options(${LIB_NAME} PUBLIC
-			-Wno-pointer-arith		# void* arithmetics in arrays
-			-Wno-cast-function-type	# Some hacky casting in ECS threads
-			-Wno-pedantic			# Map cleanup casts pointers to/from functions
-		)
-	endif ()
 endif ()
 
 # Not all platforms define "NDEBUG"

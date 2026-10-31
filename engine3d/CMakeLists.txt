@@ -25,6 +25,9 @@ target_link_libraries(${EXEC_NAME} PRIVATE chirp)
 include(../cmake/resources.cmake)
 target_resources(${EXEC_NAME})
 
+include(../cmake/warnings.cmake)
+enable_warnings(${EXEC_NAME})
+
 include(../cmake/execproperties.cmake)
 set_target_exec_properties(${EXEC_NAME}
 	IDENTIFIER    "com.kraxarn.${EXEC_NAME}"
