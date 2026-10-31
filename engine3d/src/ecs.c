@@ -241,13 +241,12 @@ static void add_modules()
 
 static void on_init_set([[maybe_unused]] ecs_iter_t *iter)
 {
-	const arg_values_t *args = ecs_field(iter, arg_values_t, 1);
-
 	ecs_os_api_t os_api = ecs_os_api_create();
 	ecs_os_set_api(&os_api);
 
 	// TODO: Currently broken
 #ifndef SDL_PLATFORM_EMSCRIPTEN
+	const arg_values_t *args = ecs_field(iter, arg_values_t, 1);
 	const Sint32 threads = args->ecs_threads > 0
 		? (Sint32) args->ecs_threads
 		: SDL_GetNumLogicalCPUCores();
