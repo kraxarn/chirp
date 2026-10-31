@@ -35,7 +35,7 @@ endif ()
 
 if (ENABLE_WARNINGS_AS_ERRORS)
 	target_compile_options(${LIB_NAME} PUBLIC -Wall -Wextra -Wpedantic -Werror)
-	if (CMAKE_C_COMPILER_ID STREQUAL "Clang")
+	if (CMAKE_C_COMPILER_ID STREQUAL "Clang" OR CMAKE_C_COMPILER_ID STREQUAL "AppleClang")
 		target_compile_options(${LIB_NAME} PUBLIC
 			-Wno-gnu-pointer-arith				# void* arithmetics in arrays
 			-Wno-cast-function-type-mismatch	# Some hacky casting in ECS threads
