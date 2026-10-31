@@ -11,6 +11,7 @@ function(target_enable_warnings target)
 				-Wno-pointer-arith		# void* arithmetics in arrays
 				-Wno-cast-function-type	# Some hacky casting in ECS threads
 				-Wno-pedantic			# Map cleanup casts pointers to/from functions
+				-Wno-format				# Format strings, probably temporary
 			)
 		endif ()
 	endif ()
