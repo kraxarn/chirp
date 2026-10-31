@@ -14,7 +14,7 @@
 #include <SDL3/SDL_cpuinfo.h>
 #include <SDL3/SDL_stdinc.h>
 
-static void init_physics(ecs_iter_t *iter)
+static void init_physics([[maybe_unused]] ecs_iter_t *iter)
 {
 	// TODO: Currently broken
 #ifdef SDL_PLATFORM_EMSCRIPTEN
