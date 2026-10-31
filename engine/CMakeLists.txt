@@ -34,15 +34,19 @@ if (ENABLE_SIMD)
 endif ()
 
 if (ENABLE_WARNINGS_AS_ERRORS)
-	target_compile_options(${LIB_NAME} PUBLIC
-		-Wall -Wextra -Wpedantic
-		-Werror
-		# void* arithmetics in arrays
-		-Wno-pointer-arith
-		-Wno-gnu-pointer-arith
-		# Some hacky casting in ECS threads
-		-Wno-cast-function-type-mismatch
-	)
+	target_compile_options(${LIB_NAME} PUBLIC -Wall -Wextra -Wpedantic -Werror)
+	if (CMAKE_C_COMPILER_ID STREQUAL "Clang")
+		target_compile_options(${LIB_NAME} PUBLIC
+			-Wno-gnu-pointer-arith				# void* arithmetics in arrays
+			-Wno-cast-function-type-mismatch	# Some hacky casting in ECS threads
+		)
+	elseif (CMAKE_C_COMPILER_ID STREQUAL "GNU")
+		target_compile_options(${LIB_NAME} PUBLIC
+			-Wno-pointer-arith		# void* arithmetics in arrays
+			-Wno-cast-function-type	# Some hacky casting in ECS threads
+			-Wno-pedantic			# Map cleanup casts pointers to/from functions
+		)
+	endif ()
 endif ()
 
 # Not all platforms define "NDEBUG"

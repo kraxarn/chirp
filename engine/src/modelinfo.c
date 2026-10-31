@@ -403,7 +403,7 @@ static void set_primitive_material(const mesh_primitive_t *primitive,
 static bool load_model_data(model_info_t *model, const cgltf_data *gltf_data)
 {
 	model->node_count = gltf_data->nodes_count;
-	model->nodes = SDL_calloc(sizeof(model_node_t), model->node_count);
+	model->nodes = SDL_calloc(model->node_count, sizeof(model_node_t));
 
 	for (size_t nn = 0; nn < gltf_data->nodes_count; nn++)
 	{

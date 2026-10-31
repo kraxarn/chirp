@@ -47,50 +47,60 @@ matrix4x4_t matrix4x4_multiply_n(const matrix4x4_t *mat, const size_t len)
 matrix4x4_t matrix4x4_create_rotation_x(const float radians)
 {
 	return (matrix4x4_t){
-		1, 0, 0, 0,
-		0, SDL_cosf(radians), SDL_sinf(radians), 0,
-		0, -SDL_sinf(radians), SDL_cosf(radians), 0,
-		0, 0, 0, 1,
+		.m = {
+			1, 0, 0, 0,
+			0, SDL_cosf(radians), SDL_sinf(radians), 0,
+			0, -SDL_sinf(radians), SDL_cosf(radians), 0,
+			0, 0, 0, 1,
+		},
 	};
 }
 
 matrix4x4_t matrix4x4_create_rotation_y(const float radians)
 {
 	return (matrix4x4_t){
-		SDL_cosf(radians), 0, -SDL_sinf(radians), 0,
-		0, 1, 0, 0,
-		SDL_sinf(radians), 0, SDL_cosf(radians), 0,
-		0, 0, 0, 1,
+		.m = {
+			SDL_cosf(radians), 0, -SDL_sinf(radians), 0,
+			0, 1, 0, 0,
+			SDL_sinf(radians), 0, SDL_cosf(radians), 0,
+			0, 0, 0, 1,
+		},
 	};
 }
 
 matrix4x4_t matrix4x4_create_rotation_z(const float radians)
 {
 	return (matrix4x4_t){
-		SDL_cosf(radians), SDL_sinf(radians), 0, 0,
-		-SDL_sinf(radians), SDL_cosf(radians), 0, 0,
-		0, 0, 1, 0,
-		0, 0, 0, 1,
+		.m = {
+			SDL_cosf(radians), SDL_sinf(radians), 0, 0,
+			-SDL_sinf(radians), SDL_cosf(radians), 0, 0,
+			0, 0, 1, 0,
+			0, 0, 0, 1,
+		},
 	};
 }
 
 matrix4x4_t matrix4x4_create_translation(const vector3f_t vec)
 {
 	return (matrix4x4_t){
-		1, 0, 0, 0,
-		0, 1, 0, 0,
-		0, 0, 1, 0,
-		vec.x, vec.y, vec.z, 1,
+		.m = {
+			1, 0, 0, 0,
+			0, 1, 0, 0,
+			0, 0, 1, 0,
+			vec.x, vec.y, vec.z, 1,
+		},
 	};
 }
 
 matrix4x4_t matrix4x4_create_scale(const vector3f_t vec)
 {
 	return (matrix4x4_t){
-		vec.x, 0, 0, 0,
-		0, vec.y, 0, 0,
-		0, 0, vec.z, 0,
-		0, 0, 0, 1,
+		.m = {
+			vec.x, 0, 0, 0,
+			0, vec.y, 0, 0,
+			0, 0, vec.z, 0,
+			0, 0, 0, 1,
+		},
 	};
 }
 
@@ -99,10 +109,12 @@ matrix4x4_t matrix4x4_create_perspective(const float fov, const float aspect, co
 	const float num = 1.F / SDL_tanf(fov * 0.5F);
 
 	return (matrix4x4_t){
-		num / aspect, 0, 0, 0,
-		0, num, 0, 0,
-		0, 0, far / (near - far), -1,
-		0, 0, (near * far) / (near - far), 0
+		.m = {
+			num / aspect, 0, 0, 0,
+			0, num, 0, 0,
+			0, 0, far / (near - far), -1,
+			0, 0, (near * far) / (near - far), 0
+		},
 	};
 }
 
@@ -110,10 +122,12 @@ matrix4x4_t matrix4x4_create_orthographic(const float left, const float right,
 	const float bottom, const float top, const float near, const float far)
 {
 	return (matrix4x4_t){
-		2.F / (right - left), 0, 0, 0,
-		0, 2.F / (top - bottom), 0, 0,
-		0, 0, 1.F / (near - far), 0,
-		(left + right) / (left - right), (top + bottom) / (bottom - top), near / (near - far), 1,
+		.m = {
+			2.F / (right - left), 0, 0, 0,
+			0, 2.F / (top - bottom), 0, 0,
+			0, 0, 1.F / (near - far), 0,
+			(left + right) / (left - right), (top + bottom) / (bottom - top), near / (near - far), 1,
+		},
 	};
 }
 
@@ -130,10 +144,12 @@ matrix4x4_t matrix4x4_create_look_at(const vector3f_t camera_position,
 	const vector3f_t vec3 = vector3f_cross(vec1, vec2);
 
 	return (matrix4x4_t){
-		vec2.x, vec3.x, vec1.x, 0,
-		vec2.y, vec3.y, vec1.y, 0,
-		vec2.z, vec3.z, vec1.z, 0,
-		-vector3f_dot(vec2, camera_position), -vector3f_dot(vec3, camera_position),
-		-vector3f_dot(vec1, camera_position), 1
+		.m = {
+			vec2.x, vec3.x, vec1.x, 0,
+			vec2.y, vec3.y, vec1.y, 0,
+			vec2.z, vec3.z, vec1.z, 0,
+			-vector3f_dot(vec2, camera_position), -vector3f_dot(vec3, camera_position),
+			-vector3f_dot(vec1, camera_position), 1
+		},
 	};
 }
