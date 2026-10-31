@@ -41,10 +41,10 @@ static void init_physics(ecs_iter_t *iter)
 static void update_physics(ecs_iter_t *iter)
 {
 	const b3WorldId world = *ecs_field(iter, b3WorldId, 0);
+	const arg_values_t *args = ecs_field(iter, arg_values_t, 1);
 
-	// TODO: Test this with different frame-rates
-	constexpr int sub_step_count = 4;
-	b3World_Step(world, iter->delta_time, sub_step_count);
+	// TODO: Test sub-step count with different frame-rates
+	b3World_Step(world, iter->delta_time, (int) args->physics_sub_step_count);
 }
 
 static void sync_physics(ecs_iter_t *iter)
@@ -68,7 +68,7 @@ void ecs_add_physics()
 {
 	ecs_observer_init(ecs_world(), &(ecs_observer_desc_t){
 		.query.terms = {
-			(ecs_term_t){.id = EcsArgs, .inout = EcsIn},
+			(ecs_term_t){.id = ecs_singleton_id(EcsArgs), .inout = EcsIn},
 		},
 		.events = {EcsOnSet},
 		.callback = init_physics,
@@ -80,7 +80,8 @@ void ecs_add_physics()
 			.add = ecs_ids(ecs_dependson(ecs_phase(PHASE_PHYSICS_UPDATE))),
 		}),
 		.query.terms = {
-			(ecs_term_t){.id = EcsPhysicsWorld, .inout = EcsIn},
+			(ecs_term_t){.id = ecs_singleton_id(EcsPhysicsWorld), .inout = EcsIn},
+			(ecs_term_t){.id = ecs_singleton_id(EcsArgs), .inout = EcsIn},
 		},
 		.callback = update_physics,
 	});

@@ -22,6 +22,7 @@ arg_parse_result_t arg_values_parse(const int argc, char **argv, arg_values_t *v
 		.ecs_threading = "threads",
 		.ecs_threads = 0,
 		.physics_threads = 0,
+		.physics_sub_step_count = 4,
 #ifdef NDEBUG
 		.gpu_debug_mode = false,
 		.fatal_error_message_box = true,
@@ -68,6 +69,11 @@ arg_parse_result_t arg_values_parse(const int argc, char **argv, arg_values_t *v
 		"ecs-threading",
 		"Set threading type for ECS [threads/tasks]",
 		&values->ecs_threading
+	);
+	args_add_int(args,
+		"physics-sub-step-count",
+		"Set sub-step count for physics",
+		&values->physics_sub_step_count
 	);
 
 	constexpr size_t buffer_len = 256;
