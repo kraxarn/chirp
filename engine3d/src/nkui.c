@@ -31,8 +31,17 @@
 #define STBTT_memcpy      SDL_memcpy
 #define STBTT_memset      SDL_memset
 
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunused-but-set-variable"
+#endif
+
 #define NK_IMPLEMENTATION
 #include "nkui.h"
+
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
 
 static constexpr size_t max_vertex_buffer = 512u * 1024u;
 static constexpr size_t max_element_buffer = 128u * 1024u;
