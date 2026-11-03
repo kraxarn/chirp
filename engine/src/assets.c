@@ -49,31 +49,31 @@ static bool parse_project_metadata(char *json, const json_token_t *token)
 		const json_token_t *value = key + 1;
 
 		const char *prop_name;
-		if (is_key(json, key, "nam"))
+		if (is_key(json, key, "n")) // Name
 		{
 			prop_name = SDL_PROP_APP_METADATA_NAME_STRING;
 		}
-		else if (is_key(json, key, "ver"))
+		else if (is_key(json, key, "v")) // Version
 		{
 			prop_name = SDL_PROP_APP_METADATA_VERSION_STRING;
 		}
-		else if (is_key(json, key, "ide"))
+		else if (is_key(json, key, "i")) // Identifier
 		{
 			prop_name = SDL_PROP_APP_METADATA_IDENTIFIER_STRING;
 		}
-		else if (is_key(json, key, "cre"))
+		else if (is_key(json, key, "c")) // Creator
 		{
 			prop_name = SDL_PROP_APP_METADATA_CREATOR_STRING;
 		}
-		else if (is_key(json, key, "cop"))
+		else if (is_key(json, key, "o")) // Copyright
 		{
 			prop_name = SDL_PROP_APP_METADATA_COPYRIGHT_STRING;
 		}
-		else if (is_key(json, key, "url"))
+		else if (is_key(json, key, "u")) // URL
 		{
 			prop_name = SDL_PROP_APP_METADATA_URL_STRING;
 		}
-		else if (is_key(json, key, "typ"))
+		else if (is_key(json, key, "t")) // Type
 		{
 			prop_name = SDL_PROP_APP_METADATA_TYPE_STRING;
 		}
@@ -104,7 +104,7 @@ static bool parse_project_window(char *json, window_config_t *window_config,
 
 		const json_token_t *value = key + 1;
 
-		if (is_key(json, key, "tit"))
+		if (is_key(json, key, "t")) // Title
 		{
 			const size_t title_size = value->end - value->start + 1;
 			char *title = SDL_malloc(title_size);
@@ -112,7 +112,7 @@ static bool parse_project_window(char *json, window_config_t *window_config,
 
 			window_config->title = title;
 		}
-		else if (is_key(json, key, "siz"))
+		else if (is_key(json, key, "s")) // Size
 		{
 			const long width = SDL_strtol(json + (value + 1)->start, nullptr, 10);
 			const long height = SDL_strtol(json + (value + 2)->start, nullptr, 10);
@@ -120,13 +120,13 @@ static bool parse_project_window(char *json, window_config_t *window_config,
 			window_config->size.x = (int) width;
 			window_config->size.y = (int) height;
 		}
-		else if (is_key(json, key, "ful"))
+		else if (is_key(json, key, "f")) // Fullscreen
 		{
 			const bool fullscreen = SDL_strncmp(json + value->start, "true", 4) == 0;
 
 			window_config->fullscreen = fullscreen;
 		}
-		else if (is_key(json, key, "ico"))
+		else if (is_key(json, key, "i")) // Icon
 		{
 			// TODO: Icons are currently not supported
 		}
@@ -177,7 +177,7 @@ static bool parse_project_input(const input_t input, char *json, const json_toke
 			input_config = input_config_default();
 		}
 
-		if (is_key(json, key, "key"))
+		if (is_key(json, key, "k")) // Keycode
 		{
 			array_reserve(input_config.keycodes, value->size);
 			for (int j = 0; j < value->size; j++)
@@ -195,7 +195,7 @@ static bool parse_project_input(const input_t input, char *json, const json_toke
 				array_push(input_config.keycodes, keycode);
 			}
 		}
-		else if (is_key(json, key, "mou"))
+		else if (is_key(json, key, "m")) // Mouse
 		{
 			json[value->end] = '\0';
 			input_config.mouse_button = mouse_button_from_name(json + value->start);
@@ -205,7 +205,7 @@ static bool parse_project_input(const input_t input, char *json, const json_toke
 					json + value->start);
 			}
 		}
-		else if (is_key(json, key, "axi"))
+		else if (is_key(json, key, "a")) // Axis
 		{
 			const input_axis_sign_t sign = json[value->end - 1];
 			if (sign != AXIS_NEGATIVE && sign != AXIS_POSITIVE)
@@ -224,7 +224,7 @@ static bool parse_project_input(const input_t input, char *json, const json_toke
 				}
 			}
 		}
-		else if (is_key(json, key, "dea"))
+		else if (is_key(json, key, "d")) // Deadzone
 		{
 			const double deadzone = SDL_strtod(json + value->start, nullptr);
 			input_config.deadzone = (float) deadzone;
@@ -233,7 +233,7 @@ static bool parse_project_input(const input_t input, char *json, const json_toke
 				SDL_LogError(LOG_CATEGORY_INPUT, "Invalid deadzone: %.2F", deadzone);
 			}
 		}
-		else if (is_key(json, key, "gam"))
+		else if (is_key(json, key, "g")) // Gamepad
 		{
 			json[value->end] = '\0';
 			const SDL_GamepadButton button = gamepad_button_from_name(json + value->start);
@@ -318,11 +318,11 @@ static bool parse_project(SDL_IOStream *stream,
 			continue;
 		}
 
-		if ((is_key(json, token, "met")
+		if ((is_key(json, token, "m") // Metadata
 				&& parse_project_metadata(json, token))
-			|| (is_key(json, token, "win")
+			|| (is_key(json, token, "w") // Window
 				&& parse_project_window(json, &assets->window_config, tokens, count, token))
-			|| (is_key(json, token, "inp")
+			|| (is_key(json, token, "i") // Input
 				&& parse_project_input(input, json, tokens, count, token)))
 		{
 			i += size;
