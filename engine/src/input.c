@@ -15,6 +15,8 @@
 #include <SDL3/SDL_properties.h>
 #include <SDL3/SDL_stdinc.h>
 
+#include <stddef.h>
+
 typedef struct
 {
 	// Keyboard
@@ -25,7 +27,7 @@ typedef struct
 
 	// Gamepad axis
 	SDL_GamepadAxis gamepad_axis;
-	float deadzone;
+	Sint16 deadzone;
 
 	// Gamepad button
 	SDL_GamepadButton gamepad_button;
@@ -178,7 +180,7 @@ bool input_add(const input_t input, const char *name, const input_config_t confi
 	map->keycodes = nullptr;
 	map->mouse_button = 0;
 	map->gamepad_axis = SDL_GAMEPAD_AXIS_INVALID;
-	map->deadzone = 0.F;
+	map->deadzone = 0;
 	map->gamepad_button = SDL_GAMEPAD_BUTTON_INVALID;
 	map->gamepad_button_label = SDL_GAMEPAD_BUTTON_LABEL_UNKNOWN;
 
@@ -211,8 +213,11 @@ bool input_add(const input_t input, const char *name, const input_config_t confi
 	if (config.gamepad_axis != SDL_GAMEPAD_AXIS_INVALID)
 	{
 		map->gamepad_axis = config.gamepad_axis;
-		map->deadzone = config.deadzone
-			* (config.gamepad_axis_sign == AXIS_NEGATIVE ? -1.F : 1.F);
+		map->deadzone = (Sint16) (config.deadzone * SDL_MAX_SINT16);
+		if (config.gamepad_axis_sign == AXIS_NEGATIVE)
+		{
+			map->deadzone = (Sint16) -map->deadzone;
+		}
 		is_valid = true;
 	}
 
@@ -368,16 +373,15 @@ float input_axis(const input_t input, const char *name, const int index)
 		if (gamepad != nullptr)
 		{
 			const Sint16 axis = SDL_GetGamepadAxis(gamepad, input_map->gamepad_axis);
-			const float axis_f = (float) axis / (float) SDL_MAX_SINT16;
 
-			if (SDL_copysignf(1.F, axis_f) == SDL_copysignf(1.F, input_map->deadzone))
+			if ((axis < 0) == (input_map->deadzone < 0))
 			{
-				const float axis_abs = SDL_fabsf(axis_f);
-				const float deadzone_abs = SDL_fabsf(input_map->deadzone);
+				const Sint16 axis_abs = (Sint16) SDL_abs(axis);
+				const Sint16 deadzone_abs = (Sint16) SDL_abs(input_map->deadzone);
 
 				if (axis_abs >= deadzone_abs)
 				{
-					return axis_abs;
+					return (float) axis_abs / SDL_MAX_SINT16;
 				}
 			}
 		}
