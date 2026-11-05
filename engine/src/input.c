@@ -376,8 +376,8 @@ float input_axis(const input_t input, const char *name, const int index)
 
 			if ((axis < 0) == (input_map->deadzone < 0))
 			{
-				const Sint16 axis_abs = (Sint16) SDL_abs(axis);
-				const Sint16 deadzone_abs = (Sint16) SDL_abs(input_map->deadzone);
+				const int axis_abs = SDL_abs(axis);
+				const int deadzone_abs = SDL_abs(input_map->deadzone);
 
 				if (axis_abs >= deadzone_abs)
 				{
