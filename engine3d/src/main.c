@@ -593,23 +593,6 @@ SDL_AppResult SDL_AppIterate(void *appstate)
 		}
 	}
 
-	// TODO: Set clamping during creation
-	const b3Vec3 min_velocity =
-	{
-		.x = -physics_config->max_move_speed,
-		.y = -1'000.F,
-		.z = -physics_config->max_move_speed,
-	};
-	const b3Vec3 max_velocity =
-	{
-		.x = physics_config->max_move_speed,
-		.y = 1'000.F,
-		.z = physics_config->max_move_speed,
-	};
-	const b3Vec3 velocity = b3Body_GetLinearVelocity(*player_body_id);
-	const b3Vec3 clamped_velocity = b3Clamp(velocity, min_velocity, max_velocity);
-	b3Body_SetLinearVelocity(*player_body_id, clamped_velocity);
-
 	const b3Vec3 player_position = b3Body_GetPosition(*player_body_id);
 	const vector3f_t camera_dir = vector3f_sub(camera->target, camera->position);
 	camera->position = vector3f_from_b3vec3(player_position);
