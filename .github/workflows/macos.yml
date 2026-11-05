@@ -14,15 +14,13 @@ jobs:
       matrix:
         include:
           - arch: x86_64
-            compile-flags: '-march=x86-64-v3'
-
           - arch: arm64
 
     steps:
       - uses: actions/checkout@v7
 
       - name: Configure CMake
-        run: cmake -S . -B build -D CMAKE_BUILD_TYPE=$BUILD_TYPE -D CMAKE_OSX_DEPLOYMENT_TARGET="10.14" -D CMAKE_OSX_ARCHITECTURES="${{ matrix.arch }}" -D CMAKE_C_FLAGS="${{ matrix.compile-flags }}"
+        run: cmake -S . -B build -D CMAKE_BUILD_TYPE=$BUILD_TYPE -D CMAKE_OSX_DEPLOYMENT_TARGET="10.14" -D CMAKE_OSX_ARCHITECTURES="${{ matrix.arch }}"
 
       - name: Build
         run: cmake --build build --target chirp3d chirp_tests

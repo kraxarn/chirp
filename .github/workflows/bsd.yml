@@ -20,7 +20,6 @@ jobs:
           - os-type: 'freebsd'
             os-version: '15.1'
             arch: 'x86-64'
-            compile-flags: '-march=x86-64-v3'
 
           - os-type: 'freebsd'
             os-version: '15.1'
@@ -29,7 +28,6 @@ jobs:
           - os-type: 'openbsd'
             os-version: '7.9'
             arch: 'x86-64'
-            compile-flags: '-march=x86-64-v3'
 
           - os-type: 'openbsd'
             os-version: '7.9'
@@ -38,7 +36,6 @@ jobs:
           - os-type: 'netbsd'
             os-version: '10.1'
             arch: 'x86-64'
-            compile-flags: '-march=x86-64-v3'
 
           - os-type: 'netbsd'
             os-version: '10.1'
@@ -67,7 +64,7 @@ jobs:
         run: sudo pkgin -y install git cmake clang SDL3
 
       - name: Configure CMake
-        run: cmake -S . -B build -D ENABLE_TESTS=ON -D CMAKE_BUILD_TYPE=$BUILD_TYPE -D CMAKE_C_FLAGS="${{ matrix.compile-flags }}"
+        run: cmake -S . -B build -D ENABLE_TESTS=ON -D CMAKE_BUILD_TYPE=$BUILD_TYPE
 
       - name: Build
         run: cmake --build build
