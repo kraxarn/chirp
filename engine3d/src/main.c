@@ -474,72 +474,65 @@ SDL_AppResult SDL_AppIterate(void *appstate)
 		camera_rotate_x(camera, -(mouse.x * mouse_sensitivity));
 		camera_rotate_y(camera, -(mouse.y * mouse_sensitivity));
 
-		b3Vec3 player_velocity = b3Body_GetLinearVelocity(*player_body_id);
-		b3Vec3 movement = {.x = 0.F, .y = 0.F};
+		const b3Vec3 player_velocity = b3Body_GetLinearVelocity(*player_body_id);
 
-#define move_axis(axis, dir)																\
-	do {																					\
-		const vector3f_t scaled = camera_to_##axis(camera, 20.F * time_stats->dt * (dir));	\
-		camera->position = vector3f_add(camera->position, scaled);							\
-		camera->target = vector3f_add(camera->target, scaled);								\
-	} while (false)
+		vector3f_t move_forward = vector3f_normalize(camera_forward(camera));
+		move_forward.y = 0.F;
+		move_forward = vector3f_normalize(move_forward);
+
+		vector3f_t move_right = vector3f_normalize(camera_right(camera));
+		vector3f_t target = vector3f_zero();
+		vector3f_t move_up = vector3f_normalize(camera_up(camera));
 
 		if (input_axis(input, "move_forward", 0) > 0.F)
 		{
-			move_axis(z, 1);
-			movement.z += 1.F;
+			target = vector3f_add(target, move_forward);
 		}
 
 		if (input_axis(input, "move_backward", 0) > 0.F)
 		{
-			move_axis(z, -1);
-			movement.z -= 1.F;
+			target = vector3f_sub(target, move_forward);
 		}
 
 		if (input_axis(input, "move_left", 0) > 0.F)
 		{
-			move_axis(x, -1);
-			movement.x -= 1.F;
+			target = vector3f_sub(target, move_right);
 		}
 
 		if (input_axis(input, "move_right", 0) > 0.F)
 		{
-			move_axis(x, 1);
-			movement.x += 1.F;
+			target = vector3f_add(target, move_right);
 		}
 
 		if (input_is_down(input, "move_up", 0))
 		{
-			move_axis(y, 1);
-			movement.y -= 1.F;
+			target = vector3f_add(target, move_up);
 		}
 
 		if (input_is_down(input, "move_down", 0))
 		{
-			move_axis(y, -1);
-			movement.y += 1.F;
+			target = vector3f_sub(target, move_up);
+		}
+
+		if (!vector3f_is_zero(target))
+		{
+			target = vector3f_normalize(target);
+			target = vector3f_scale(target, physics_config->move_speed);
+			target.y = player_velocity.y;
 		}
 
 		if (input_is_pressed(input, "jump", 0))
 		{
 			if (player_velocity.y > -0.1F && player_velocity.y < 0.1F)
 			{
-				movement.y += physics_config->jump_speed;
+				target.y = physics_config->jump_speed;
 			}
 		}
 
-#undef move_axis
-
-		// TODO
-		// const float maxSpeed = physics_config->move_speed;
-		// b3Vec3 target_velocity = b3Add(
-		// 	b3MulSV(maxSpeed * movement.z, vector3f_to_b3vec3(camera_forward(camera))),
-		// 	b3MulSV(maxSpeed * movement.x, vector3f_to_b3vec3(camera_right(camera)))
-		// );
-		// target_velocity.y = movement.y;
-		//
-		// player_velocity = b3Add(player_velocity, target_velocity);
-		// b3Body_SetLinearVelocity(*player_body_id, player_velocity);
+		if (!vector3f_is_zero(target))
+		{
+			b3Body_SetLinearVelocity(*player_body_id, vector3f_to_b3vec3(target));
+		}
 
 		if (input_is_pressed(input, "shoot", 0))
 		{
@@ -617,11 +610,10 @@ SDL_AppResult SDL_AppIterate(void *appstate)
 	const b3Vec3 clamped_velocity = b3Clamp(velocity, min_velocity, max_velocity);
 	b3Body_SetLinearVelocity(*player_body_id, clamped_velocity);
 
-	// TODO: There should be a better way to do this, right?
-	// TODO
-	// const b3Vec3 player_position = b3Body_GetPosition(*player_body_id);
-	// camera->target = vector3f_add(camera->target, vector3f_sub(cast(vector3f_t, player_position), camera->position));
-	// camera->position = cast(vector3f_t, player_position);
+	const b3Vec3 player_position = b3Body_GetPosition(*player_body_id);
+	const vector3f_t camera_dir = vector3f_sub(camera->target, camera->position);
+	camera->position = vector3f_from_b3vec3(player_position);
+	camera->target = vector3f_add(camera->position, camera_dir);
 
 	const vector3f_t forward_n = vector3f_normalize(vector3f_sub(camera->target, camera->position));
 	const vector3f_t right_n = vector3f_normalize(vector3f_cross(forward_n, camera->up));
