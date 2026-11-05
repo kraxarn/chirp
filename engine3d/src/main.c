@@ -593,10 +593,13 @@ SDL_AppResult SDL_AppIterate(void *appstate)
 		}
 	}
 
-	const b3Vec3 player_position = b3Body_GetPosition(*player_body_id);
-	const vector3f_t camera_dir = vector3f_sub(camera->target, camera->position);
-	camera->position = vector3f_from_b3vec3(player_position);
-	camera->target = vector3f_add(camera->position, camera_dir);
+	if (player_body_id != nullptr)
+	{
+		const b3Vec3 player_position = b3Body_GetPosition(*player_body_id);
+		const vector3f_t camera_dir = vector3f_sub(camera->target, camera->position);
+		camera->position = vector3f_from_b3vec3(player_position);
+		camera->target = vector3f_add(camera->position, camera_dir);
+	}
 
 	const vector3f_t forward_n = vector3f_normalize(vector3f_sub(camera->target, camera->position));
 	const vector3f_t right_n = vector3f_normalize(vector3f_cross(forward_n, camera->up));
