@@ -22,12 +22,12 @@
 #include <stddef.h>
 
 [[nodiscard]]
-static ecs_entity_t models_entity()
+static ecs_entity_t models_entity(ecs_world_t *world)
 {
 	const ecs_entity_desc_t entity_desc = {
 		.name = "Model",
 	};
-	return ecs_entity_init(ecs_world(), &entity_desc);
+	return ecs_entity_init(world, &entity_desc);
 }
 
 static Uint16 fix_entity_name(const char *name)
@@ -44,7 +44,8 @@ static Uint16 fix_entity_name(const char *name)
 	return changes;
 }
 
-static ecs_entity_t load_model(SDL_GPUDevice *device, const assets_t *assets, const char *name)
+static ecs_entity_t load_model(ecs_world_t *world, SDL_GPUDevice *device,
+	const assets_t *assets, const char *name)
 {
 	SDL_LogInfo(LOG_CATEGORY_ECS, "Loading model: '%s'", name);
 
@@ -56,12 +57,12 @@ static ecs_entity_t load_model(SDL_GPUDevice *device, const assets_t *assets, co
 		return 0;
 	}
 
-	const ecs_entity_t entity = ecs_entity_init(ecs_world(), &(ecs_entity_desc_t){
+	const ecs_entity_t entity = ecs_entity_init(world, &(ecs_entity_desc_t){
 		.name = name,
 	});
-	ecs_add_pair(ecs_world(), entity, EcsChildOf, models_entity());
+	ecs_add_pair(world, entity, EcsChildOf, models_entity(world));
 
-	ecs_set_id(ecs_world(), entity, EcsModel,
+	ecs_set_id(world, entity, EcsModel,
 		sizeof(model_t), &model);
 
 	for (size_t i = 0; i < model.info.node_count; i++)
@@ -72,56 +73,57 @@ static ecs_entity_t load_model(SDL_GPUDevice *device, const assets_t *assets, co
 			SDL_LogWarn(LOG_CATEGORY_MODEL, "Renamed invalid entity name '%s' to '%s' in '%s'",
 				model_node_name(&model.info, i), node_name, name);
 		}
-		const ecs_entity_t node = ecs_entity_init(ecs_world(), &(ecs_entity_desc_t){
+		const ecs_entity_t node = ecs_entity_init(world, &(ecs_entity_desc_t){
 			.name = node_name,
 		});
 		SDL_free(node_name);
 
-		ecs_add_pair(ecs_world(), node, EcsChildOf, entity);
+		ecs_add_pair(world, node, EcsChildOf, entity);
 
 		const position_t position = model_node_translation(&model.info, i);
-		ecs_set_id(ecs_world(), node, EcsPosition,
+		ecs_set_id(world, node, EcsPosition,
 			sizeof(position_t), &position);
 
 		const world_transform_t world_transform = model_node_world_transform(&model.info, i);
-		ecs_set_id(ecs_world(), node, EcsWorldTransform,
+		ecs_set_id(world, node, EcsWorldTransform,
 			sizeof(world_transform_t), &world_transform);
 	}
 
 	return entity;
 }
 
-static void create_instance(const ecs_entity_t entity, const ecs_entity_t model)
+static void create_instance(ecs_world_t *world,
+	const ecs_entity_t entity, const ecs_entity_t model)
 {
 	SDL_LogDebug(LOG_CATEGORY_ECS, "Creating new instance of model '%s'",
-		ecs_get_name(ecs_world(), model));
+		ecs_get_name(world, model));
 
-	const ecs_entity_t instance = ecs_entity_init(ecs_world(), &(ecs_entity_desc_t){
+	const ecs_entity_t instance = ecs_entity_init(world, &(ecs_entity_desc_t){
 		// Should be fine to copy name, they probably have different paths
-		.name = ecs_get_name(ecs_world(), model),
+		.name = ecs_get_name(world, model),
 		.parent = entity,
 	});
 
-	ecs_add_id(ecs_world(), instance,
+	ecs_add_id(world, instance,
 		ecs_pair(EcsInstanceOf, model));
 
-	ecs_iter_t iter = ecs_children(ecs_world(), model);
+	ecs_iter_t iter = ecs_children(world, model);
 	while (ecs_children_next(&iter))
 	{
 		for (Sint32 i = 0; i < iter.count; i++)
 		{
 			const ecs_entity_t child = iter.entities[i];
 
-			const ecs_entity_t node = ecs_entity_init(ecs_world(), &(ecs_entity_desc_t){
-				.name = ecs_get_name(ecs_world(), child),
+			const ecs_entity_t node = ecs_entity_init(world, &(ecs_entity_desc_t){
+				.name = ecs_get_name(world, child),
 				.parent = instance,
 			});
 
 			const projection_t projection = {.rebuild = true};
-			ecs_set_id(ecs_world(), node, EcsProjection,
+			ecs_set_id(world, node, EcsProjection,
 				sizeof(projection_t), &projection);
 
-			ecs_add_pair(ecs_world(), node, EcsInstanceOf, child);
+			ecs_add_pair(world, node, EcsInstanceOf, child);
 		}
 	}
 	ecs_iter_fini(&iter);
@@ -140,33 +142,34 @@ static void instance_model(ecs_iter_t *iter)
 	const ecs_entity_t entity = iter->entities[0];
 	SDL_assert(entity != 0);
 
-	const ecs_entity_t model = ecs_lookup_child(ecs_world(), models_entity(), name);
+	const ecs_entity_t parent = models_entity(iter->stage);
+	const ecs_entity_t model = ecs_lookup_child(iter->stage, parent, name);
 	if (model == 0)
 	{
 		SDL_GPUDevice *device = *ecs_field(iter, SDL_GPUDevice*, 1);
 		const assets_t *assets = ecs_field(iter, assets_t, 2);
 
-		if (load_model(device, assets, name) == 0)
+		if (load_model(iter->stage, device, assets, name) == 0)
 		{
 			// Don't try to load indefinitely
-			ecs_remove_id(ecs_world(), entity, EcsModelInstance);
-			ecs_remove_id(ecs_world(), entity, EcsModelScene);
+			ecs_remove_id(iter->stage, entity, EcsModelInstance);
+			ecs_remove_id(iter->stage, entity, EcsModelScene);
 		}
 
 		// Deferred, I don't really like this, but it works
 		return;
 	}
 
-	if (ecs_has_id(ecs_world(), entity, EcsModelInstance))
+	if (ecs_has_id(iter->stage, entity, EcsModelInstance))
 	{
-		create_instance(entity, model);
-		ecs_remove_id(ecs_world(), entity, EcsModelInstance);
+		create_instance(iter->stage, entity, model);
+		ecs_remove_id(iter->stage, entity, EcsModelInstance);
 	}
-	else if (ecs_has_id(ecs_world(), entity, EcsModelScene))
+	else if (ecs_has_id(iter->stage, entity, EcsModelScene))
 	{
 		// TODO: We might want to keep the entity?
-		ecs_add_id(ecs_world(), model, EcsScene);
-		ecs_delete(ecs_world(), entity);
+		ecs_add_id(iter->stage, model, EcsScene);
+		ecs_delete(iter->stage, entity);
 	}
 }
 
