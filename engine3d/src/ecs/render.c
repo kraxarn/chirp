@@ -237,11 +237,14 @@ void ecs_add_render()
 	ecs_add_id(ecs_world(), ecs_singleton(EcsSwapchainTextureSize));
 	ecs_add_id(ecs_world(), ecs_singleton(EcsViewProjection));
 
+	const ecs_entity_t entity_begin_render = ecs_entity_init(ecs_world(), &(ecs_entity_desc_t){
+		.name = "BeginRender",
+	});
+	ecs_add_id(ecs_world(), entity_begin_render,
+		ecs_dependson(ecs_phase(PHASE_RENDER_BEGIN)));
+
 	ecs_system_init(ecs_world(), &(ecs_system_desc_t){
-		.entity = ecs_entity_init(ecs_world(), &(ecs_entity_desc_t){
-			.name = "BeginRender",
-			.add = ecs_ids(ecs_dependson(ecs_phase(PHASE_RENDER_BEGIN))),
-		}),
+		.entity = entity_begin_render,
 		.query.terms = {
 			(ecs_term_t){.id = ecs_singleton_id(EcsWindow), .inout = EcsIn},
 			(ecs_term_t){.id = ecs_singleton_id(EcsGpuDevice), .inout = EcsIn},
@@ -257,11 +260,14 @@ void ecs_add_render()
 		.callback = begin_render,
 	});
 
+	const ecs_entity_t entity_rebuild_camera_projection = ecs_entity_init(ecs_world(), &(ecs_entity_desc_t){
+		.name = "RebuildCameraProjection",
+	});
+	ecs_add_id(ecs_world(), entity_rebuild_camera_projection,
+		ecs_dependson(ecs_phase(PHASE_RENDER_BEGIN)));
+
 	ecs_system_init(ecs_world(), &(ecs_system_desc_t){
-		.entity = ecs_entity_init(ecs_world(), &(ecs_entity_desc_t){
-			.name = "RebuildCameraProjection",
-			.add = ecs_ids(ecs_dependson(ecs_phase(PHASE_RENDER_BEGIN))),
-		}),
+		.entity = entity_rebuild_camera_projection,
 		.query.terms = {
 			(ecs_term_t){.id = ecs_singleton_id(EcsCamera), .inout = EcsIn},
 			(ecs_term_t){.id = ecs_singleton_id(EcsSwapchainTextureSize), .inout = EcsIn, .oper = EcsOptional},
@@ -270,11 +276,14 @@ void ecs_add_render()
 		.callback = rebuild_camera_projection,
 	});
 
+	const ecs_entity_t entity_render_scene = ecs_entity_init(ecs_world(), &(ecs_entity_desc_t){
+		.name = "RenderScene",
+	});
+	ecs_add_id(ecs_world(), entity_render_scene,
+		ecs_dependson(ecs_phase(PHASE_RENDER)));
+
 	ecs_system_init(ecs_world(), &(ecs_system_desc_t){
-		.entity = ecs_entity_init(ecs_world(), &(ecs_entity_desc_t){
-			.name = "RenderScene",
-			.add = ecs_ids(ecs_dependson(ecs_phase(PHASE_RENDER))),
-		}),
+		.entity = entity_render_scene,
 		.query.terms = {
 			(ecs_term_t){.id = ecs_singleton_id(EcsGpuRenderPass), .inout = EcsIn},
 			(ecs_term_t){.id = ecs_singleton_id(EcsGpuCommandBuffer), .inout = EcsIn},
@@ -285,11 +294,14 @@ void ecs_add_render()
 		.callback = render_scene,
 	});
 
+	const ecs_entity_t entity_render_model = ecs_entity_init(ecs_world(), &(ecs_entity_desc_t){
+		.name = "RenderModel",
+	});
+	ecs_add_id(ecs_world(), entity_render_model,
+		ecs_dependson(ecs_phase(PHASE_RENDER)));
+
 	ecs_system_init(ecs_world(), &(ecs_system_desc_t){
-		.entity = ecs_entity_init(ecs_world(), &(ecs_entity_desc_t){
-			.name = "RenderModel",
-			.add = ecs_ids(ecs_dependson(ecs_phase(PHASE_RENDER))),
-		}),
+		.entity = entity_render_model,
 		.query.terms = {
 			/* 0  */ (ecs_term_t){.id = ecs_singleton_id(EcsGpuRenderPass), .inout = EcsIn},
 			/* 1  */ (ecs_term_t){.id = ecs_singleton_id(EcsGpuCommandBuffer), .inout = EcsIn},
@@ -311,11 +323,14 @@ void ecs_add_render()
 		.callback = render_model,
 	});
 
+	const ecs_entity_t entity_end_render = ecs_entity_init(ecs_world(), &(ecs_entity_desc_t){
+		.name = "EndRender",
+	});
+	ecs_add_id(ecs_world(), entity_end_render,
+		ecs_dependson(ecs_phase(PHASE_RENDER_END)));
+
 	ecs_system_init(ecs_world(), &(ecs_system_desc_t){
-		.entity = ecs_entity_init(ecs_world(), &(ecs_entity_desc_t){
-			.name = "EndRender",
-			.add = ecs_ids(ecs_dependson(ecs_phase(PHASE_RENDER_END))),
-		}),
+		.entity = entity_end_render,
 		.query.terms = {
 			(ecs_term_t){.id = ecs_singleton_id(EcsGpuRenderPass), .inout = EcsIn},
 			(ecs_term_t){.id = ecs_singleton_id(EcsGpuCommandBuffer), .inout = EcsIn},

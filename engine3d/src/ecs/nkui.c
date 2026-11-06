@@ -51,22 +51,28 @@ void ecs_add_nkui()
 		.callback = init_nkui,
 	});
 
+	const ecs_entity_t entity_end_input = ecs_entity_init(ecs_world(), &(ecs_entity_desc_t){
+		.name = "NkEndInput",
+	});
+	ecs_add_id(ecs_world(), entity_end_input,
+		ecs_dependson(ecs_phase(PHASE_UPDATE_BEGIN)));
+
 	ecs_system_init(ecs_world(), &(ecs_system_desc_t){
-		.entity = ecs_entity_init(ecs_world(), &(ecs_entity_desc_t){
-			.name = "NkEndInput",
-			.add = ecs_ids(ecs_dependson(ecs_phase(PHASE_UPDATE_BEGIN))),
-		}),
+		.entity = entity_end_input,
 		.query.terms = {
 			(ecs_term_t){.id = ecs_singleton_id(EcsNkContext), .inout = EcsInOut},
 		},
 		.callback = end_input,
 	});
 
+	const ecs_entity_t entity_begin_input = ecs_entity_init(ecs_world(), &(ecs_entity_desc_t){
+		.name = "NkBeginInput",
+	});
+	ecs_add_id(ecs_world(), entity_begin_input,
+		ecs_dependson(ecs_phase(PHASE_UPDATE_END)));
+
 	ecs_system_init(ecs_world(), &(ecs_system_desc_t){
-		.entity = ecs_entity_init(ecs_world(), &(ecs_entity_desc_t){
-			.name = "NkBeginInput",
-			.add = ecs_ids(ecs_dependson(ecs_phase(PHASE_UPDATE_END))),
-		}),
+		.entity = entity_begin_input,
 		.query.terms = {
 			(ecs_term_t){.id = ecs_singleton_id(EcsNkContext), .inout = EcsInOut},
 		},

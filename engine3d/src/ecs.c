@@ -30,11 +30,12 @@ static ecs_entity_t phases[PHASE_COUNT];
 
 static ecs_entity_t phase(const char *name)
 {
-	const ecs_entity_desc_t entity_desc = {
+	const ecs_entity_t entity = ecs_entity_init(ecs_world(), &(ecs_entity_desc_t){
 		.name = name,
-		.add = ecs_ids(EcsPhase),
-	};
-	return ecs_entity_init(ecs_world(), &entity_desc);
+	});
+	ecs_add_id(ecs_world(), entity, EcsPhase);
+
+	return entity;
 }
 
 static void phase_depend(const phase_t source, const phase_t target)

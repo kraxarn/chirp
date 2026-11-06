@@ -100,11 +100,10 @@ static void create_instance(const ecs_entity_t entity, const ecs_entity_t model)
 		// Should be fine to copy name, they probably have different paths
 		.name = ecs_get_name(ecs_world(), model),
 		.parent = entity,
-		.add = (ecs_id_t[]){
-			ecs_pair(EcsInstanceOf, model),
-			ecs_ids_end,
-		},
 	});
+
+	ecs_add_id(ecs_world(), instance,
+		ecs_pair(EcsInstanceOf, model));
 
 	ecs_iter_t iter = ecs_children(ecs_world(), model);
 	while (ecs_children_next(&iter))
@@ -173,11 +172,14 @@ static void instance_model(ecs_iter_t *iter)
 
 void ecs_add_models()
 {
+	const ecs_entity_t entity_load_models = ecs_entity_init(ecs_world(), &(ecs_entity_desc_t){
+		.name = "LoadModels",
+	});
+	ecs_add_id(ecs_world(), entity_load_models,
+		ecs_dependson(ecs_phase(PHASE_RENDER_BEGIN)));
+
 	ecs_system_init(ecs_world(), &(ecs_system_desc_t){
-		.entity = ecs_entity_init(ecs_world(), &(ecs_entity_desc_t){
-			.name = "LoadModels",
-			.add = ecs_ids(ecs_dependson(ecs_phase(PHASE_RENDER_BEGIN))),
-		}),
+		.entity = entity_load_models,
 		.query.terms = {
 			(ecs_term_t){.id = EcsModelInstance, .oper = EcsOr, .inout = EcsInOut},
 			(ecs_term_t){.id = EcsModelScene, .inout = EcsInOut},

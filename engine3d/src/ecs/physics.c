@@ -73,11 +73,14 @@ void ecs_add_physics()
 		.callback = init_physics,
 	});
 
+	const ecs_entity_t entity_update_physics = ecs_entity_init(ecs_world(), &(ecs_entity_desc_t){
+		.name = "UpdatePhysics",
+	});
+	ecs_add_id(ecs_world(), entity_update_physics,
+		ecs_dependson(ecs_phase(PHASE_PHYSICS_UPDATE)));
+
 	ecs_system_init(ecs_world(), &(ecs_system_desc_t){
-		.entity = ecs_entity_init(ecs_world(), &(ecs_entity_desc_t){
-			.name = "UpdatePhysics",
-			.add = ecs_ids(ecs_dependson(ecs_phase(PHASE_PHYSICS_UPDATE))),
-		}),
+		.entity = entity_update_physics,
 		.query.terms = {
 			(ecs_term_t){.id = ecs_singleton_id(EcsPhysicsWorld), .inout = EcsIn},
 			(ecs_term_t){.id = ecs_singleton_id(EcsArgs), .inout = EcsIn},
@@ -85,11 +88,14 @@ void ecs_add_physics()
 		.callback = update_physics,
 	});
 
+	const ecs_entity_t entity_sync_physics = ecs_entity_init(ecs_world(), &(ecs_entity_desc_t){
+		.name = "SyncPhysics",
+	});
+	ecs_add_id(ecs_world(), entity_sync_physics,
+		ecs_dependson(ecs_phase(PHASE_PHYSICS_SYNC)));
+
 	ecs_system_init(ecs_world(), &(ecs_system_desc_t){
-		.entity = ecs_entity_init(ecs_world(), &(ecs_entity_desc_t){
-			.name = "SyncPhysics",
-			.add = ecs_ids(ecs_dependson(ecs_phase(PHASE_PHYSICS_SYNC))),
-		}),
+		.entity = entity_sync_physics,
 		.query.terms = {
 			(ecs_term_t){.id = EcsPhysicsBody, .inout = EcsIn},
 			(ecs_term_t){.id = EcsPosition, .oper = EcsOptional, .inout = EcsInOut},

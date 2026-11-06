@@ -380,11 +380,14 @@ SDL_AppResult SDL_AppInit(void **appstate, const int argc, char **argv)
 		.callback = toggle_lock_cursor,
 	});
 
+	const ecs_entity_t entity_draw_ui = ecs_entity_init(ecs_world(), &(ecs_entity_desc_t){
+		.name = "DrawUi",
+	});
+	ecs_add_id(ecs_world(), entity_draw_ui,
+		ecs_dependson(ecs_phase(PHASE_UPDATE)));
+
 	ecs_system_init(ecs_world(), &(ecs_system_desc_t){
-		.entity = ecs_entity_init(ecs_world(), &(ecs_entity_desc_t){
-			.name = "DrawUi",
-			.add = ecs_ids(ecs_dependson(ecs_phase(PHASE_UPDATE))),
-		}),
+		.entity = entity_draw_ui,
 		.query.terms = {
 			(ecs_term_t){.id = ecs_singleton_id(EcsNkContext), .inout = EcsIn},
 			(ecs_term_t){.id = ecs_singleton_id(EcsCamera), .inout = EcsIn},
@@ -656,17 +659,17 @@ SDL_AppResult SDL_AppIterate(void *appstate)
 	return check_error(state, window);
 }
 
-static void emit(const ecs_entity_t event, const ecs_id_t value_type, void *value)
+static void emit(const ecs_entity_t event, const ecs_id_t id,
+	const void *ptr, const size_t size)
 {
-	const ecs_entity_t entity = ecs_entity_init(ecs_world(), &(ecs_entity_desc_t){
-		.set = ecs_values((ecs_value_t){.type = value_type, .ptr = value}),
-	});
+	const ecs_entity_t entity = ecs_new(ecs_world());
+	ecs_set_id(ecs_world(), entity, id, size, ptr);
 
 	ecs_emit(ecs_world(), &(ecs_event_desc_t){
 		.event = event,
 		.entity = entity,
 		.ids = &(ecs_type_t){
-			.array = (ecs_id_t[]){value_type},
+			.array = (ecs_id_t[]){id},
 			.count = 1,
 		},
 	});
@@ -694,16 +697,19 @@ SDL_AppResult SDL_AppEvent([[maybe_unused]] void *appstate, SDL_Event *event)
 	{
 		case SDL_EVENT_MOUSE_BUTTON_DOWN:
 		case SDL_EVENT_MOUSE_BUTTON_UP:
-			emit(EcsOnMouseButton, EcsMouseButtonEvent, &event->button);
+			emit(EcsOnMouseButton, EcsMouseButtonEvent,
+				&event->button, sizeof(SDL_MouseButtonEvent));
 			break;
 
 		case SDL_EVENT_KEY_DOWN:
 		case SDL_EVENT_KEY_UP:
-			emit(EcsOnKey, EcsKeyboardEvent, &event->key);
+			emit(EcsOnKey, EcsKeyboardEvent,
+				&event->key, sizeof(SDL_KeyboardEvent));
 			break;
 
 		case SDL_EVENT_WINDOW_RESIZED:
-			emit(EcsOnWindowResized, EcsWindowEvent, &event->window);
+			emit(EcsOnWindowResized, EcsWindowEvent,
+				&event->window, sizeof(SDL_WindowEvent));
 			break;
 
 		case SDL_EVENT_GAMEPAD_ADDED:
