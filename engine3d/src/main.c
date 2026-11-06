@@ -724,8 +724,11 @@ SDL_AppResult SDL_AppEvent([[maybe_unused]] void *appstate, SDL_Event *event)
 			break;
 	}
 
-	const input_t input = *(const input_t*) ecs_get_id(ecs_world(), ecs_singleton(EcsInput));
-	input_update(input, event);
+	const input_t *input = ecs_get_id(ecs_world(), ecs_singleton(EcsInput));
+	if (input != nullptr)
+	{
+		input_update(*input, event);
+	}
 
 	return SDL_APP_CONTINUE;
 }
@@ -755,7 +758,12 @@ void SDL_AppQuit(void *appstate, [[maybe_unused]] SDL_AppResult result)
 	ecs_query_fini(query);
 
 	assets_destroy(ecs_get_id(ecs_world(), ecs_singleton(EcsAssets)));
-	physics_destroy(*(b3WorldId*) ecs_get_id(ecs_world(), ecs_singleton(EcsPhysicsWorld)));
+
+	const b3WorldId *world_id = ecs_get_id(ecs_world(), ecs_singleton(EcsPhysicsWorld));
+	if (world_id != nullptr)
+	{
+		physics_destroy(*world_id);
+	}
 
 	if (ecs_has_id(ecs_world(), ecs_singleton(EcsGpuDevice)))
 	{
