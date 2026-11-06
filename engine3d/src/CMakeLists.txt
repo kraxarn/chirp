@@ -6,6 +6,7 @@ target_sources(${EXEC_NAME} PRIVATE
 	"${CMAKE_CURRENT_SOURCE_DIR}/assethelper.c"
 	"${CMAKE_CURRENT_SOURCE_DIR}/camera.c"
 	"${CMAKE_CURRENT_SOURCE_DIR}/ecs.c"
+	"${CMAKE_CURRENT_SOURCE_DIR}/game.c"
 	"${CMAKE_CURRENT_SOURCE_DIR}/gpudevicedriver.c"
 	"${CMAKE_CURRENT_SOURCE_DIR}/gpudriver.c"
 	"${CMAKE_CURRENT_SOURCE_DIR}/gpushaderformat.c"
