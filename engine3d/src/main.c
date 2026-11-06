@@ -487,24 +487,28 @@ SDL_AppResult SDL_AppIterate(void *appstate)
 		vector3f_t target = vector3f_zero();
 		vector3f_t move_up = vector3f_normalize(camera_up(camera));
 
-		if (input_axis(input, "move_forward", 0) > 0.F)
+		const float axis_forward = input_axis(input, "move_forward", 0);
+		if (axis_forward > 0.F)
 		{
-			target = vector3f_add(target, move_forward);
+			target = vector3f_add(target, vector3f_scale(move_forward, axis_forward));
 		}
 
-		if (input_axis(input, "move_backward", 0) > 0.F)
+		const float axis_backward = input_axis(input, "move_backward", 0);
+		if (axis_backward > 0.F)
 		{
-			target = vector3f_sub(target, move_forward);
+			target = vector3f_sub(target, vector3f_scale(move_forward, axis_backward));
 		}
 
-		if (input_axis(input, "move_left", 0) > 0.F)
+		const float axis_left = input_axis(input, "move_left", 0);
+		if (axis_left > 0.F)
 		{
-			target = vector3f_sub(target, move_right);
+			target = vector3f_sub(target, vector3f_scale(move_right, axis_left));
 		}
 
-		if (input_axis(input, "move_right", 0) > 0.F)
+		const float axis_right = input_axis(input, "move_right", 0);
+		if (axis_right > 0.F)
 		{
-			target = vector3f_add(target, move_right);
+			target = vector3f_add(target, vector3f_scale(move_right, axis_right));
 		}
 
 		if (input_is_down(input, "move_up", 0))
@@ -519,7 +523,6 @@ SDL_AppResult SDL_AppIterate(void *appstate)
 
 		if (!vector3f_is_zero(target))
 		{
-			target = vector3f_normalize(target);
 			target = vector3f_scale(target, physics_config->move_speed);
 			target.y = player_velocity.y;
 		}
