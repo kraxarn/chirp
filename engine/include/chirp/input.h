@@ -2,6 +2,7 @@
 
 #include "chirp/inputconfig.h"
 #include "chirp/map.h"
+#include "chirp/vector.h"
 
 #include <SDL3/SDL_events.h>
 #include <SDL3/SDL_joystick.h>
@@ -57,3 +58,6 @@ bool input_is_down(input_t input, const char *name, int index);
 
 [[nodiscard]]
 float input_axis(input_t input, const char *name, int index);
+
+[[nodiscard]]
+vector2f_t input_mouse_delta(input_t input);

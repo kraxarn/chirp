@@ -3,6 +3,7 @@
 #include "chirp/inputconfig.h"
 #include "chirp/logcategory.h"
 #include "chirp/map.h"
+#include "chirp/vector.h"
 
 #include <SDL3/SDL_assert.h>
 #include <SDL3/SDL_error.h>
@@ -388,4 +389,12 @@ float input_axis(const input_t input, const char *name, const int index)
 	}
 
 	return (int) input_is_down(input, name, index) ? 1.F : 0.F;
+}
+
+// input is only included for consistency
+vector2f_t input_mouse_delta([[maybe_unused]] input_t input)
+{
+	vector2f_t delta;
+	SDL_GetRelativeMouseState(&delta.x, &delta.y);
+	return delta;
 }

@@ -57,8 +57,7 @@ static void update_camera_rotation(ecs_iter_t *iter)
 	const input_t input = *ecs_field(iter, input_t, 1);
 	camera_t *camera = ecs_field(iter, camera_t, 2);
 
-	vector2f_t mouse;
-	SDL_GetRelativeMouseState(&mouse.x, &mouse.y);
+	const vector2f_t mouse = input_mouse_delta(input);
 	camera_rotate_x(camera, -(mouse.x * mouse_sensitivity));
 	camera_rotate_y(camera, -(mouse.y * mouse_sensitivity));
 
