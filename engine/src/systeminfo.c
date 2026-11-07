@@ -16,10 +16,6 @@ static constexpr size_t name_length = CPUINFO_PACKAGE_NAME_MAX;
 const char *system_info_cpu_name()
 {
 	static char cpu_name[name_length];
-	if (cpu_name[0] != '\0')
-	{
-		return cpu_name;
-	}
 
 	if (!cpuinfo_initialize())
 	{
