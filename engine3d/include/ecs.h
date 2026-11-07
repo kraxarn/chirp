@@ -47,25 +47,12 @@ typedef struct model_descriptor
 typedef model_descriptor_t model_instance_t;
 typedef model_descriptor_t model_scene_t;
 
-typedef enum : Uint8
-{
-	PHASE_UPDATE_BEGIN,   // TODO
-	PHASE_UPDATE,         // Update game logic
-	PHASE_UPDATE_END,     // TODO
-	PHASE_PHYSICS_UPDATE, // Update/tick physics engine
-	PHASE_PHYSICS_SYNC,   // Sync physics engine changes to entities
-	PHASE_RENDER_BEGIN,   // Begin rendering
-	PHASE_RENDER,         // Render all renderable entities
-	PHASE_RENDER_END,     // End rendering and submit to GPU
-	PHASE_COUNT,
-} phase_t;
-
 void ecs_create();
 
 void ecs_destroy();
 
-[[nodiscard]]
-ecs_entity_t ecs_phase(phase_t phase);
+#define ecs_phase(phase)	\
+	ecs_dependson(EcsPhase##phase) // NOLINT(bugprone-signed-bitwise)
 
 #define ecs_observer_init_all(o)					\
 	for (size_t i = 0; i < SDL_arraysize(o); i++)	\

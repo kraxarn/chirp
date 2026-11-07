@@ -26,8 +26,6 @@
 #include <SDL3/SDL_log.h>
 #include <SDL3/SDL_stdinc.h>
 
-static ecs_entity_t phases[PHASE_COUNT];
-
 static ecs_entity_t phase(const char *name)
 {
 	const ecs_entity_t entity = ecs_entity_init(ecs_world(), &(ecs_entity_desc_t){
@@ -38,9 +36,9 @@ static ecs_entity_t phase(const char *name)
 	return entity;
 }
 
-static void phase_depend(const phase_t source, const phase_t target)
+static void phase_depend(const ecs_entity_t source, const ecs_entity_t target)
 {
-	ecs_add_pair(ecs_world(), phases[source], EcsDependsOn, phases[target]);
+	ecs_add_pair(ecs_world(), source, EcsDependsOn, target);
 }
 
 static void create_pipeline()
@@ -60,22 +58,22 @@ static void create_pipeline()
 	const ecs_entity_t pipeline = ecs_pipeline_init(ecs_world(), &pipeline_desc);
 	ecs_set_pipeline(ecs_world(), pipeline);
 
-	phases[PHASE_UPDATE_BEGIN] = phase("UpdateBegin");
-	phases[PHASE_UPDATE] = phase("Update");
-	phases[PHASE_UPDATE_END] = phase("UpdateEnd");
-	phases[PHASE_PHYSICS_UPDATE] = phase("PhysicsUpdate");
-	phases[PHASE_PHYSICS_SYNC] = phase("PhysicsSync");
-	phases[PHASE_RENDER_BEGIN] = phase("RenderBegin");
-	phases[PHASE_RENDER] = phase("Render");
-	phases[PHASE_RENDER_END] = phase("RenderEnd");
+	EcsPhaseUpdateBegin = phase("UpdateBegin");
+	EcsPhaseUpdate = phase("Update");
+	EcsPhaseUpdateEnd = phase("UpdateEnd");
+	EcsPhasePhysicsUpdate = phase("PhysicsUpdate");
+	EcsPhasePhysicsSync = phase("PhysicsSync");
+	EcsPhaseRenderBegin = phase("RenderBegin");
+	EcsPhaseRender = phase("Render");
+	EcsPhaseRenderEnd = phase("RenderEnd");
 
-	phase_depend(PHASE_UPDATE, PHASE_UPDATE_BEGIN);
-	phase_depend(PHASE_UPDATE_END, PHASE_UPDATE);
-	phase_depend(PHASE_PHYSICS_UPDATE, PHASE_UPDATE_END);
-	phase_depend(PHASE_PHYSICS_SYNC, PHASE_PHYSICS_UPDATE);
-	phase_depend(PHASE_RENDER_BEGIN, PHASE_PHYSICS_SYNC);
-	phase_depend(PHASE_RENDER, PHASE_RENDER_BEGIN);
-	phase_depend(PHASE_RENDER_END, PHASE_RENDER);
+	phase_depend(EcsPhaseUpdate, EcsPhaseUpdateBegin);
+	phase_depend(EcsPhaseUpdateEnd, EcsPhaseUpdate);
+	phase_depend(EcsPhasePhysicsUpdate, EcsPhaseUpdateEnd);
+	phase_depend(EcsPhasePhysicsSync, EcsPhasePhysicsUpdate);
+	phase_depend(EcsPhaseRenderBegin, EcsPhasePhysicsSync);
+	phase_depend(EcsPhaseRender, EcsPhaseRenderBegin);
+	phase_depend(EcsPhaseRenderEnd, EcsPhaseRender);
 }
 
 [[nodiscard]]
@@ -299,11 +297,4 @@ void ecs_create()
 void ecs_destroy()
 {
 	ecs_destroy_default();
-}
-
-ecs_entity_t ecs_phase(const phase_t phase)
-{
-	const ecs_entity_t entity = phases[phase];
-	SDL_assert(entity != 0);
-	return entity;
 }

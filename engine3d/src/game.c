@@ -4,6 +4,7 @@
 #include "physicsconfig.h"
 #include "prefabs.h"
 #include "ecs/components.h"
+#include "ecs/entities.h"
 #include "ui/debugoverlay.h"
 
 #include "flecs.h"
@@ -29,8 +30,7 @@ static void init_debug_overlay(ecs_world_t *stage)
 	const ecs_entity_t entity_draw_ui = ecs_entity_init(stage, &(ecs_entity_desc_t){
 		.name = "DrawUi",
 	});
-	ecs_add_id(stage, entity_draw_ui,
-		ecs_dependson(ecs_phase(PHASE_UPDATE)));
+	ecs_add_id(stage, entity_draw_ui, ecs_phase(Update));
 
 	ecs_system_init(ecs_world(), &(ecs_system_desc_t){
 		.entity = entity_draw_ui,
@@ -198,8 +198,7 @@ static void init_player_input(ecs_world_t *stage)
 	const ecs_entity_t entity_update_camera_rotation = ecs_entity_init(stage, &(ecs_entity_desc_t){
 		.name = "UpdateCameraRotation",
 	});
-	ecs_add_id(stage, entity_update_camera_rotation,
-		ecs_dependson(ecs_phase(PHASE_UPDATE)));
+	ecs_add_id(stage, entity_update_camera_rotation, ecs_phase(Update));
 
 	ecs_system_init(ecs_world(), &(ecs_system_desc_t){
 		.entity = entity_update_camera_rotation,
@@ -214,8 +213,7 @@ static void init_player_input(ecs_world_t *stage)
 	const ecs_entity_t entity_update_player_movement = ecs_entity_init(stage, &(ecs_entity_desc_t){
 		.name = "UpdatePlayerMovement",
 	});
-	ecs_add_id(stage, entity_update_player_movement,
-		ecs_dependson(ecs_phase(PHASE_UPDATE)));
+	ecs_add_id(stage, entity_update_player_movement, ecs_phase(Update));
 
 	ecs_system_init(ecs_world(), &(ecs_system_desc_t){
 		.entity = entity_update_player_movement,
@@ -238,8 +236,7 @@ static void init_player_input(ecs_world_t *stage)
 	const ecs_entity_t entity_update_player_shoot = ecs_entity_init(stage, &(ecs_entity_desc_t){
 		.name = "UpdatePlayerShoot",
 	});
-	ecs_add_id(stage, entity_update_player_shoot,
-		ecs_dependson(ecs_phase(PHASE_UPDATE)));
+	ecs_add_id(stage, entity_update_player_shoot, ecs_phase(Update));
 
 	ecs_system_init(ecs_world(), &(ecs_system_desc_t){
 		.entity = entity_update_player_shoot,

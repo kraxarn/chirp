@@ -240,8 +240,7 @@ void ecs_add_render()
 	const ecs_entity_t entity_begin_render = ecs_entity_init(ecs_world(), &(ecs_entity_desc_t){
 		.name = "BeginRender",
 	});
-	ecs_add_id(ecs_world(), entity_begin_render,
-		ecs_dependson(ecs_phase(PHASE_RENDER_BEGIN)));
+	ecs_add_id(ecs_world(), entity_begin_render, ecs_phase(RenderBegin));
 
 	ecs_system_init(ecs_world(), &(ecs_system_desc_t){
 		.entity = entity_begin_render,
@@ -263,8 +262,7 @@ void ecs_add_render()
 	const ecs_entity_t entity_rebuild_camera_projection = ecs_entity_init(ecs_world(), &(ecs_entity_desc_t){
 		.name = "RebuildCameraProjection",
 	});
-	ecs_add_id(ecs_world(), entity_rebuild_camera_projection,
-		ecs_dependson(ecs_phase(PHASE_RENDER_BEGIN)));
+	ecs_add_id(ecs_world(), entity_rebuild_camera_projection, ecs_phase(RenderBegin));
 
 	ecs_system_init(ecs_world(), &(ecs_system_desc_t){
 		.entity = entity_rebuild_camera_projection,
@@ -279,8 +277,7 @@ void ecs_add_render()
 	const ecs_entity_t entity_render_scene = ecs_entity_init(ecs_world(), &(ecs_entity_desc_t){
 		.name = "RenderScene",
 	});
-	ecs_add_id(ecs_world(), entity_render_scene,
-		ecs_dependson(ecs_phase(PHASE_RENDER)));
+	ecs_add_id(ecs_world(), entity_render_scene, ecs_phase(Render));
 
 	ecs_system_init(ecs_world(), &(ecs_system_desc_t){
 		.entity = entity_render_scene,
@@ -297,8 +294,7 @@ void ecs_add_render()
 	const ecs_entity_t entity_render_model = ecs_entity_init(ecs_world(), &(ecs_entity_desc_t){
 		.name = "RenderModel",
 	});
-	ecs_add_id(ecs_world(), entity_render_model,
-		ecs_dependson(ecs_phase(PHASE_RENDER)));
+	ecs_add_id(ecs_world(), entity_render_model, ecs_phase(Render));
 
 	ecs_system_init(ecs_world(), &(ecs_system_desc_t){
 		.entity = entity_render_model,
@@ -326,8 +322,7 @@ void ecs_add_render()
 	const ecs_entity_t entity_end_render = ecs_entity_init(ecs_world(), &(ecs_entity_desc_t){
 		.name = "EndRender",
 	});
-	ecs_add_id(ecs_world(), entity_end_render,
-		ecs_dependson(ecs_phase(PHASE_RENDER_END)));
+	ecs_add_id(ecs_world(), entity_end_render, ecs_phase(RenderEnd));
 
 	ecs_system_init(ecs_world(), &(ecs_system_desc_t){
 		.entity = entity_end_render,

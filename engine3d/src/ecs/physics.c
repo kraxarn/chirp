@@ -9,6 +9,7 @@
 #include "chirp/ecs.h"
 #include "chirp/vector.h"
 #include "chirp/ecs/components.h"
+#include "ecs/entities.h"
 #include "flecs/addons/flecs_c.h"
 
 #include <SDL3/SDL_cpuinfo.h>
@@ -76,8 +77,7 @@ void ecs_add_physics()
 	const ecs_entity_t entity_update_physics = ecs_entity_init(ecs_world(), &(ecs_entity_desc_t){
 		.name = "UpdatePhysics",
 	});
-	ecs_add_id(ecs_world(), entity_update_physics,
-		ecs_dependson(ecs_phase(PHASE_PHYSICS_UPDATE)));
+	ecs_add_id(ecs_world(), entity_update_physics,ecs_phase(PhysicsUpdate));
 
 	ecs_system_init(ecs_world(), &(ecs_system_desc_t){
 		.entity = entity_update_physics,
@@ -91,8 +91,7 @@ void ecs_add_physics()
 	const ecs_entity_t entity_sync_physics = ecs_entity_init(ecs_world(), &(ecs_entity_desc_t){
 		.name = "SyncPhysics",
 	});
-	ecs_add_id(ecs_world(), entity_sync_physics,
-		ecs_dependson(ecs_phase(PHASE_PHYSICS_SYNC)));
+	ecs_add_id(ecs_world(), entity_sync_physics, ecs_phase(PhysicsSync));
 
 	ecs_system_init(ecs_world(), &(ecs_system_desc_t){
 		.entity = entity_sync_physics,

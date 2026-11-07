@@ -1,6 +1,7 @@
 #include "nkui.h"
 #include "ecs.h"
 #include "ecs/components.h"
+#include "ecs/entities.h"
 
 #include "flecs.h"
 #include "chirp/ecs.h"
@@ -54,8 +55,7 @@ void ecs_add_nkui()
 	const ecs_entity_t entity_end_input = ecs_entity_init(ecs_world(), &(ecs_entity_desc_t){
 		.name = "NkEndInput",
 	});
-	ecs_add_id(ecs_world(), entity_end_input,
-		ecs_dependson(ecs_phase(PHASE_UPDATE_BEGIN)));
+	ecs_add_id(ecs_world(), entity_end_input,ecs_phase(UpdateBegin));
 
 	ecs_system_init(ecs_world(), &(ecs_system_desc_t){
 		.entity = entity_end_input,
@@ -68,8 +68,7 @@ void ecs_add_nkui()
 	const ecs_entity_t entity_begin_input = ecs_entity_init(ecs_world(), &(ecs_entity_desc_t){
 		.name = "NkBeginInput",
 	});
-	ecs_add_id(ecs_world(), entity_begin_input,
-		ecs_dependson(ecs_phase(PHASE_UPDATE_END)));
+	ecs_add_id(ecs_world(), entity_begin_input,ecs_phase(UpdateEnd));
 
 	ecs_system_init(ecs_world(), &(ecs_system_desc_t){
 		.entity = entity_begin_input,

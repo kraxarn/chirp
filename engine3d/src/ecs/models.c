@@ -178,8 +178,7 @@ void ecs_add_models()
 	const ecs_entity_t entity_load_models = ecs_entity_init(ecs_world(), &(ecs_entity_desc_t){
 		.name = "LoadModels",
 	});
-	ecs_add_id(ecs_world(), entity_load_models,
-		ecs_dependson(ecs_phase(PHASE_RENDER_BEGIN)));
+	ecs_add_id(ecs_world(), entity_load_models,ecs_phase(RenderBegin));
 
 	ecs_system_init(ecs_world(), &(ecs_system_desc_t){
 		.entity = entity_load_models,
