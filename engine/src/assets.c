@@ -437,6 +437,7 @@ bool assets_create(const char *path, const input_t input, assets_t *assets)
 			|| !SDL_ReadU32LE(stream, &descriptor->offset)
 			|| !SDL_ReadU32LE(stream, &descriptor->size))
 		{
+			SDL_free(descriptor);
 			assets_destroy(assets);
 			return false;
 		}
@@ -444,6 +445,7 @@ bool assets_create(const char *path, const input_t input, assets_t *assets)
 		if (descriptor->flags != 0)
 		{
 			SDL_SetError("Unknown flag: %d", descriptor->flags);
+			SDL_free(descriptor);
 			assets_destroy(assets);
 			return false;
 		}
