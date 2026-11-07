@@ -11,7 +11,7 @@
 
 #include <stddef.h>
 
-static constexpr size_t name_length = 64;
+static constexpr size_t name_length = CPUINFO_PACKAGE_NAME_MAX;
 
 const char *system_info_cpu_name()
 {
@@ -60,14 +60,14 @@ const char *system_info_arch_name()
 bool system_info_cpu_supported()
 {
 #ifdef SIMD_ENABLED
-#if CPUINFO_ARCH_WASM == 1
+#if CPUINFO_ARCH_WASM
 	return true;
-#elif CPUINFO_ARCH_X86_64 == 1 || CPUINFO_ARCH_X86 == 1
+#elif CPUINFO_ARCH_X86_64 || CPUINFO_ARCH_X86
 	if (!SDL_HasSSE2())
 	{
 		return SDL_SetError("CPU doesn't support required SSE2 features");
 	}
-#elif CPUINFO_ARCH_ARM64 == 1 || CPUINFO_ARCH_ARM == 1
+#elif CPUINFO_ARCH_ARM64 || CPUINFO_ARCH_ARM
 	if (!SDL_HasNEON())
 	{
 		return SDL_SetError("CPU doesn't support required NEON features");
