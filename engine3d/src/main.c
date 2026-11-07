@@ -6,17 +6,14 @@
 #include "model.h"
 #include "nkui.h"
 #include "physicsconfig.h"
-#include "prefabs.h"
 #include "timestats.h"
 #include "ecs/components.h"
 #include "ecs/events.h"
 
 #include "flecs.h"
 #include "box3d/box3d.h"
-#include "box3d/collision.h"
 #include "box3d/id.h"
 #include "box3d/math_functions.h"
-#include "box3d/types.h"
 #include "chirp/assets.h"
 #include "chirp/ecs.h"
 #include "chirp/input.h"
@@ -38,10 +35,8 @@
 #include <SDL3/SDL_gpu.h>
 #include <SDL3/SDL_hints.h>
 #include <SDL3/SDL_init.h>
-#include <SDL3/SDL_keycode.h>
 #include <SDL3/SDL_log.h>
 #include <SDL3/SDL_messagebox.h>
-#include <SDL3/SDL_mouse.h>
 #include <SDL3/SDL_pixels.h>
 #include <SDL3/SDL_stdinc.h>
 #include <SDL3/SDL_timer.h>
@@ -91,20 +86,6 @@ static bool sdl_supported()
 	}
 
 	return true;
-}
-
-static void toggle_lock_cursor(ecs_iter_t *iter)
-{
-	const SDL_KeyboardEvent *event = ecs_field(iter, SDL_KeyboardEvent, 0);
-	if (event->key != SDLK_ESCAPE || !event->down)
-	{
-		return;
-	}
-
-	SDL_Window *window = *ecs_field(iter, window_t*, 1);
-
-	const bool enabled = SDL_GetWindowRelativeMouseMode(window);
-	SDL_SetWindowRelativeMouseMode(window, (bool) !enabled);
 }
 
 static void set_default_metadata()
@@ -271,15 +252,6 @@ SDL_AppResult SDL_AppInit(void **appstate, const int argc, char **argv)
 		.terms = {
 			(ecs_term_t){.id = EcsError},
 		},
-	});
-
-	ecs_observer_init(ecs_world(), &(ecs_observer_desc_t){
-		.query.terms = {
-			(ecs_term_t){.id = EcsKeyboardEvent, .inout = EcsIn},
-			(ecs_term_t){.id = EcsWindow, .src.name = "$window", .inout = EcsIn},
-		},
-		.events = {EcsOnKey},
-		.callback = toggle_lock_cursor,
 	});
 
 	// NOTE: Returning from here will call a default SDL_Init if not already called

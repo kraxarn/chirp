@@ -5,6 +5,7 @@
 #include "prefabs.h"
 #include "ecs/components.h"
 #include "ecs/entities.h"
+#include "ecs/events.h"
 #include "ui/debugoverlay.h"
 
 #include "flecs.h"
@@ -99,6 +100,20 @@ static void log_spawn_position(ecs_iter_t *iter)
 	SDL_Log("Spawn: %f %f %f", spawn_position->x, spawn_position->y, spawn_position->z);
 }
 
+static void toggle_lock_cursor(ecs_iter_t *iter)
+{
+	const SDL_KeyboardEvent *event = ecs_field(iter, SDL_KeyboardEvent, 0);
+	if (event->key != SDLK_ESCAPE || !event->down)
+	{
+		return;
+	}
+
+	SDL_Window *window = *ecs_field(iter, window_t*, 1);
+
+	const bool enabled = SDL_GetWindowRelativeMouseMode(window);
+	SDL_SetWindowRelativeMouseMode(window, (bool) !enabled);
+}
+
 static void init_scene()
 {
 	ecs_observer_init(ecs_world(), &(ecs_observer_desc_t){
@@ -124,6 +139,15 @@ static void init_scene()
 		},
 		.events = {EcsOnSet},
 		.callback = log_spawn_position,
+	});
+
+	ecs_observer_init(ecs_world(), &(ecs_observer_desc_t){
+		.query.terms = {
+			(ecs_term_t){.id = EcsKeyboardEvent, .inout = EcsIn},
+			(ecs_term_t){.id = EcsWindow, .src.name = "$window", .inout = EcsIn},
+		},
+		.events = {EcsOnKey},
+		.callback = toggle_lock_cursor,
 	});
 }
 
