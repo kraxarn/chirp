@@ -32,6 +32,31 @@ const char *system_info_cpu_name()
 	return cpu_name;
 }
 
+const char *system_info_arch_name()
+{
+#if CPUINFO_ARCH_X86
+	return "x86";
+#elif CPUINFO_ARCH_X86_64
+	return "x86_64";
+#elif CPUINFO_ARCH_ARM
+	return "arm";
+#elif CPUINFO_ARCH_ARM64
+	return "arm64";
+#elif CPUINFO_ARCH_PPC64
+	return "ppc64";
+#elif CPUINFO_ARCH_WASM
+	return "wasm";
+#elif CPUINFO_ARCH_WASMSIMD
+	return "wasm_simd";
+#elif CPUINFO_ARCH_RISCV32
+	return "riscv32";
+#elif CPUINFO_ARCH_RISCV64
+	return "riscv64";
+#else
+	return nullptr;
+#endif
+}
+
 bool system_info_cpu_supported()
 {
 #ifdef SIMD_ENABLED

@@ -23,8 +23,8 @@ static void log_info(ecs_iter_t *iter)
 	SDL_LogInfo(LOG_CATEGORY_CORE, "Platform: %s",
 		SDL_GetPlatform());
 
-	SDL_LogInfo(LOG_CATEGORY_CORE, "CPU: %s",
-		system_info_cpu_name());
+	SDL_LogInfo(LOG_CATEGORY_CORE, "CPU: %s (%s)",
+		system_info_cpu_name(), system_info_arch_name());
 
 	SDL_LogInfo(LOG_CATEGORY_CORE, "GPU: %s (%s)",
 		system_info_gpu_name(device), system_info_gpu_driver(device));
