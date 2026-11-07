@@ -435,9 +435,6 @@ SDL_AppResult SDL_AppIterate(void *appstate)
 		return check_error(state, nullptr);
 	}
 
-	const physics_config_t *physics_config = ecs_get_id(ecs_world(),
-		ecs_singleton(EcsPhysicsConfig));
-
 	const ecs_entity_t player_entity = ecs_lookup(ecs_world(), "Player");
 	const b3BodyId *player_body_id = player_entity != 0
 		? ecs_get_id(ecs_world(), player_entity, EcsPhysicsBody)
@@ -450,70 +447,6 @@ SDL_AppResult SDL_AppIterate(void *appstate)
 		&& player_body_id != nullptr)
 	{
 		const input_t input = *(const input_t*) ecs_get_id(ecs_world(), ecs_singleton(EcsInput));
-
-		const b3Vec3 player_velocity = b3Body_GetLinearVelocity(*player_body_id);
-
-		vector3f_t move_forward = vector3f_normalize(camera_forward(camera));
-		move_forward.y = 0.F;
-		move_forward = vector3f_normalize(move_forward);
-
-		vector3f_t move_right = vector3f_normalize(camera_right(camera));
-		vector3f_t target = vector3f_zero();
-		vector3f_t move_up = vector3f_normalize(camera_up(camera));
-
-		const float axis_forward = input_axis(input, "move_forward", 0);
-		if (axis_forward > 0.F)
-		{
-			target = vector3f_add(target, vector3f_scale(move_forward, axis_forward));
-		}
-
-		const float axis_backward = input_axis(input, "move_backward", 0);
-		if (axis_backward > 0.F)
-		{
-			target = vector3f_sub(target, vector3f_scale(move_forward, axis_backward));
-		}
-
-		const float axis_left = input_axis(input, "move_left", 0);
-		if (axis_left > 0.F)
-		{
-			target = vector3f_sub(target, vector3f_scale(move_right, axis_left));
-		}
-
-		const float axis_right = input_axis(input, "move_right", 0);
-		if (axis_right > 0.F)
-		{
-			target = vector3f_add(target, vector3f_scale(move_right, axis_right));
-		}
-
-		if (input_is_down(input, "move_up", 0))
-		{
-			target = vector3f_add(target, move_up);
-		}
-
-		if (input_is_down(input, "move_down", 0))
-		{
-			target = vector3f_sub(target, move_up);
-		}
-
-		if (!vector3f_is_zero(target))
-		{
-			target = vector3f_scale(target, physics_config->move_speed);
-			target.y = player_velocity.y;
-		}
-
-		if (input_is_pressed(input, "jump", 0))
-		{
-			if (player_velocity.y > -0.1F && player_velocity.y < 0.1F)
-			{
-				target.y = physics_config->jump_speed;
-			}
-		}
-
-		if (!vector3f_is_zero(target))
-		{
-			b3Body_SetLinearVelocity(*player_body_id, vector3f_to_b3vec3(target));
-		}
-
 		if (input_is_pressed(input, "shoot", 0))
 		{
 			static constexpr float firepower = 10.F;

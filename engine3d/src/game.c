@@ -1,10 +1,13 @@
 #include "game.h"
 #include "camera.h"
 #include "ecs.h"
+#include "physicsconfig.h"
 #include "ecs/components.h"
 #include "ui/debugoverlay.h"
 
 #include "flecs.h"
+#include "box3d/box3d.h"
+#include "box3d/id.h"
 #include "chirp/ecs.h"
 #include "chirp/input.h"
 #include "chirp/vector.h"
@@ -73,6 +76,65 @@ static void update_camera_rotation(ecs_iter_t *iter)
 	);
 }
 
+static void update_player_movement(ecs_iter_t *iter)
+{
+	const b3BodyId body_id = *ecs_field(iter, b3BodyId, 0);
+	const camera_t *camera = ecs_field(iter, camera_t, 2);
+	const input_t input = *ecs_field(iter, input_t, 3);
+	const physics_config_t physics_config = *ecs_field(iter, physics_config_t, 4);
+
+	const b3Vec3 velocity = b3Body_GetLinearVelocity(body_id);
+
+	vector3f_t move_forward = vector3f_normalize(camera_forward(camera));
+	move_forward.y = 0.F;
+	move_forward = vector3f_normalize(move_forward);
+
+	const vector3f_t move_right = vector3f_normalize(camera_right(camera));
+
+	vector3f_t target = vector3f_zero();
+
+	const float axis_forward = input_axis(input, "move_forward", 0);
+	if (axis_forward > 0.F)
+	{
+		target = vector3f_add(target, vector3f_scale(move_forward, axis_forward));
+	}
+
+	const float axis_backward = input_axis(input, "move_backward", 0);
+	if (axis_backward > 0.F)
+	{
+		target = vector3f_sub(target, vector3f_scale(move_forward, axis_backward));
+	}
+
+	const float axis_left = input_axis(input, "move_left", 0);
+	if (axis_left > 0.F)
+	{
+		target = vector3f_sub(target, vector3f_scale(move_right, axis_left));
+	}
+
+	const float axis_right = input_axis(input, "move_right", 0);
+	if (axis_right > 0.F)
+	{
+		target = vector3f_add(target, vector3f_scale(move_right, axis_right));
+	}
+
+	if (!vector3f_is_zero(target))
+	{
+		target = vector3f_scale(target, physics_config.move_speed);
+		target.y = velocity.y;
+	}
+
+	if (input_is_pressed(input, "jump", 0)
+		&& velocity.y > -0.1F && velocity.y < 0.1F)
+	{
+		target.y = physics_config.jump_speed;
+	}
+
+	if (!vector3f_is_zero(target))
+	{
+		b3Body_SetLinearVelocity(body_id, vector3f_to_b3vec3(target));
+	}
+}
+
 static void init_player_input(ecs_world_t *stage)
 {
 	const ecs_entity_t entity_update_camera_rotation = ecs_entity_init(stage, &(ecs_entity_desc_t){
@@ -89,6 +151,29 @@ static void init_player_input(ecs_world_t *stage)
 			(ecs_term_t){.id = ecs_singleton_id(EcsCamera), .inout = EcsInOut},
 		},
 		.callback = update_camera_rotation,
+	});
+
+	const ecs_entity_t entity_update_player_movement = ecs_entity_init(stage, &(ecs_entity_desc_t){
+		.name = "UpdatePlayerMovement",
+	});
+	ecs_add_id(stage, entity_update_player_movement,
+		ecs_dependson(ecs_phase(PHASE_UPDATE)));
+
+	ecs_system_init(ecs_world(), &(ecs_system_desc_t){
+		.entity = entity_update_player_movement,
+		.query.terms = {
+			(ecs_term_t){.id = EcsPhysicsBody, .src.name = "$player", .inout = EcsIn},
+			(ecs_term_t){
+				.src.name = "$player",
+				.first.id = EcsPredEq,
+				.second = (ecs_term_ref_t){.id = EcsIsName, .name = "Player"},
+				.inout = EcsInOutNone,
+			},
+			(ecs_term_t){.id = ecs_singleton_id(EcsCamera), .inout = EcsIn},
+			(ecs_term_t){.id = ecs_singleton_id(EcsInput), .inout = EcsIn},
+			(ecs_term_t){.id = ecs_singleton_id(EcsPhysicsConfig), .inout = EcsIn},
+		},
+		.callback = update_player_movement,
 	});
 }
 

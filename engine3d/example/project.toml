@@ -30,7 +30,5 @@ look_up       = { axis = "righty-", deadzone = 0.2 }
 look_down     = { axis = "righty+", deadzone = 0.2 }
 look_left     = { axis = "rightx-", deadzone = 0.2 }
 look_right    = { axis = "rightx+", deadzone = 0.2 }
-move_up       = { keycode = "q" }
-move_down     = { keycode = "e" }
 jump          = { keycode = "space", gamepad = "south"         }
 shoot         = { mouse   = "left",  axis    = "righttrigger+" }
