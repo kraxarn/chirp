@@ -93,99 +93,6 @@ static bool sdl_supported()
 	return true;
 }
 
-static void log_spawn_position(ecs_iter_t *iter)
-{
-	const position_t *spawn_position = ecs_field(iter, position_t, 0);
-	SDL_Log("Spawn: %f %f %f", spawn_position->x, spawn_position->y, spawn_position->z);
-}
-
-static void build_scene(ecs_iter_t *iter)
-{
-	const b3WorldId physics_world = *ecs_field(iter, b3WorldId, 0);
-	const physics_config_t *physics_config = ecs_field(iter, physics_config_t, 1);
-
-	ecs_observer_init(ecs_world(), &(ecs_observer_desc_t){
-		.query.terms = {
-			(ecs_term_t){.id = EcsPosition, .inout = EcsIn},
-			(ecs_term_t){
-				.first.id = EcsPredEq,
-				.second = (ecs_term_ref_t){
-					.id = EcsIsName,
-					.name = "Model.scene.Spawn",
-				},
-				.inout = EcsInOutNone,
-			},
-		},
-		.events = {EcsOnSet},
-		.callback = log_spawn_position,
-	});
-
-	// Blaster
-
-	const ecs_entity_t blaster = ecs_new(ecs_world());
-	ecs_set_id(ecs_world(), blaster, prefab_model("blaster"));
-	ecs_set_name(ecs_world(), blaster, "Blaster");
-
-	const rotation_t rotation = {
-		.x = 0.F,
-		.y = 90.F,
-		.z = 0.F,
-	};
-	ecs_set_id(ecs_world(), blaster, EcsRotation,
-		sizeof(rotation_t), &rotation);
-
-	const position_t position = {
-		.x = 5.F,
-		.y = 1.F,
-		.z = -5.F,
-	};
-	ecs_set_id(ecs_world(), blaster, EcsPosition,
-		sizeof(position_t), &position);
-
-	// Scene
-
-	const ecs_entity_t scene = ecs_new(ecs_world());
-	ecs_set_id(ecs_world(), scene, prefab_scene("scene"));
-
-	// Physics
-
-	const b3BodyDef floor_def = b3DefaultBodyDef();
-	b3BodyId floor_body = b3CreateBody(physics_world, &floor_def);
-	b3BoxHull floor_box = b3MakeBoxHull(100.F, 0.F, 100.F);
-	b3ShapeDef floor_shape_def = b3DefaultShapeDef();
-	floor_shape_def.baseMaterial.friction = 5.F;
-	b3CreateHullShape(floor_body, &floor_shape_def, &floor_box.base);
-
-	// TODO: Make character mover
-	b3BodyDef player_def = b3DefaultBodyDef();
-	player_def.position = (b3Pos){.y = 1.F};
-	player_def.type = b3_dynamicBody;
-	player_def.motionLocks = (b3MotionLocks){
-		.angularX = true,
-		.angularY = true,
-		.angularZ = true,
-	};
-	b3BodyId player_body = b3CreateBody(physics_world, &player_def);
-	b3Capsule player_capsule = {
-		.center1 = (b3Vec3){.x = 0.F, .y = 0.F},
-		.center2 = (b3Vec3){.x = 0.F, .y = 1.F},
-		.radius = 1.F,
-	};
-	b3ShapeDef player_shape_def = b3DefaultShapeDef();
-	player_shape_def.density = 1.F;
-	b3CreateCapsuleShape(player_body, &player_shape_def, &player_capsule);
-
-	const ecs_entity_t player_entity = ecs_entity_init(ecs_world(), &(ecs_entity_desc_t){
-		.name = "Player",
-	});
-	ecs_set_id(ecs_world(), player_entity, EcsPhysicsBody,
-		sizeof(b3BodyId), &player_body);
-
-	b3World_SetGravity(physics_world, (b3Vec3){
-		.y = -physics_config->gravity_y,
-	});
-}
-
 static void toggle_lock_cursor(ecs_iter_t *iter)
 {
 	const SDL_KeyboardEvent *event = ecs_field(iter, SDL_KeyboardEvent, 0);
@@ -322,15 +229,6 @@ SDL_AppResult SDL_AppInit(void **appstate, const int argc, char **argv)
 
 	ecs_set_id(ecs_world(), ecs_singleton(EcsArgs),
 		sizeof(arg_values_t), &args);
-
-	ecs_observer_init(ecs_world(), &(ecs_observer_desc_t){
-		.query.terms = {
-			(ecs_term_t){.id = ecs_singleton_id(EcsPhysicsWorld), .inout = EcsIn},
-			(ecs_term_t){.id = ecs_singleton_id(EcsPhysicsConfig), .inout = EcsIn},
-		},
-		.events = {EcsOnSet},
-		.callback = build_scene,
-	});
 
 	// Should be changed by assets later when loaded
 	set_default_metadata();
