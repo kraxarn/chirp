@@ -2,12 +2,14 @@
 #include "camera.h"
 #include "ecs.h"
 #include "physicsconfig.h"
+#include "prefabs.h"
 #include "ecs/components.h"
 #include "ui/debugoverlay.h"
 
 #include "flecs.h"
 #include "box3d/box3d.h"
 #include "box3d/id.h"
+#include "box3d/types.h"
 #include "chirp/ecs.h"
 #include "chirp/input.h"
 #include "chirp/vector.h"
@@ -20,6 +22,7 @@
 
 static constexpr auto mouse_sensitivity = 0.0015F;
 static constexpr auto gamepad_sensitivity = 0.005F;
+static constexpr float firepower = 10.F;
 
 static void init_debug_overlay(ecs_world_t *stage)
 {
@@ -141,6 +144,55 @@ static void update_player_movement(ecs_iter_t *iter)
 	}
 }
 
+static void update_player_shoot(ecs_iter_t *iter)
+{
+	SDL_Window *window = *ecs_field(iter, SDL_Window*, 0);
+	if (!SDL_GetWindowRelativeMouseMode(window))
+	{
+		return;
+	}
+
+	const input_t input = *ecs_field(iter, input_t, 1);
+	if (!input_is_pressed(input, "shoot", 0))
+	{
+		return;
+	}
+
+	const position_t position = *ecs_field(iter, position_t, 2);
+	const b3WorldId world_id = *ecs_field(iter, b3WorldId, 4);
+	const camera_t *camera = ecs_field(iter, camera_t, 5);
+
+	const ecs_entity_t entity = ecs_new(iter->stage);
+	ecs_set_id(iter->stage, entity, prefab_model("bullet"));
+
+	ecs_set_id(iter->stage, entity, EcsPosition,
+		sizeof(position_t), &position);
+
+	const rotation_t rotation = vector3f_zero();
+	ecs_set_id(iter->stage, entity, EcsRotation,
+		sizeof(rotation_t), &rotation);
+
+	const vector3f_t forward = vector3f_normalize(vector3f_sub(camera->target, position));
+	const vector3f_t velocity = vector3f_scale(forward, firepower);
+
+	// TODO: Make cylinder
+	// TODO: Fix rotation
+
+	b3BodyDef body_def = b3DefaultBodyDef();
+	body_def.position = vector3f_to_b3vec3(position);
+	body_def.linearVelocity = vector3f_to_b3vec3(velocity);
+	body_def.type = b3_dynamicBody;
+	b3BodyId body = b3CreateBody(world_id, &body_def);
+	b3BoxHull box = b3MakeCubeHull(1.F);
+	b3ShapeDef shape_def = b3DefaultShapeDef();
+	shape_def.density = 1.F;
+	shape_def.baseMaterial.friction = 0.3F;
+	b3CreateHullShape(body, &shape_def, &box.base);
+
+	ecs_set_id(iter->stage, entity, EcsPhysicsBody,
+		sizeof(b3BodyId), &body);
+}
+
 static void init_player_input(ecs_world_t *stage)
 {
 	const ecs_entity_t entity_update_camera_rotation = ecs_entity_init(stage, &(ecs_entity_desc_t){
@@ -181,6 +233,30 @@ static void init_player_input(ecs_world_t *stage)
 			(ecs_term_t){.id = ecs_singleton_id(EcsPhysicsConfig), .inout = EcsIn},
 		},
 		.callback = update_player_movement,
+	});
+
+	const ecs_entity_t entity_update_player_shoot = ecs_entity_init(stage, &(ecs_entity_desc_t){
+		.name = "UpdatePlayerShoot",
+	});
+	ecs_add_id(stage, entity_update_player_shoot,
+		ecs_dependson(ecs_phase(PHASE_UPDATE)));
+
+	ecs_system_init(ecs_world(), &(ecs_system_desc_t){
+		.entity = entity_update_player_shoot,
+		.query.terms = {
+			(ecs_term_t){.id = ecs_singleton_id(EcsWindow), .inout = EcsInOut},
+			(ecs_term_t){.id = ecs_singleton_id(EcsInput), .inout = EcsIn},
+			(ecs_term_t){.id = EcsPosition, .src.name = "$blaster", .inout = EcsIn},
+			(ecs_term_t){
+				.src.name = "$blaster",
+				.first.id = EcsPredEq,
+				.second = (ecs_term_ref_t){.id = EcsIsName, .name = "Blaster"},
+				.inout = EcsInOutNone,
+			},
+			(ecs_term_t){.id = ecs_singleton_id(EcsPhysicsWorld), .inout = EcsInOut},
+			(ecs_term_t){.id = ecs_singleton_id(EcsCamera), .inout = EcsIn},
+		},
+		.callback = update_player_shoot,
 	});
 }
 
