@@ -244,7 +244,7 @@ SDL_AppResult SDL_AppInit(void **appstate, const int argc, char **argv)
 	ecs_set_id(ecs_world(), ecs_singleton(EcsPhysicsConfig),
 		sizeof(physics_config_t), &physics_config);
 
-	const SDL_FColor clear_color = {.r = 0.12F, .g = 0.12F, .b = 0.12F, .a = 1.F};
+	const SDL_FColor clear_color = {.r = 0.F, .g = 0.F, .b = 0.F, .a = 1.F};
 	ecs_set_id(ecs_world(), ecs_singleton(EcsClearColor),
 		sizeof(clear_color_t), &clear_color);
 

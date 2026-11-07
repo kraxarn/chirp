@@ -13,6 +13,9 @@ size = [1280, 720]
 fullscreen = false
 icon = ""
 
+[rendering]
+clear_color = "#1f1f1fff"
+
 [run]
 scene = "test"
 

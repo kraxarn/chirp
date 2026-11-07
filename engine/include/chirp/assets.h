@@ -2,6 +2,7 @@
 
 #include "chirp/input.h"
 #include "chirp/map.h"
+#include "chirp/rendererconfig.h"
 #include "chirp/windowconfig.h"
 
 #include <SDL3/SDL_iostream.h>
@@ -12,6 +13,7 @@ typedef struct assets
 	SDL_IOStream *stream;
 	SDL_Mutex *read_mutex;
 	window_config_t window_config;
+	renderer_config_t renderer_config;
 	map_t desc;
 } assets_t;
 

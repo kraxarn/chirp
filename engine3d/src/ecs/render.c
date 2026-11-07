@@ -7,10 +7,12 @@
 #include "ecs/tags.h"
 
 #include "flecs.h"
+#include "chirp/assets.h"
 #include "chirp/degutil.h"
 #include "chirp/ecs.h"
 #include "chirp/logcategory.h"
 #include "chirp/vector.h"
+#include "chirp/ecs/components.h"
 
 #include <SDL3/SDL_assert.h>
 #include <SDL3/SDL_error.h>
@@ -228,6 +230,14 @@ static void end_render(ecs_iter_t *iter)
 	}
 }
 
+static void set_clear_color(ecs_iter_t *iter)
+{
+	const assets_t *assets = ecs_field(iter, assets_t, 0);
+	clear_color_t *clear_color = ecs_field(iter, clear_color_t, 1);
+
+	*clear_color = assets->renderer_config.clear_color;
+}
+
 void ecs_add_render()
 {
 	// TODO: Why though?
@@ -334,5 +344,14 @@ void ecs_add_render()
 			(ecs_term_t){.id = ecs_singleton_id(EcsWindow), .oper = EcsOptional, .inout = EcsIn},
 		},
 		.callback = end_render,
+	});
+
+	ecs_observer_init(ecs_world(), &(ecs_observer_desc_t){
+		.query.terms = {
+			(ecs_term_t){.id = ecs_singleton_id(EcsAssets), .inout = EcsIn},
+			(ecs_term_t){.id = ecs_singleton_id(EcsClearColor), .inout = EcsOut},
+		},
+		.events = {EcsOnSet},
+		.callback = set_clear_color,
 	});
 }

@@ -10,6 +10,7 @@
 #include "chirp/logcategory.h"
 #include "chirp/map.h"
 #include "chirp/mousebutton.h"
+#include "chirp/rendererconfig.h"
 #include "chirp/windowconfig.h"
 
 #include <SDL3/SDL_error.h>
@@ -20,6 +21,7 @@
 #include <SDL3/SDL_keycode.h>
 #include <SDL3/SDL_log.h>
 #include <SDL3/SDL_mutex.h>
+#include <SDL3/SDL_pixels.h>
 #include <SDL3/SDL_stdinc.h>
 
 typedef struct
@@ -276,6 +278,46 @@ static bool parse_project_input(const input_t input, char *json, const json_toke
 	return true;
 }
 
+static bool parse_color(const char *str, SDL_FColor *color)
+{
+	const Uint32 parsed = SDL_strtoul(str + 1, nullptr, 16);
+	if (parsed == 0)
+	{
+		return false;
+	}
+
+	color->r = (float) ((Uint8) (parsed >> 24U)) / SDL_ALPHA_OPAQUE;
+	color->g = (float) ((Uint8) (parsed >> 16U)) / SDL_ALPHA_OPAQUE;
+	color->b = (float) ((Uint8) (parsed >> 8U)) / SDL_ALPHA_OPAQUE;
+	color->a = (float) ((Uint8) parsed) / SDL_ALPHA_OPAQUE;
+
+	return true;
+}
+
+static bool parse_project_renderer(const char *json, const json_token_t *tokens,
+	const int token_count, const json_token_t *token, renderer_config_t *config)
+{
+	for (int i = (token + 1)->parent + 2; i < token_count; i++)
+	{
+		const json_token_t *key = tokens + i;
+
+		if (key->start < (token + 1)->start || key->end > (token + 1)->end)
+		{
+			break;
+		}
+
+		const json_token_t *value = key + 1;
+
+		if (is_key(json, key, "c") // Clear colour
+			&& !parse_color(json + value->start, &config->clear_color))
+		{
+			return false;
+		}
+	}
+
+	return true;
+}
+
 [[nodiscard]]
 static bool parse_project(SDL_IOStream *stream,
 	assets_t *assets, const input_t input)
@@ -323,7 +365,9 @@ static bool parse_project(SDL_IOStream *stream,
 			|| (is_key(json, token, "w") // Window
 				&& parse_project_window(json, &assets->window_config, tokens, count, token))
 			|| (is_key(json, token, "i") // Input
-				&& parse_project_input(input, json, tokens, count, token)))
+				&& parse_project_input(input, json, tokens, count, token))
+			|| (is_key(json, token, "r") // Renderer
+				&& parse_project_renderer(json, tokens, token_count, token, &assets->renderer_config)))
 		{
 			i += size;
 		}
@@ -413,6 +457,7 @@ bool assets_create(const char *path, const input_t input, assets_t *assets)
 	assets->stream = stream;
 	assets->read_mutex = SDL_CreateMutex();
 	assets->window_config = window_config_default();
+	assets->renderer_config = renderer_config_default();
 	assets->desc = map_create();
 
 	if (assets->read_mutex == nullptr)
