@@ -2,4 +2,4 @@
 
 #include "flecs.h"
 
-void game_init(ecs_world_t *world);
+void game_init(ecs_world_t *stage);

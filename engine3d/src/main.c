@@ -48,9 +48,6 @@
 #include <SDL3/SDL_version.h>
 #include <SDL3/SDL_video.h>
 
-static constexpr auto mouse_sensitivity = 0.0015F;
-static constexpr auto gamepad_sensitivity = 0.005F;
-
 [[nodiscard]]
 static bool fatal_error_message_box()
 {
@@ -453,22 +450,6 @@ SDL_AppResult SDL_AppIterate(void *appstate)
 		&& player_body_id != nullptr)
 	{
 		const input_t input = *(const input_t*) ecs_get_id(ecs_world(), ecs_singleton(EcsInput));
-
-		vector2f_t mouse;
-		SDL_GetRelativeMouseState(&mouse.x, &mouse.y);
-		camera_rotate_x(camera, -(mouse.x * mouse_sensitivity));
-		camera_rotate_y(camera, -(mouse.y * mouse_sensitivity));
-
-		camera_rotate_x(camera,
-			(input_axis(input, "look_left", 0)
-				- input_axis(input, "look_right", 0))
-			* gamepad_sensitivity
-		);
-		camera_rotate_y(camera,
-			(input_axis(input, "look_up", 0)
-				- input_axis(input, "look_down", 0))
-			* gamepad_sensitivity
-		);
 
 		const b3Vec3 player_velocity = b3Body_GetLinearVelocity(*player_body_id);
 
