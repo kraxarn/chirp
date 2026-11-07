@@ -78,10 +78,16 @@ static void update_camera_rotation(ecs_iter_t *iter)
 
 static void update_player_movement(ecs_iter_t *iter)
 {
-	const b3BodyId body_id = *ecs_field(iter, b3BodyId, 0);
-	const camera_t *camera = ecs_field(iter, camera_t, 2);
-	const input_t input = *ecs_field(iter, input_t, 3);
-	const physics_config_t physics_config = *ecs_field(iter, physics_config_t, 4);
+	SDL_Window *window = *ecs_field(iter, SDL_Window*, 0);
+	if (!SDL_GetWindowRelativeMouseMode(window))
+	{
+		return;
+	}
+
+	const b3BodyId body_id = *ecs_field(iter, b3BodyId, 1);
+	const camera_t *camera = ecs_field(iter, camera_t, 3);
+	const input_t input = *ecs_field(iter, input_t, 4);
+	const physics_config_t physics_config = *ecs_field(iter, physics_config_t, 5);
 
 	const b3Vec3 velocity = b3Body_GetLinearVelocity(body_id);
 
@@ -162,6 +168,7 @@ static void init_player_input(ecs_world_t *stage)
 	ecs_system_init(ecs_world(), &(ecs_system_desc_t){
 		.entity = entity_update_player_movement,
 		.query.terms = {
+			(ecs_term_t){.id = ecs_singleton_id(EcsWindow), .inout = EcsInOut},
 			(ecs_term_t){.id = EcsPhysicsBody, .src.name = "$player", .inout = EcsIn},
 			(ecs_term_t){
 				.src.name = "$player",
