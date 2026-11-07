@@ -16,6 +16,7 @@
 #include "chirp/vector.h"
 #include "chirp/ecs/components.h"
 
+#include <SDL3/SDL_log.h>
 #include <SDL3/SDL_mouse.h>
 #include <SDL3/SDL_video.h>
 
@@ -24,6 +25,107 @@
 static constexpr auto mouse_sensitivity = 0.0015F;
 static constexpr auto gamepad_sensitivity = 0.005F;
 static constexpr float firepower = 10.F;
+
+static void build_scene(ecs_iter_t *iter)
+{
+	const b3WorldId world_id = *ecs_field(iter, b3WorldId, 0);
+	const physics_config_t *physics_config = ecs_field(iter, physics_config_t, 1);
+
+	// Blaster
+
+	const ecs_entity_t blaster = ecs_entity_init(iter->stage, &(ecs_entity_desc_t){
+		.name = "Blaster",
+	});
+	ecs_set_id(ecs_world(), blaster, prefab_model("blaster"));
+
+	const rotation_t blaster_rotation = {.x = 0.F, .y = 90.F, .z = 0.F};
+	ecs_set_id(ecs_world(), blaster, EcsRotation,
+		sizeof(rotation_t), &blaster_rotation);
+
+	const position_t blaster_position = {.x = 5.F, .y = 1.F, .z = -5.F};
+	ecs_set_id(ecs_world(), blaster, EcsPosition,
+		sizeof(position_t), &blaster_position);
+
+	// Scene
+
+	const ecs_entity_t scene = ecs_new(ecs_world());
+	ecs_set_id(ecs_world(), scene, prefab_scene("scene"));
+
+	// Floor physics
+
+	const b3BodyDef floor_def = b3DefaultBodyDef();
+	b3BodyId floor_body = b3CreateBody(world_id, &floor_def);
+	b3BoxHull floor_box = b3MakeBoxHull(100.F, 0.F, 100.F);
+	b3ShapeDef floor_shape_def = b3DefaultShapeDef();
+	floor_shape_def.baseMaterial.friction = 5.F;
+	b3CreateHullShape(floor_body, &floor_shape_def, &floor_box.base);
+
+	// Player physics
+
+	b3BodyDef player_def = b3DefaultBodyDef();
+	player_def.position = (b3Pos){.y = 1.F};
+	player_def.type = b3_dynamicBody;
+	player_def.motionLocks = (b3MotionLocks){
+		.angularX = true,
+		.angularY = true,
+		.angularZ = true,
+	};
+	b3BodyId player_body = b3CreateBody(world_id, &player_def);
+	b3Capsule player_capsule = {
+		.center1 = (b3Vec3){.x = 0.F, .y = 0.F},
+		.center2 = (b3Vec3){.x = 0.F, .y = 1.F},
+		.radius = 1.F,
+	};
+	b3ShapeDef player_shape_def = b3DefaultShapeDef();
+	player_shape_def.density = 1.F;
+	b3CreateCapsuleShape(player_body, &player_shape_def, &player_capsule);
+
+	const ecs_entity_t player_entity = ecs_entity_init(ecs_world(), &(ecs_entity_desc_t){
+		.name = "Player",
+	});
+	ecs_set_id(ecs_world(), player_entity, EcsPhysicsBody,
+		sizeof(b3BodyId), &player_body);
+
+	// Physics
+
+	b3World_SetGravity(world_id, (b3Vec3){
+		.y = -physics_config->gravity_y,
+	});
+}
+
+static void log_spawn_position(ecs_iter_t *iter)
+{
+	const position_t *spawn_position = ecs_field(iter, position_t, 0);
+	SDL_Log("Spawn: %f %f %f", spawn_position->x, spawn_position->y, spawn_position->z);
+}
+
+static void init_scene()
+{
+	ecs_observer_init(ecs_world(), &(ecs_observer_desc_t){
+		.query.terms = {
+			(ecs_term_t){.id = ecs_singleton_id(EcsPhysicsWorld), .inout = EcsIn},
+			(ecs_term_t){.id = ecs_singleton_id(EcsPhysicsConfig), .inout = EcsIn},
+		},
+		.events = {EcsOnSet},
+		.callback = build_scene,
+	});
+
+	ecs_observer_init(ecs_world(), &(ecs_observer_desc_t){
+		.query.terms = {
+			(ecs_term_t){.id = EcsPosition, .inout = EcsIn},
+			(ecs_term_t){
+				.first.id = EcsPredEq,
+				.second = (ecs_term_ref_t){
+					.id = EcsIsName,
+					.name = "Model.scene.Spawn",
+				},
+				.inout = EcsInOutNone,
+			},
+		},
+		.events = {EcsOnSet},
+		.callback = log_spawn_position,
+	});
+}
 
 static void init_debug_overlay(ecs_world_t *stage)
 {
@@ -259,6 +361,7 @@ static void init_player_input(ecs_world_t *stage)
 
 void game_init(ecs_world_t *stage)
 {
+	init_scene();
 	init_debug_overlay(stage);
 	init_player_input(stage);
 }
