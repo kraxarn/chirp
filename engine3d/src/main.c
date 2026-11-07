@@ -443,69 +443,6 @@ SDL_AppResult SDL_AppIterate(void *appstate)
 	SDL_Window *window = *(SDL_Window**) ecs_get_mut_id(ecs_world(), ecs_singleton(EcsWindow));
 	camera_t *camera = ecs_get_mut_id(ecs_world(), ecs_singleton(EcsCamera));
 
-	if (SDL_GetWindowRelativeMouseMode(window)
-		&& player_body_id != nullptr)
-	{
-		const input_t input = *(const input_t*) ecs_get_id(ecs_world(), ecs_singleton(EcsInput));
-		if (input_is_pressed(input, "shoot", 0))
-		{
-			static constexpr float firepower = 10.F;
-
-			const ecs_entity_t entity = ecs_new(ecs_world());
-			ecs_set_id(ecs_world(), entity, prefab_model("bullet"));
-
-			static ecs_query_t *position_query = nullptr;
-			if (position_query == nullptr)
-			{
-				position_query = ecs_query_init(ecs_world(), &(ecs_query_desc_t){
-					.terms = {
-						(ecs_term_t){
-							.id = EcsPosition,
-							.src.id = ecs_lookup(ecs_world(), "Blaster"),
-						},
-					},
-				});
-			}
-
-			position_t position = {};
-			ecs_iter_t iter = ecs_query_iter(ecs_world(), position_query);
-			while (ecs_query_next(&iter)) // Should only have 1 match, but just to be sure
-			{
-				position = *ecs_field(&iter, position_t, 0);
-			}
-
-			ecs_set_id(ecs_world(), entity, EcsPosition,
-				sizeof(position_t), &position);
-
-			const rotation_t rotation = vector3f_zero();
-			ecs_set_id(ecs_world(), entity, EcsRotation,
-				sizeof(rotation_t), &rotation);
-
-			const b3WorldId *physics_world = ecs_get_id(ecs_world(),
-				EcsPhysicsWorld, EcsPhysicsWorld);
-
-			const vector3f_t forward = vector3f_normalize(vector3f_sub(camera->target, position));
-			const vector3f_t velocity = vector3f_scale(forward, firepower);
-
-			// TODO: Make cylinder
-			// TODO: Fix rotation
-
-			b3BodyDef body_def = b3DefaultBodyDef();
-			body_def.position = vector3f_to_b3vec3(position);
-			body_def.linearVelocity = vector3f_to_b3vec3(velocity);
-			body_def.type = b3_dynamicBody;
-			b3BodyId body = b3CreateBody(*physics_world, &body_def);
-			b3BoxHull box = b3MakeCubeHull(1.F);
-			b3ShapeDef shape_def = b3DefaultShapeDef();
-			shape_def.density = 1.F;
-			shape_def.baseMaterial.friction = 0.3F;
-			b3CreateHullShape(body, &shape_def, &box.base);
-
-			ecs_set_id(ecs_world(), entity, EcsPhysicsBody,
-				sizeof(b3BodyId), &body);
-		}
-	}
-
 	if (player_body_id != nullptr)
 	{
 		const b3Vec3 player_position = b3Body_GetPosition(*player_body_id);
