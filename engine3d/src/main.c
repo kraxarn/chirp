@@ -246,7 +246,7 @@ SDL_AppResult SDL_AppInit(void **appstate, const int argc, char **argv)
 
 	const SDL_FColor clear_color = {.r = 0.F, .g = 0.F, .b = 0.F, .a = 1.F};
 	ecs_set_id(ecs_world(), ecs_singleton(EcsClearColor),
-		sizeof(clear_color_t), &clear_color);
+		sizeof(SDL_FColor), &clear_color);
 
 	state->status_query = ecs_query_init(ecs_world(), &(ecs_query_desc_t){
 		.terms = {

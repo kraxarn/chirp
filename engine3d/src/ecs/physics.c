@@ -13,6 +13,7 @@
 #include "flecs/addons/flecs_c.h"
 
 #include <SDL3/SDL_cpuinfo.h>
+#include <SDL3/SDL_error.h>
 #include <SDL3/SDL_stdinc.h>
 
 static void init_physics([[maybe_unused]] ecs_iter_t *iter)

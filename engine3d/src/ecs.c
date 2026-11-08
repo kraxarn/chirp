@@ -25,6 +25,7 @@
 #include <SDL3/SDL_events.h>
 #include <SDL3/SDL_gpu.h>
 #include <SDL3/SDL_log.h>
+#include <SDL3/SDL_pixels.h>
 #include <SDL3/SDL_stdinc.h>
 #include <SDL3/SDL_video.h>
 
@@ -137,7 +138,7 @@ static void add_modules()
 		EcsNkContext = component("NkContext", nkui_context_t);
 		EcsVertexShader = component("VertexShader", SDL_GPUShader*);
 		EcsFragmentShader = component("FragmentShader", SDL_GPUShader*);
-		EcsClearColor = component("ClearColor", clear_color_t);
+		EcsClearColor = component("ClearColor", SDL_FColor);
 		EcsViewProjection = component("ViewProjection", view_projection_t);
 		EcsWorldTransform = component("WorldTransform", world_transform_t);
 		EcsScriptEngine = component("ScriptEngine", py_vm_index_t);
