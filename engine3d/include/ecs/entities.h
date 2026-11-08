@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ecs.h"
+#include "flecs.h"
 
 extern ecs_entity_t EcsPhaseUpdateBegin;   // TODO
 extern ecs_entity_t EcsPhaseUpdate;        // Update game logic
