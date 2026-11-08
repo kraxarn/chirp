@@ -132,7 +132,7 @@ static void add_modules()
 		EcsModel = component("Model", model_t);
 		EcsRotation = component("Rotation", vector3f_t);
 		EcsPosition = component("Position", vector3f_t);
-		EcsScale = component("Scale", scale_t);
+		EcsScale = component("Scale", vector3f_t);
 		EcsProjection = component("Projection", projection_t);
 		EcsNkContext = component("NkContext", nkui_context_t);
 		EcsVertexShader = component("VertexShader", vertex_shader_t*);

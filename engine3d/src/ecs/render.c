@@ -174,8 +174,8 @@ static void render_model(ecs_iter_t *iter)
 		{
 #define deref(v) ((v) != nullptr ? *(v) : vector3f_zero())
 			const vector3f_t scale = vector3f_add(
-				deref(ecs_field(iter, scale_t, 5)), // model
-				deref(ecs_field(iter, scale_t, 9))  // entity
+				deref(ecs_field(iter, vector3f_t, 5)), // model
+				deref(ecs_field(iter, vector3f_t, 9))  // entity
 			);
 			const vector3f_t rotation = vector3f_add(
 				deref(ecs_field(iter, vector3f_t, 6)), // model
