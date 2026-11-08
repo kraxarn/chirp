@@ -43,9 +43,9 @@ static void build_scene(ecs_iter_t *iter)
 	ecs_set_id(ecs_world(), blaster, EcsRotation,
 		sizeof(vector3f_t), &blaster_rotation);
 
-	const position_t blaster_position = {.x = 5.F, .y = 1.F, .z = -5.F};
+	const vector3f_t blaster_position = {.x = 5.F, .y = 1.F, .z = -5.F};
 	ecs_set_id(ecs_world(), blaster, EcsPosition,
-		sizeof(position_t), &blaster_position);
+		sizeof(vector3f_t), &blaster_position);
 
 	// Scene
 
@@ -96,7 +96,7 @@ static void build_scene(ecs_iter_t *iter)
 
 static void log_spawn_position(ecs_iter_t *iter)
 {
-	const position_t *spawn_position = ecs_field(iter, position_t, 0);
+	const vector3f_t *spawn_position = ecs_field(iter, vector3f_t, 0);
 	SDL_Log("Spawn: %f %f %f", spawn_position->x, spawn_position->y, spawn_position->z);
 }
 
@@ -284,7 +284,7 @@ static void update_player_shoot(ecs_iter_t *iter)
 		return;
 	}
 
-	const position_t position = *ecs_field(iter, position_t, 2);
+	const vector3f_t position = *ecs_field(iter, vector3f_t, 2);
 	const b3WorldId world_id = *ecs_field(iter, b3WorldId, 4);
 	const camera_t *camera = ecs_field(iter, camera_t, 5);
 
@@ -292,7 +292,7 @@ static void update_player_shoot(ecs_iter_t *iter)
 	ecs_set_id(iter->stage, entity, prefab_model("bullet"));
 
 	ecs_set_id(iter->stage, entity, EcsPosition,
-		sizeof(position_t), &position);
+		sizeof(vector3f_t), &position);
 
 	const vector3f_t rotation = vector3f_zero();
 	ecs_set_id(iter->stage, entity, EcsRotation,

@@ -131,7 +131,7 @@ static void add_modules()
 		EcsPhysicsConfig = component("PhysicsConfig", physics_config_t);
 		EcsModel = component("Model", model_t);
 		EcsRotation = component("Rotation", vector3f_t);
-		EcsPosition = component("Position", position_t);
+		EcsPosition = component("Position", vector3f_t);
 		EcsScale = component("Scale", scale_t);
 		EcsProjection = component("Projection", projection_t);
 		EcsNkContext = component("NkContext", nkui_context_t);

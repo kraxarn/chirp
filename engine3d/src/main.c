@@ -360,7 +360,7 @@ SDL_AppResult SDL_AppIterate(void *appstate)
 	ecs_iter_t iter = ecs_query_iter(ecs_world(), weapon_query);
 	while (ecs_query_next(&iter))
 	{
-		vector3f_t *positions = ecs_field(&iter, position_t, 0);
+		vector3f_t *positions = ecs_field(&iter, vector3f_t, 0);
 		vector3f_t *rotations = ecs_field(&iter, vector3f_t, 1);
 		projection_t *projections = ecs_field(&iter, projection_t, 5);
 

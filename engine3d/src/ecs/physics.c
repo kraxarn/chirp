@@ -50,7 +50,7 @@ static void update_physics(ecs_iter_t *iter)
 static void sync_physics(ecs_iter_t *iter)
 {
 	const b3BodyId *body_ids = ecs_field(iter, b3BodyId, 0);
-	position_t *positions = ecs_field(iter, position_t, 1);
+	vector3f_t *positions = ecs_field(iter, vector3f_t, 1);
 	projection_t *projections = ecs_field(iter, projection_t, 2);
 
 	for (Sint32 i = 0; i < iter->count; i++)

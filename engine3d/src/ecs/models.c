@@ -10,6 +10,7 @@
 #include "chirp/ecs.h"
 #include "chirp/logcategory.h"
 #include "chirp/modelinfo.h"
+#include "chirp/vector.h"
 #include "chirp/ecs/components.h"
 #include "flecs/addons/system.h"
 
@@ -80,9 +81,9 @@ static ecs_entity_t load_model(ecs_world_t *world, SDL_GPUDevice *device,
 
 		ecs_add_pair(world, node, EcsChildOf, entity);
 
-		const position_t position = model_node_translation(&model.info, i);
+		const vector3f_t position = model_node_translation(&model.info, i);
 		ecs_set_id(world, node, EcsPosition,
-			sizeof(position_t), &position);
+			sizeof(vector3f_t), &position);
 
 		const world_transform_t world_transform = model_node_world_transform(&model.info, i);
 		ecs_set_id(world, node, EcsWorldTransform,

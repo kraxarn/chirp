@@ -182,8 +182,8 @@ static void render_model(ecs_iter_t *iter)
 				deref(ecs_field(iter, vector3f_t, 10)) // entity
 			);
 			const vector3f_t position = vector3f_add(
-				deref(ecs_field(iter, position_t, 7)), // model
-				deref(ecs_field(iter, position_t, 11)) // entity
+				deref(ecs_field(iter, vector3f_t, 7)), // model
+				deref(ecs_field(iter, vector3f_t, 11)) // entity
 			);
 #undef deref
 			*projection = rebuild_model_projection(*world_transform, scale, rotation, position);
