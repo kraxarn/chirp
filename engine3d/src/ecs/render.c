@@ -31,7 +31,7 @@ static void begin_render(ecs_iter_t *iter)
 	nkui_context_t *nkui_context = ecs_field(iter, nkui_context_t, 4);
 	SDL_GPUGraphicsPipeline *pipeline = *ecs_field(iter, SDL_GPUGraphicsPipeline*, 5);
 	SDL_GPUCommandBuffer **command_buffer = ecs_field(iter, SDL_GPUCommandBuffer*, 6);
-	SDL_GPURenderPass **render_pass = ecs_field(iter, gpu_render_pass_t*, 7);
+	SDL_GPURenderPass **render_pass = ecs_field(iter, SDL_GPURenderPass*, 7);
 	SDL_GPUTexture **swapchain_texture = ecs_field(iter, swapchain_texture_t*, 8);
 	vector2f_t *swapchain_texture_size = ecs_field(iter, swapchain_texture_size_t, 9);
 
@@ -114,7 +114,7 @@ static void render_scene(ecs_iter_t *iter)
 {
 	SDL_assert(iter->count == 1);
 
-	SDL_GPURenderPass *render_pass = *ecs_field(iter, gpu_render_pass_t*, 0);
+	SDL_GPURenderPass *render_pass = *ecs_field(iter, SDL_GPURenderPass*, 0);
 	SDL_GPUCommandBuffer *command_buffer = *ecs_field(iter, SDL_GPUCommandBuffer*, 1);
 	const matrix4x4_t view_proj = *ecs_field(iter, view_projection_t, 2);
 	const model_t *model = ecs_field(iter, model_t, 3);
@@ -158,7 +158,7 @@ static projection_t rebuild_model_projection(const matrix4x4_t transform, const 
 
 static void render_model(ecs_iter_t *iter)
 {
-	SDL_GPURenderPass *render_pass = *ecs_field(iter, gpu_render_pass_t*, 0);
+	SDL_GPURenderPass *render_pass = *ecs_field(iter, SDL_GPURenderPass*, 0);
 	SDL_GPUCommandBuffer *command_buffer = *ecs_field(iter, SDL_GPUCommandBuffer*, 1);
 	const matrix4x4_t view_proj = *ecs_field(iter, view_projection_t, 2);
 	projection_t *projections = ecs_field(iter, projection_t, 3);
@@ -201,7 +201,7 @@ static void end_render(ecs_iter_t *iter)
 		return;
 	}
 
-	SDL_GPURenderPass *render_pass = *ecs_field(iter, gpu_render_pass_t*, 0);
+	SDL_GPURenderPass *render_pass = *ecs_field(iter, SDL_GPURenderPass*, 0);
 	SDL_GPUCommandBuffer *command_buffer = *ecs_field(iter, SDL_GPUCommandBuffer*, 1);
 	SDL_GPUTexture *swapchain_texture = *ecs_field(iter, swapchain_texture_t*, 2);
 	nkui_context_t *nkui_context = ecs_field(iter, nkui_context_t, 3);
