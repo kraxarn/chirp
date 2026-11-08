@@ -123,7 +123,7 @@ static void add_modules()
 		EcsGpuDevice = component("GpuDevice", SDL_GPUDevice*);
 		EcsGpuGraphicsPipeline = component("GpuGraphicsPipeline", SDL_GPUGraphicsPipeline*);
 		EcsDepthTexture = component("DepthTexture", depth_texture_t*);
-		EcsGpuCommandBuffer = component("GpuCommandBuffer", gpu_command_buffer_t*);
+		EcsGpuCommandBuffer = component("GpuCommandBuffer", SDL_GPUCommandBuffer*);
 		EcsGpuRenderPass = component("GpuRenderPass", gpu_render_pass_t*);
 		EcsSwapchainTexture = component("SwapchainTexture", swapchain_texture_t*);
 		EcsSwapchainTextureSize = component("SwapchainTextureSize", swapchain_texture_size_t);
