@@ -25,7 +25,7 @@
 static void begin_render(ecs_iter_t *iter)
 {
 	SDL_Window *window = *ecs_field(iter, SDL_Window*, 0);
-	SDL_GPUDevice *device = *ecs_field(iter, gpu_device_t*, 1);
+	SDL_GPUDevice *device = *ecs_field(iter, SDL_GPUDevice*, 1);
 	const SDL_FColor clear_color = *ecs_field(iter, clear_color_t, 2);
 	SDL_GPUTexture *depth_texture = *ecs_field(iter, depth_texture_t*, 3);
 	nkui_context_t *nkui_context = ecs_field(iter, nkui_context_t, 4);

@@ -66,7 +66,7 @@ static void create_gpu_device(ecs_iter_t *iter)
 static void enable_vsync(ecs_iter_t *iter)
 {
 	SDL_Window *window = *ecs_field(iter, SDL_Window*, 0);
-	SDL_GPUDevice *device = *ecs_field(iter, gpu_device_t*, 1);
+	SDL_GPUDevice *device = *ecs_field(iter, SDL_GPUDevice*, 1);
 
 	if (!SDL_SetGPUSwapchainParameters(device, window,
 		SDL_GPU_SWAPCHAINCOMPOSITION_SDR, SDL_GPU_PRESENTMODE_VSYNC))
@@ -101,7 +101,7 @@ static SDL_GPUTexture *create_depth_texture(SDL_GPUDevice *device, const vector2
 static void set_depth_texture(ecs_iter_t *iter)
 {
 	SDL_Window *window = *ecs_field(iter, SDL_Window*, 0);
-	SDL_GPUDevice *device = *ecs_field(iter, gpu_device_t*, 1);
+	SDL_GPUDevice *device = *ecs_field(iter, SDL_GPUDevice*, 1);
 
 	vector2i_t size;
 	if (!SDL_GetWindowSize(window, &size.x, &size.y))
@@ -122,7 +122,7 @@ static void set_depth_texture(ecs_iter_t *iter)
 
 static void load_default_shaders(ecs_iter_t *iter)
 {
-	SDL_GPUDevice *device = *ecs_field(iter, gpu_device_t*, 0);
+	SDL_GPUDevice *device = *ecs_field(iter, SDL_GPUDevice*, 0);
 
 	SDL_IOStream *vertex_source;
 	SDL_IOStream *fragment_source;
@@ -177,7 +177,7 @@ static void load_default_shaders(ecs_iter_t *iter)
 static void create_default_pipeline(ecs_iter_t *iter)
 {
 	SDL_Window *window = *ecs_field(iter, SDL_Window*, 0);
-	SDL_GPUDevice *device = *ecs_field(iter, gpu_device_t*, 1);
+	SDL_GPUDevice *device = *ecs_field(iter, SDL_GPUDevice*, 1);
 	SDL_GPUShader *vertex_shader = *ecs_field(iter, vertex_shader_t*, 2);
 	SDL_GPUShader *fragment_shader = *ecs_field(iter, fragment_shader_t*, 3);
 
@@ -271,7 +271,7 @@ static void resize_depth_texture(ecs_iter_t *iter)
 		.y = event->data2,
 	};
 
-	SDL_GPUDevice *device = *ecs_field(iter, gpu_device_t*, 1);
+	SDL_GPUDevice *device = *ecs_field(iter, SDL_GPUDevice*, 1);
 	SDL_GPUTexture **depth_texture = ecs_field(iter, depth_texture_t*, 2);
 
 	SDL_ReleaseGPUTexture(device, *depth_texture);

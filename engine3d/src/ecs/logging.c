@@ -18,7 +18,7 @@
 
 static void log_info(ecs_iter_t *iter)
 {
-	SDL_GPUDevice *device = *ecs_field(iter, gpu_device_t*, 0);
+	SDL_GPUDevice *device = *ecs_field(iter, SDL_GPUDevice*, 0);
 
 	SDL_LogInfo(LOG_CATEGORY_CORE, "Platform: %s",
 		SDL_GetPlatform());

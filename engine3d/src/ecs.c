@@ -23,6 +23,7 @@
 #include <SDL3/SDL_assert.h>
 #include <SDL3/SDL_cpuinfo.h>
 #include <SDL3/SDL_events.h>
+#include <SDL3/SDL_gpu.h>
 #include <SDL3/SDL_log.h>
 #include <SDL3/SDL_stdinc.h>
 #include <SDL3/SDL_video.h>
@@ -119,7 +120,7 @@ static void add_modules()
 		EcsTimeStats = component("TimeStats", time_stats_t);
 		EcsWindowConfig = component("WindowConfig", window_config_t);
 		EcsWindow = component("Window", SDL_Window*);
-		EcsGpuDevice = component("GpuDevice", gpu_device_t*);
+		EcsGpuDevice = component("GpuDevice", SDL_GPUDevice*);
 		EcsGpuGraphicsPipeline = component("GpuGraphicsPipeline", gpu_graphics_pipeline_t*);
 		EcsDepthTexture = component("DepthTexture", depth_texture_t*);
 		EcsGpuCommandBuffer = component("GpuCommandBuffer", gpu_command_buffer_t*);
