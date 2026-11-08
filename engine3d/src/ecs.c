@@ -15,6 +15,7 @@
 #include "chirp/ecsosapi.h"
 #include "chirp/ecsutils.h"
 #include "chirp/logcategory.h"
+#include "chirp/matrix.h"
 #include "chirp/vector.h"
 #include "chirp/windowconfig.h"
 #include "chirp/ecs/components.h"
@@ -139,7 +140,7 @@ static void add_modules()
 		EcsVertexShader = component("VertexShader", SDL_GPUShader*);
 		EcsFragmentShader = component("FragmentShader", SDL_GPUShader*);
 		EcsClearColor = component("ClearColor", SDL_FColor);
-		EcsViewProjection = component("ViewProjection", view_projection_t);
+		EcsViewProjection = component("ViewProjection", matrix4x4_t);
 		EcsWorldTransform = component("WorldTransform", world_transform_t);
 		EcsScriptEngine = component("ScriptEngine", py_vm_index_t);
 		EcsArgs = component("Args", arg_values_t);

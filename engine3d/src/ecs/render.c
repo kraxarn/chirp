@@ -11,6 +11,7 @@
 #include "chirp/degutil.h"
 #include "chirp/ecs.h"
 #include "chirp/logcategory.h"
+#include "chirp/matrix.h"
 #include "chirp/vector.h"
 #include "chirp/ecs/components.h"
 
@@ -95,7 +96,7 @@ static void rebuild_camera_projection(ecs_iter_t *iter)
 {
 	const camera_t *camera = ecs_field(iter, camera_t, 0);
 	const vector2f_t *size = ecs_field(iter, vector2f_t, 1);
-	matrix4x4_t *view_proj = ecs_field(iter, view_projection_t, 2);
+	matrix4x4_t *view_proj = ecs_field(iter, matrix4x4_t, 2);
 
 	const float aspect = size != nullptr
 		? size->x / size->y
@@ -116,7 +117,7 @@ static void render_scene(ecs_iter_t *iter)
 
 	SDL_GPURenderPass *render_pass = *ecs_field(iter, SDL_GPURenderPass*, 0);
 	SDL_GPUCommandBuffer *command_buffer = *ecs_field(iter, SDL_GPUCommandBuffer*, 1);
-	const matrix4x4_t view_proj = *ecs_field(iter, view_projection_t, 2);
+	const matrix4x4_t view_proj = *ecs_field(iter, matrix4x4_t, 2);
 	const model_t *model = ecs_field(iter, model_t, 3);
 
 	model_draw(model, render_pass, command_buffer, view_proj);
@@ -160,7 +161,7 @@ static void render_model(ecs_iter_t *iter)
 {
 	SDL_GPURenderPass *render_pass = *ecs_field(iter, SDL_GPURenderPass*, 0);
 	SDL_GPUCommandBuffer *command_buffer = *ecs_field(iter, SDL_GPUCommandBuffer*, 1);
-	const matrix4x4_t view_proj = *ecs_field(iter, view_projection_t, 2);
+	const matrix4x4_t view_proj = *ecs_field(iter, matrix4x4_t, 2);
 	projection_t *projections = ecs_field(iter, projection_t, 3);
 	const world_transform_t *world_transform = ecs_field(iter, world_transform_t, 13);
 	const model_t *model = ecs_field(iter, model_t, 15);
