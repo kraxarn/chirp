@@ -13,7 +13,6 @@ typedef struct ecs_iter_t ecs_iter_t;
 typedef Uint64 ecs_id_t;
 typedef Uint64 ecs_entity_t;
 
-typedef SDL_GPUGraphicsPipeline gpu_graphics_pipeline_t;
 typedef SDL_GPUCommandBuffer gpu_command_buffer_t;
 typedef SDL_GPURenderPass gpu_render_pass_t;
 typedef SDL_GPUTexture depth_texture_t;
