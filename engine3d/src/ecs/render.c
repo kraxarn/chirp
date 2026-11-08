@@ -163,7 +163,7 @@ static void render_model(ecs_iter_t *iter)
 	SDL_GPUCommandBuffer *command_buffer = *ecs_field(iter, SDL_GPUCommandBuffer*, 1);
 	const matrix4x4_t view_proj = *ecs_field(iter, matrix4x4_t, 2);
 	projection_t *projections = ecs_field(iter, projection_t, 3);
-	const world_transform_t *world_transform = ecs_field(iter, world_transform_t, 13);
+	const matrix4x4_t *world_transform = ecs_field(iter, matrix4x4_t, 13);
 	const model_t *model = ecs_field(iter, model_t, 15);
 
 	for (Sint32 i = 0; i < iter->count; i++)

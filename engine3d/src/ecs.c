@@ -141,7 +141,7 @@ static void add_modules()
 		EcsFragmentShader = component("FragmentShader", SDL_GPUShader*);
 		EcsClearColor = component("ClearColor", SDL_FColor);
 		EcsViewProjection = component("ViewProjection", matrix4x4_t);
-		EcsWorldTransform = component("WorldTransform", world_transform_t);
+		EcsWorldTransform = component("WorldTransform", matrix4x4_t);
 		EcsScriptEngine = component("ScriptEngine", py_vm_index_t);
 		EcsArgs = component("Args", arg_values_t);
 		EcsModelInstance = component("ModelInstance", model_descriptor_t);

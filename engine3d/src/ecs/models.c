@@ -9,6 +9,7 @@
 #include "chirp/assets.h"
 #include "chirp/ecs.h"
 #include "chirp/logcategory.h"
+#include "chirp/matrix.h"
 #include "chirp/modelinfo.h"
 #include "chirp/vector.h"
 #include "chirp/ecs/components.h"
@@ -85,9 +86,9 @@ static ecs_entity_t load_model(ecs_world_t *world, SDL_GPUDevice *device,
 		ecs_set_id(world, node, EcsPosition,
 			sizeof(vector3f_t), &position);
 
-		const world_transform_t world_transform = model_node_world_transform(&model.info, i);
+		const matrix4x4_t world_transform = model_node_world_transform(&model.info, i);
 		ecs_set_id(world, node, EcsWorldTransform,
-			sizeof(world_transform_t), &world_transform);
+			sizeof(matrix4x4_t), &world_transform);
 	}
 
 	return entity;
