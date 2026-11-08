@@ -142,7 +142,6 @@ static void add_modules()
 		EcsClearColor = component("ClearColor", SDL_FColor);
 		EcsViewProjection = component("ViewProjection", matrix4x4_t);
 		EcsWorldTransform = component("WorldTransform", matrix4x4_t);
-		EcsScriptEngine = component("ScriptEngine", py_vm_index_t);
 		EcsArgs = component("Args", arg_values_t);
 		EcsModelInstance = component("ModelInstance", model_descriptor_t);
 		EcsModelScene = component("ModelScene", model_descriptor_t);
@@ -213,10 +212,6 @@ static void add_modules()
 		reflect(EcsError,
 			(ecs_member_t){.name = "title", .type = ecs_id(ecs_string_t)},
 			(ecs_member_t){.name = "message", .type = ecs_id(ecs_string_t)},
-		);
-
-		reflect(EcsScriptEngine,
-			(ecs_member_t){.name = "vm_index", .type = ecs_id(ecs_i32_t)},
 		);
 
 		reflect(EcsArgs,

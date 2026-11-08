@@ -23,7 +23,6 @@ ecs_id_t EcsFragmentShader = 0;
 ecs_id_t EcsClearColor = 0;
 ecs_id_t EcsViewProjection = 0;
 ecs_id_t EcsWorldTransform = 0;
-ecs_id_t EcsScriptEngine = 0;
 ecs_id_t EcsArgs = 0;
 ecs_id_t EcsModelInstance = 0;
 ecs_id_t EcsModelScene = 0;

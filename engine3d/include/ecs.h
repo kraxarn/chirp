@@ -10,8 +10,6 @@ typedef struct ecs_iter_t ecs_iter_t;
 typedef Uint64 ecs_id_t;
 typedef Uint64 ecs_entity_t;
 
-typedef Sint32 py_vm_index_t;
-
 typedef struct
 {
 	bool rebuild;
