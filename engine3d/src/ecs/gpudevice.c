@@ -272,7 +272,7 @@ static void resize_depth_texture(ecs_iter_t *iter)
 	};
 
 	SDL_GPUDevice *device = *ecs_field(iter, SDL_GPUDevice*, 1);
-	SDL_GPUTexture **depth_texture = ecs_field(iter, depth_texture_t*, 2);
+	SDL_GPUTexture **depth_texture = ecs_field(iter, SDL_GPUTexture*, 2);
 
 	SDL_ReleaseGPUTexture(device, *depth_texture);
 	*depth_texture = create_depth_texture(device, size);
