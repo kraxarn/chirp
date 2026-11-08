@@ -33,7 +33,7 @@ static void begin_render(ecs_iter_t *iter)
 	SDL_GPUCommandBuffer **command_buffer = ecs_field(iter, SDL_GPUCommandBuffer*, 6);
 	SDL_GPURenderPass **render_pass = ecs_field(iter, SDL_GPURenderPass*, 7);
 	SDL_GPUTexture **swapchain_texture = ecs_field(iter, SDL_GPUTexture*, 8);
-	vector2f_t *swapchain_texture_size = ecs_field(iter, swapchain_texture_size_t, 9);
+	vector2f_t *swapchain_texture_size = ecs_field(iter, vector2f_t, 9);
 
 	*command_buffer = SDL_AcquireGPUCommandBuffer(device);
 	if (*command_buffer == nullptr)
@@ -94,7 +94,7 @@ static void begin_render(ecs_iter_t *iter)
 static void rebuild_camera_projection(ecs_iter_t *iter)
 {
 	const camera_t *camera = ecs_field(iter, camera_t, 0);
-	const vector2f_t *size = ecs_field(iter, swapchain_texture_size_t, 1);
+	const vector2f_t *size = ecs_field(iter, vector2f_t, 1);
 	matrix4x4_t *view_proj = ecs_field(iter, view_projection_t, 2);
 
 	const float aspect = size != nullptr

@@ -12,10 +12,10 @@
 
 #include "chirp/ecs.h"
 #include "flecs.h"
-#include "box3d/id.h"
 #include "chirp/ecsosapi.h"
 #include "chirp/ecsutils.h"
 #include "chirp/logcategory.h"
+#include "chirp/vector.h"
 #include "chirp/windowconfig.h"
 #include "chirp/ecs/components.h"
 #include "chirp/ecs/modules.h"
@@ -126,7 +126,7 @@ static void add_modules()
 		EcsGpuCommandBuffer = component("GpuCommandBuffer", SDL_GPUCommandBuffer*);
 		EcsGpuRenderPass = component("GpuRenderPass", SDL_GPURenderPass*);
 		EcsSwapchainTexture = component("SwapchainTexture", SDL_GPUTexture*);
-		EcsSwapchainTextureSize = component("SwapchainTextureSize", swapchain_texture_size_t);
+		EcsSwapchainTextureSize = component("SwapchainTextureSize", vector2f_t);
 		EcsCamera = component("Camera", camera_t);
 		EcsPhysicsConfig = component("PhysicsConfig", physics_config_t);
 		EcsModel = component("Model", model_t);
