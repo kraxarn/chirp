@@ -24,8 +24,6 @@ typedef struct
 	char *name;
 } model_descriptor_t;
 
-typedef model_descriptor_t model_scene_t;
-
 void ecs_create();
 
 void ecs_destroy();
