@@ -178,7 +178,7 @@ static void create_default_pipeline(ecs_iter_t *iter)
 {
 	SDL_Window *window = *ecs_field(iter, SDL_Window*, 0);
 	SDL_GPUDevice *device = *ecs_field(iter, SDL_GPUDevice*, 1);
-	SDL_GPUShader *vertex_shader = *ecs_field(iter, vertex_shader_t*, 2);
+	SDL_GPUShader *vertex_shader = *ecs_field(iter, SDL_GPUShader*, 2);
 	SDL_GPUShader *fragment_shader = *ecs_field(iter, fragment_shader_t*, 3);
 
 	const SDL_GPUGraphicsPipelineCreateInfo create_info = {

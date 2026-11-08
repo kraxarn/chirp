@@ -12,7 +12,6 @@ typedef struct ecs_iter_t ecs_iter_t;
 typedef Uint64 ecs_id_t;
 typedef Uint64 ecs_entity_t;
 
-typedef SDL_GPUShader vertex_shader_t;
 typedef SDL_GPUShader fragment_shader_t;
 typedef SDL_FColor clear_color_t;
 typedef matrix4x4_t view_projection_t;
