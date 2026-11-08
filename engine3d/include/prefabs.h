@@ -4,8 +4,8 @@
 
 #define prefab_model(n)			\
 	EcsModelInstance,			\
-	sizeof(model_instance_t),	\
-	&(model_instance_t){.name = (n)}
+	sizeof(model_descriptor_t),	\
+	&(model_descriptor_t){.name = (n)}
 
 #define prefab_scene(n)		\
 	EcsModelScene,			\

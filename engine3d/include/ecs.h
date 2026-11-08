@@ -19,12 +19,11 @@ typedef struct
 	matrix4x4_t value;
 } projection_t;
 
-typedef struct model_descriptor
+typedef struct
 {
 	char *name;
 } model_descriptor_t;
 
-typedef model_descriptor_t model_instance_t;
 typedef model_descriptor_t model_scene_t;
 
 void ecs_create();

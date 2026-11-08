@@ -144,7 +144,7 @@ static void add_modules()
 		EcsWorldTransform = component("WorldTransform", world_transform_t);
 		EcsScriptEngine = component("ScriptEngine", py_vm_index_t);
 		EcsArgs = component("Args", arg_values_t);
-		EcsModelInstance = component("ModelInstance", model_instance_t);
+		EcsModelInstance = component("ModelInstance", model_descriptor_t);
 		EcsModelScene = component("ModelScene", model_scene_t);
 
 #ifndef NDEBUG
