@@ -20,7 +20,7 @@
 
 static void create_gpu_device(ecs_iter_t *iter)
 {
-	SDL_Window *window = *ecs_field(iter, window_t*, 0);
+	SDL_Window *window = *ecs_field(iter, SDL_Window*, 0);
 	const arg_values_t args = *ecs_field(iter, arg_values_t, 1);
 
 	const SDL_PropertiesID props = SDL_CreateProperties();
@@ -65,7 +65,7 @@ static void create_gpu_device(ecs_iter_t *iter)
 
 static void enable_vsync(ecs_iter_t *iter)
 {
-	SDL_Window *window = *ecs_field(iter, window_t*, 0);
+	SDL_Window *window = *ecs_field(iter, SDL_Window*, 0);
 	SDL_GPUDevice *device = *ecs_field(iter, gpu_device_t*, 1);
 
 	if (!SDL_SetGPUSwapchainParameters(device, window,
@@ -100,7 +100,7 @@ static SDL_GPUTexture *create_depth_texture(SDL_GPUDevice *device, const vector2
 
 static void set_depth_texture(ecs_iter_t *iter)
 {
-	SDL_Window *window = *ecs_field(iter, window_t*, 0);
+	SDL_Window *window = *ecs_field(iter, SDL_Window*, 0);
 	SDL_GPUDevice *device = *ecs_field(iter, gpu_device_t*, 1);
 
 	vector2i_t size;
@@ -176,7 +176,7 @@ static void load_default_shaders(ecs_iter_t *iter)
 
 static void create_default_pipeline(ecs_iter_t *iter)
 {
-	SDL_Window *window = *ecs_field(iter, window_t*, 0);
+	SDL_Window *window = *ecs_field(iter, SDL_Window*, 0);
 	SDL_GPUDevice *device = *ecs_field(iter, gpu_device_t*, 1);
 	SDL_GPUShader *vertex_shader = *ecs_field(iter, vertex_shader_t*, 2);
 	SDL_GPUShader *fragment_shader = *ecs_field(iter, fragment_shader_t*, 3);

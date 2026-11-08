@@ -108,7 +108,7 @@ static void toggle_lock_cursor(ecs_iter_t *iter)
 		return;
 	}
 
-	SDL_Window *window = *ecs_field(iter, window_t*, 1);
+	SDL_Window *window = *ecs_field(iter, SDL_Window*, 1);
 
 	const bool enabled = SDL_GetWindowRelativeMouseMode(window);
 	SDL_SetWindowRelativeMouseMode(window, (bool) !enabled);
