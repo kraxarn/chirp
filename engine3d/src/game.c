@@ -39,9 +39,9 @@ static void build_scene(ecs_iter_t *iter)
 	});
 	ecs_set_id(ecs_world(), blaster, prefab_model("blaster"));
 
-	const rotation_t blaster_rotation = {.x = 0.F, .y = 90.F, .z = 0.F};
+	const vector3f_t blaster_rotation = {.x = 0.F, .y = 90.F, .z = 0.F};
 	ecs_set_id(ecs_world(), blaster, EcsRotation,
-		sizeof(rotation_t), &blaster_rotation);
+		sizeof(vector3f_t), &blaster_rotation);
 
 	const position_t blaster_position = {.x = 5.F, .y = 1.F, .z = -5.F};
 	ecs_set_id(ecs_world(), blaster, EcsPosition,
@@ -294,9 +294,9 @@ static void update_player_shoot(ecs_iter_t *iter)
 	ecs_set_id(iter->stage, entity, EcsPosition,
 		sizeof(position_t), &position);
 
-	const rotation_t rotation = vector3f_zero();
+	const vector3f_t rotation = vector3f_zero();
 	ecs_set_id(iter->stage, entity, EcsRotation,
-		sizeof(rotation_t), &rotation);
+		sizeof(vector3f_t), &rotation);
 
 	const vector3f_t forward = vector3f_normalize(vector3f_sub(camera->target, position));
 	const vector3f_t velocity = vector3f_scale(forward, firepower);

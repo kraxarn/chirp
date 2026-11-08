@@ -361,11 +361,11 @@ SDL_AppResult SDL_AppIterate(void *appstate)
 	while (ecs_query_next(&iter))
 	{
 		vector3f_t *positions = ecs_field(&iter, position_t, 0);
-		vector3f_t *rotations = ecs_field(&iter, rotation_t, 1);
+		vector3f_t *rotations = ecs_field(&iter, vector3f_t, 1);
 		projection_t *projections = ecs_field(&iter, projection_t, 5);
 
 		positions[0] = weapon_position;
-		rotations[0] = (rotation_t){
+		rotations[0] = (vector3f_t){
 			.x = SDL_asinf(forward_n.y),
 			.y = SDL_atan2f(-forward_n.z, forward_n.x) - (SDL_PI_F * 0.5F),
 			.z = 0.0F,

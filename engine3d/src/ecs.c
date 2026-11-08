@@ -130,7 +130,7 @@ static void add_modules()
 		EcsCamera = component("Camera", camera_t);
 		EcsPhysicsConfig = component("PhysicsConfig", physics_config_t);
 		EcsModel = component("Model", model_t);
-		EcsRotation = component("Rotation", rotation_t);
+		EcsRotation = component("Rotation", vector3f_t);
 		EcsPosition = component("Position", position_t);
 		EcsScale = component("Scale", scale_t);
 		EcsProjection = component("Projection", projection_t);
