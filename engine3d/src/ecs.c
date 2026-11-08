@@ -125,7 +125,7 @@ static void add_modules()
 		EcsDepthTexture = component("DepthTexture", SDL_GPUTexture*);
 		EcsGpuCommandBuffer = component("GpuCommandBuffer", SDL_GPUCommandBuffer*);
 		EcsGpuRenderPass = component("GpuRenderPass", SDL_GPURenderPass*);
-		EcsSwapchainTexture = component("SwapchainTexture", swapchain_texture_t*);
+		EcsSwapchainTexture = component("SwapchainTexture", SDL_GPUTexture*);
 		EcsSwapchainTextureSize = component("SwapchainTextureSize", swapchain_texture_size_t);
 		EcsCamera = component("Camera", camera_t);
 		EcsPhysicsConfig = component("PhysicsConfig", physics_config_t);

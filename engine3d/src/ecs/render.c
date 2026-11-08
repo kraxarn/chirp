@@ -32,7 +32,7 @@ static void begin_render(ecs_iter_t *iter)
 	SDL_GPUGraphicsPipeline *pipeline = *ecs_field(iter, SDL_GPUGraphicsPipeline*, 5);
 	SDL_GPUCommandBuffer **command_buffer = ecs_field(iter, SDL_GPUCommandBuffer*, 6);
 	SDL_GPURenderPass **render_pass = ecs_field(iter, SDL_GPURenderPass*, 7);
-	SDL_GPUTexture **swapchain_texture = ecs_field(iter, swapchain_texture_t*, 8);
+	SDL_GPUTexture **swapchain_texture = ecs_field(iter, SDL_GPUTexture*, 8);
 	vector2f_t *swapchain_texture_size = ecs_field(iter, swapchain_texture_size_t, 9);
 
 	*command_buffer = SDL_AcquireGPUCommandBuffer(device);
@@ -203,7 +203,7 @@ static void end_render(ecs_iter_t *iter)
 
 	SDL_GPURenderPass *render_pass = *ecs_field(iter, SDL_GPURenderPass*, 0);
 	SDL_GPUCommandBuffer *command_buffer = *ecs_field(iter, SDL_GPUCommandBuffer*, 1);
-	SDL_GPUTexture *swapchain_texture = *ecs_field(iter, swapchain_texture_t*, 2);
+	SDL_GPUTexture *swapchain_texture = *ecs_field(iter, SDL_GPUTexture*, 2);
 	nkui_context_t *nkui_context = ecs_field(iter, nkui_context_t, 3);
 	SDL_Window *window = *ecs_field(iter, SDL_Window*, 4);
 
