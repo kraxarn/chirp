@@ -136,7 +136,7 @@ static void add_modules()
 		EcsProjection = component("Projection", projection_t);
 		EcsNkContext = component("NkContext", nkui_context_t);
 		EcsVertexShader = component("VertexShader", SDL_GPUShader*);
-		EcsFragmentShader = component("FragmentShader", fragment_shader_t*);
+		EcsFragmentShader = component("FragmentShader", SDL_GPUShader*);
 		EcsClearColor = component("ClearColor", clear_color_t);
 		EcsViewProjection = component("ViewProjection", view_projection_t);
 		EcsWorldTransform = component("WorldTransform", world_transform_t);
