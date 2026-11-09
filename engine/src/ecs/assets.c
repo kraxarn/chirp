@@ -3,6 +3,7 @@
 #include "chirp/input.h"
 #include "chirp/logcategory.h"
 #include "chirp/ecs/components.h"
+#include "chirp/ecs/modules.h"
 
 #include "flecs.h"
 #include "flecs/addons/flecs_c.h"
@@ -86,12 +87,17 @@ static void create_assets(ecs_iter_t *iter)
 
 void ecs_add_assets()
 {
-	const ecs_observer_desc_t observer_desc = {
-		.query.terms = {
-			(ecs_term_t){.id = ecs_singleton_id(EcsInput), .inout = EcsIn},
-		},
-		.events = {EcsOnSet},
-		.callback = create_assets,
-	};
-	ecs_observer_init(ecs_world(), &observer_desc);
+	ecs_scope(ecs_world(), EcsChirpObserver)
+	{
+		ecs_observer_init(ecs_world(), &(ecs_observer_desc_t){
+			.entity = ecs_entity_init(ecs_world(), &(ecs_entity_desc_t){
+				.name = "CreateAssets"
+			}),
+			.query.terms = {
+				(ecs_term_t){.id = ecs_singleton_id(EcsInput), .inout = EcsIn},
+			},
+			.events = {EcsOnSet},
+			.callback = create_assets,
+		});
+	}
 }
