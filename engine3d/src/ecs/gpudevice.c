@@ -9,6 +9,7 @@
 #include "flecs.h"
 #include "chirp/ecs.h"
 #include "chirp/logcategory.h"
+#include "chirp/ecs/modules.h"
 
 #include <SDL3/SDL_error.h>
 #include <SDL3/SDL_gpu.h>
@@ -280,32 +281,48 @@ static void resize_depth_texture(ecs_iter_t *iter)
 
 void ecs_add_gpu()
 {
-	const ecs_observer_desc_t observer_desc[] = {
-		(ecs_observer_desc_t){
+	ecs_scope(ecs_world(), EcsChirpObserver)
+	{
+		ecs_observer_init(ecs_world(), &(ecs_observer_desc_t){
+			.entity = ecs_entity_init(ecs_world(), &(ecs_entity_desc_t){
+				.name = "CreateGpuDevice"
+			}),
 			.query.terms = {
 				(ecs_term_t){.id = ecs_singleton_id(EcsWindow), .inout = EcsInOut},
 				(ecs_term_t){.id = ecs_singleton_id(EcsArgs), .inout = EcsIn},
 			},
 			.events = {EcsOnSet},
 			.callback = create_gpu_device,
-		},
-		(ecs_observer_desc_t){
+		});
+
+		ecs_observer_init(ecs_world(), &(ecs_observer_desc_t){
+			.entity = ecs_entity_init(ecs_world(), &(ecs_entity_desc_t){
+				.name = "EnableVsync"
+			}),
 			.query.terms = {
 				(ecs_term_t){.id = ecs_singleton_id(EcsWindow), .inout = EcsInOut},
 				(ecs_term_t){.id = ecs_singleton_id(EcsGpuDevice), .inout = EcsInOut}
 			},
 			.events = {EcsOnSet},
 			.callback = enable_vsync,
-		},
-		(ecs_observer_desc_t){
+		});
+
+		ecs_observer_init(ecs_world(), &(ecs_observer_desc_t){
+			.entity = ecs_entity_init(ecs_world(), &(ecs_entity_desc_t){
+				.name = "SetDepthTexture"
+			}),
 			.query.terms = {
 				(ecs_term_t){.id = ecs_singleton_id(EcsWindow), .inout = EcsInOut},
 				(ecs_term_t){.id = ecs_singleton_id(EcsGpuDevice), .inout = EcsInOut}
 			},
 			.events = {EcsOnSet},
 			.callback = set_depth_texture,
-		},
-		(ecs_observer_desc_t){
+		});
+
+		ecs_observer_init(ecs_world(), &(ecs_observer_desc_t){
+			.entity = ecs_entity_init(ecs_world(), &(ecs_entity_desc_t){
+				.name = "ResizeDepthTexture"
+			}),
 			.query.terms = {
 				(ecs_term_t){.id = EcsWindowEvent, .inout = EcsInOut},
 				(ecs_term_t){.id = ecs_singleton_id(EcsGpuDevice), .inout = EcsInOut},
@@ -313,15 +330,23 @@ void ecs_add_gpu()
 			},
 			.events = {EcsOnWindowResized},
 			.callback = resize_depth_texture,
-		},
-		(ecs_observer_desc_t){
+		});
+
+		ecs_observer_init(ecs_world(), &(ecs_observer_desc_t){
+			.entity = ecs_entity_init(ecs_world(), &(ecs_entity_desc_t){
+				.name = "LoadDefaultShaders"
+			}),
 			.query.terms = {
 				(ecs_term_t){.id = ecs_singleton_id(EcsGpuDevice), .inout = EcsInOut}
 			},
 			.events = {EcsOnSet},
 			.callback = load_default_shaders,
-		},
-		(ecs_observer_desc_t){
+		});
+
+		ecs_observer_init(ecs_world(), &(ecs_observer_desc_t){
+			.entity = ecs_entity_init(ecs_world(), &(ecs_entity_desc_t){
+				.name = "CreateDefaultPipeline"
+			}),
 			.query.terms = {
 				(ecs_term_t){.id = ecs_singleton_id(EcsWindow), .inout = EcsIn},
 				(ecs_term_t){.id = ecs_singleton_id(EcsGpuDevice), .inout = EcsIn},
@@ -330,8 +355,6 @@ void ecs_add_gpu()
 			},
 			.events = {EcsOnSet},
 			.callback = create_default_pipeline,
-		},
-	};
-
-	ecs_observer_init_all(observer_desc);
+		});
+	}
 }
