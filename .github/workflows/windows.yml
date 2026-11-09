@@ -28,16 +28,8 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      - name: Set up compiler
-        if: ${{ matrix.arch == 'x86_64' || matrix.arch == 'x86' }}
-        uses: egor-tensin/setup-clang@v2
-        with:
-          version: 'latest'
-          cc: '1'
-
       # setup-clang uses choco which doesn't support arm64
       - name: Set up compiler
-        if: ${{ matrix.arch == 'arm64' }}
         shell: powershell
         run: |
           Install-Module -Name Microsoft.WinGet.Client -AcceptLicense -Force
