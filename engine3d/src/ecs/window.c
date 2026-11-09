@@ -6,6 +6,7 @@
 #include "chirp/ecs.h"
 #include "chirp/windowconfig.h"
 #include "chirp/ecs/components.h"
+#include "chirp/ecs/modules.h"
 
 #include <SDL3/SDL_error.h>
 #include <SDL3/SDL_video.h>
@@ -44,22 +45,28 @@ static void create_window(ecs_iter_t *iter)
 
 void ecs_add_window()
 {
-	const ecs_observer_desc_t observer_desc[] = {
-		(ecs_observer_desc_t){
+	ecs_scope(ecs_world(), EcsChirpObserver)
+	{
+		ecs_observer_init(ecs_world(), &(ecs_observer_desc_t){
+			.entity = ecs_entity_init(ecs_world(), &(ecs_entity_desc_t){
+				.name = "LoadWindowConfig"
+			}),
 			.query.terms = {
 				(ecs_term_t){.id = ecs_singleton_id(EcsAssets), .inout = EcsIn},
 			},
 			.events = {EcsOnSet},
 			.callback = load_window_config,
-		},
-		(ecs_observer_desc_t){
+		});
+
+		ecs_observer_init(ecs_world(), &(ecs_observer_desc_t){
+			.entity = ecs_entity_init(ecs_world(), &(ecs_entity_desc_t){
+				.name = "CreateWindow"
+			}),
 			.query.terms = {
 				(ecs_term_t){.id = ecs_singleton_id(EcsWindowConfig), .inout = EcsIn},
 			},
 			.events = {EcsOnSet},
 			.callback = create_window,
-		},
-	};
-
-	ecs_observer_init_all(observer_desc);
+		});
+	}
 }
