@@ -366,11 +366,10 @@ static void init_player_input(ecs_world_t *stage)
 
 	ecs_system_init(ecs_world(), &(ecs_system_desc_t){
 		.entity = entity_update_camera_rotation,
-		.query.terms = {
-			(ecs_term_t){.id = ecs_singleton_id(EcsWindow), .inout = EcsInOut},
-			(ecs_term_t){.id = ecs_singleton_id(EcsInput), .inout = EcsIn},
-			(ecs_term_t){.id = ecs_singleton_id(EcsCamera), .inout = EcsInOut},
-		},
+		.query.expr =
+		"[inout] chirp.Window(chirp.Window),"
+		"[in]    chirp.Input(chirp.Input),"
+		"[inout] chirp.Camera(chirp.Camera)",
 		.callback = update_camera_rotation,
 	});
 
@@ -381,19 +380,13 @@ static void init_player_input(ecs_world_t *stage)
 
 	ecs_system_init(ecs_world(), &(ecs_system_desc_t){
 		.entity = entity_update_player_movement,
-		.query.terms = {
-			(ecs_term_t){.id = ecs_singleton_id(EcsWindow), .inout = EcsInOut},
-			(ecs_term_t){.id = EcsPhysicsBody, .src.name = "$player", .inout = EcsIn},
-			(ecs_term_t){
-				.src.name = "$player",
-				.first.id = EcsPredEq,
-				.second = (ecs_term_ref_t){.id = EcsIsName, .name = "Player"},
-				.inout = EcsInOutNone,
-			},
-			(ecs_term_t){.id = ecs_singleton_id(EcsCamera), .inout = EcsIn},
-			(ecs_term_t){.id = ecs_singleton_id(EcsInput), .inout = EcsIn},
-			(ecs_term_t){.id = ecs_singleton_id(EcsPhysicsConfig), .inout = EcsIn},
-		},
+		.query.expr =
+		"[inout] chirp.Window(chirp.Window),"
+		"[in]    chirp.PhysicsBody($player),"
+		"[none]  $player == \"Player\","
+		"[in]    chirp.Camera(chirp.Camera),"
+		"[in]    chirp.Input(chirp.Input),"
+		"[in]    chirp.PhysicsConfig(chirp.PhysicsConfig)",
 		.callback = update_player_movement,
 	});
 
@@ -404,19 +397,13 @@ static void init_player_input(ecs_world_t *stage)
 
 	ecs_system_init(ecs_world(), &(ecs_system_desc_t){
 		.entity = entity_update_player_shoot,
-		.query.terms = {
-			(ecs_term_t){.id = ecs_singleton_id(EcsWindow), .inout = EcsInOut},
-			(ecs_term_t){.id = ecs_singleton_id(EcsInput), .inout = EcsIn},
-			(ecs_term_t){.id = EcsPosition, .src.name = "$blaster", .inout = EcsIn},
-			(ecs_term_t){
-				.src.name = "$blaster",
-				.first.id = EcsPredEq,
-				.second = (ecs_term_ref_t){.id = EcsIsName, .name = "Blaster"},
-				.inout = EcsInOutNone,
-			},
-			(ecs_term_t){.id = ecs_singleton_id(EcsPhysicsWorld), .inout = EcsInOut},
-			(ecs_term_t){.id = ecs_singleton_id(EcsCamera), .inout = EcsIn},
-		},
+		.query.expr =
+		"[inout] chirp.Window(chirp.Window),"
+		"[in]    chirp.Input(chirp.Input),"
+		"[in]    chirp.Position($blaster),"
+		"[none]  $blaster == \"Blaster\","
+		"[inout] chirp.PhysicsWorld(chirp.PhysicsWorld),"
+		"[in]    chirp.Camera(chirp.Camera)",
 		.callback = update_player_shoot,
 	});
 
@@ -427,16 +414,10 @@ static void init_player_input(ecs_world_t *stage)
 
 	ecs_system_init(ecs_world(), &(ecs_system_desc_t){
 		.entity = entity_update_camera_position,
-		.query.terms = {
-			(ecs_term_t){.id = EcsPhysicsBody, .src.name = "$player", .inout = EcsIn},
-			(ecs_term_t){
-				.src.name = "$player",
-				.first.id = EcsPredEq,
-				.second = (ecs_term_ref_t){.id = EcsIsName, .name = "Player"},
-				.inout = EcsInOutNone,
-			},
-			(ecs_term_t){.id = ecs_singleton_id(EcsCamera), .inout = EcsInOut},
-		},
+		.query.expr =
+		"[in]    chirp.PhysicsBody($player),"
+		"[none]  $player == \"Player\","
+		"[inout] chirp.Camera(chirp.Camera)",
 		.callback = update_camera_position,
 	});
 
@@ -447,27 +428,14 @@ static void init_player_input(ecs_world_t *stage)
 
 	ecs_system_init(ecs_world(), &(ecs_system_desc_t){
 		.entity = entity_update_weapon_projection,
-		.query.terms = {
-			(ecs_term_t){.id = ecs_singleton_id(EcsCamera), .inout = EcsIn},
-			(ecs_term_t){.id = EcsPosition, .inout = EcsInOut},
-			(ecs_term_t){.id = EcsRotation, .inout = EcsInOut},
-			(ecs_term_t){
-				.first.id = EcsPredEq,
-				.second = (ecs_term_ref_t){.id = EcsIsName, .name = "Blaster"},
-				.inout = EcsInOutNone,
-			},
-			(ecs_term_t){
-				.src.name = "$model",
-				.first.id = EcsChildOf,
-				.second.name = "$this",
-			},
-			(ecs_term_t){
-				.src.name = "$node",
-				.first.id = EcsChildOf,
-				.second.name = "$model",
-			},
-			(ecs_term_t){.id = EcsProjection, .src.name = "$node"},
-		},
+		.query.expr =
+		"[in]    chirp.Camera(chirp.Camera),"
+		"[inout] chirp.Position($this),"
+		"[inout] chirp.Rotation($this),"
+		"[none]  $this == \"Blaster\","
+		"[none]  ChildOf($model, $this),"
+		"[none]  ChildOf($node, $model),"
+		"[inout] chirp.Projection($node)",
 		.callback = update_weapon_projection,
 	});
 }
