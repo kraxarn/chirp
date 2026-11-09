@@ -9,6 +9,7 @@
 #include "chirp/ecs.h"
 #include "chirp/vector.h"
 #include "chirp/ecs/components.h"
+#include "chirp/ecs/modules.h"
 #include "ecs/entities.h"
 #include "flecs/addons/flecs_c.h"
 
@@ -67,42 +68,51 @@ static void sync_physics(ecs_iter_t *iter)
 
 void ecs_add_physics()
 {
-	ecs_observer_init(ecs_world(), &(ecs_observer_desc_t){
-		.query.terms = {
-			(ecs_term_t){.id = ecs_singleton_id(EcsArgs), .inout = EcsIn},
-		},
-		.events = {EcsOnSet},
-		.callback = init_physics,
-	});
+	ecs_scope(ecs_world(), EcsChirpObserver)
+	{
+		ecs_observer_init(ecs_world(), &(ecs_observer_desc_t){
+			.entity = ecs_entity_init(ecs_world(), &(ecs_entity_desc_t){
+				.name = "InitPhysics"
+			}),
+			.query.terms = {
+				(ecs_term_t){.id = ecs_singleton_id(EcsArgs), .inout = EcsIn},
+			},
+			.events = {EcsOnSet},
+			.callback = init_physics,
+		});
+	}
 
-	const ecs_entity_t entity_update_physics = ecs_entity_init(ecs_world(), &(ecs_entity_desc_t){
-		.name = "UpdatePhysics",
-	});
-	ecs_add_id(ecs_world(), entity_update_physics,ecs_phase(PhysicsUpdate));
+	ecs_scope(ecs_world(), EcsChirpSystem)
+	{
+		const ecs_entity_t entity_update_physics = ecs_entity_init(ecs_world(), &(ecs_entity_desc_t){
+			.name = "UpdatePhysics",
+		});
+		ecs_add_id(ecs_world(), entity_update_physics,ecs_phase(PhysicsUpdate));
 
-	ecs_system_init(ecs_world(), &(ecs_system_desc_t){
-		.entity = entity_update_physics,
-		.query.terms = {
-			(ecs_term_t){.id = ecs_singleton_id(EcsPhysicsWorld), .inout = EcsIn},
-			(ecs_term_t){.id = ecs_singleton_id(EcsArgs), .inout = EcsIn},
-		},
-		.callback = update_physics,
-	});
+		ecs_system_init(ecs_world(), &(ecs_system_desc_t){
+			.entity = entity_update_physics,
+			.query.terms = {
+				(ecs_term_t){.id = ecs_singleton_id(EcsPhysicsWorld), .inout = EcsIn},
+				(ecs_term_t){.id = ecs_singleton_id(EcsArgs), .inout = EcsIn},
+			},
+			.callback = update_physics,
+		});
 
-	const ecs_entity_t entity_sync_physics = ecs_entity_init(ecs_world(), &(ecs_entity_desc_t){
-		.name = "SyncPhysics",
-	});
-	ecs_add_id(ecs_world(), entity_sync_physics, ecs_phase(PhysicsSync));
+		const ecs_entity_t entity_sync_physics = ecs_entity_init(ecs_world(), &(ecs_entity_desc_t){
+			.name = "SyncPhysics",
+		});
+		ecs_add_id(ecs_world(), entity_sync_physics, ecs_phase(PhysicsSync));
 
-	ecs_system_init(ecs_world(), &(ecs_system_desc_t){
-		.entity = entity_sync_physics,
-		.query.terms = {
-			(ecs_term_t){.id = EcsPhysicsBody, .inout = EcsIn},
-			(ecs_term_t){.id = EcsPosition, .oper = EcsOptional, .inout = EcsInOut},
-			(ecs_term_t){.id = EcsProjection, .src.name = "$node", .inout = EcsInOut},
-			(ecs_term_t){.src.name = "$model", .first.id = EcsChildOf, .second.name = "$this"},
-			(ecs_term_t){.src.name = "$node", .first.id = EcsChildOf, .second.name = "$model"},
-		},
-		.callback = sync_physics,
-	});
+		ecs_system_init(ecs_world(), &(ecs_system_desc_t){
+			.entity = entity_sync_physics,
+			.query.terms = {
+				(ecs_term_t){.id = EcsPhysicsBody, .inout = EcsIn},
+				(ecs_term_t){.id = EcsPosition, .oper = EcsOptional, .inout = EcsInOut},
+				(ecs_term_t){.id = EcsProjection, .src.name = "$node", .inout = EcsInOut},
+				(ecs_term_t){.src.name = "$model", .first.id = EcsChildOf, .second.name = "$this"},
+				(ecs_term_t){.src.name = "$node", .first.id = EcsChildOf, .second.name = "$model"},
+			},
+			.callback = sync_physics,
+		});
+	}
 }
