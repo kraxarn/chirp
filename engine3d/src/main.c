@@ -260,7 +260,7 @@ SDL_AppResult SDL_AppInit(void **appstate, const int argc, char **argv)
 }
 
 [[nodiscard]]
-static SDL_AppResult check_error(const app_state_t *state, SDL_Window *window)
+static SDL_AppResult check_error(const app_state_t *state)
 {
 	ecs_iter_t iter = ecs_query_iter(ecs_world(), state->status_query);
 	if (ecs_query_next(&iter))
@@ -269,8 +269,9 @@ static SDL_AppResult check_error(const app_state_t *state, SDL_Window *window)
 		SDL_LogCritical(LOG_CATEGORY_CORE, "%s: %s", error->title, error->message);
 		if (fatal_error_message_box())
 		{
-			SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR,
-				error->title, error->message, window);
+			SDL_Window **window = (SDL_Window**) ecs_get_mut_id(ecs_world(), ecs_singleton(EcsWindow));
+			SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, error->title, error->message,
+				window != nullptr ? *window : nullptr);
 		}
 		ecs_iter_fini(&iter);
 		return SDL_APP_FAILURE;
@@ -300,14 +301,7 @@ SDL_AppResult SDL_AppIterate(void *appstate)
 	}
 
 	ecs_progress(ecs_world(), time_stats->dt);
-
-	if (!ecs_has_id(ecs_world(), ecs_singleton(EcsWindow)))
-	{
-		return check_error(state, nullptr);
-	}
-
-	SDL_Window *window = *(SDL_Window**) ecs_get_mut_id(ecs_world(), ecs_singleton(EcsWindow));
-	return check_error(state, window);
+	return check_error(state);
 }
 
 static void emit(const ecs_entity_t event, const ecs_id_t id,
