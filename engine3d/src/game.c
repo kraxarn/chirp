@@ -122,6 +122,7 @@ static void init_scene()
 			(ecs_term_t){.id = ecs_singleton_id(EcsPhysicsConfig), .inout = EcsIn},
 		},
 		.events = {EcsOnSet},
+		.yield_existing = true,
 		.callback = build_scene,
 	});
 

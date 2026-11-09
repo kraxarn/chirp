@@ -223,12 +223,6 @@ SDL_AppResult SDL_AppInit(void **appstate, const int argc, char **argv)
 	ecs_set_id(ecs_world(), ecs_singleton(EcsInit),
 		sizeof(SDL_InitFlags), &init_flags);
 
-	ecs_world_t *stage = ecs_get_stage(ecs_world(), 0);
-	{
-		game_init(stage);
-	}
-	ecs_merge(stage);
-
 	const time_stats_t time_stats = {
 		.last_update = SDL_GetTicksNS(),
 	};
@@ -253,6 +247,12 @@ SDL_AppResult SDL_AppInit(void **appstate, const int argc, char **argv)
 			(ecs_term_t){.id = EcsError},
 		},
 	});
+
+	ecs_world_t *stage = ecs_get_stage(ecs_world(), 0);
+	{
+		game_init(stage);
+	}
+	ecs_merge(stage);
 
 	// NOTE: Returning from here will call a default SDL_Init if not already called
 	return SDL_APP_CONTINUE;
