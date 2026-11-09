@@ -122,13 +122,6 @@ static void add_modules()
 		EcsTimeStats = component("TimeStats", time_stats_t);
 		EcsWindowConfig = component("WindowConfig", window_config_t);
 		EcsWindow = component("Window", SDL_Window*);
-		EcsGpuDevice = component("GpuDevice", SDL_GPUDevice*);
-		EcsGpuGraphicsPipeline = component("GpuGraphicsPipeline", SDL_GPUGraphicsPipeline*);
-		EcsDepthTexture = component("DepthTexture", SDL_GPUTexture*);
-		EcsGpuCommandBuffer = component("GpuCommandBuffer", SDL_GPUCommandBuffer*);
-		EcsGpuRenderPass = component("GpuRenderPass", SDL_GPURenderPass*);
-		EcsSwapchainTexture = component("SwapchainTexture", SDL_GPUTexture*);
-		EcsSwapchainTextureSize = component("SwapchainTextureSize", vector2f_t);
 		EcsCamera = component("Camera", camera_t);
 		EcsPhysicsConfig = component("PhysicsConfig", physics_config_t);
 		EcsModel = component("Model", model_t);
@@ -137,96 +130,25 @@ static void add_modules()
 		EcsScale = component("Scale", vector3f_t);
 		EcsProjection = component("Projection", projection_t);
 		EcsNkContext = component("NkContext", nkui_context_t);
-		EcsVertexShader = component("VertexShader", SDL_GPUShader*);
-		EcsFragmentShader = component("FragmentShader", SDL_GPUShader*);
-		EcsClearColor = component("ClearColor", SDL_FColor);
 		EcsViewProjection = component("ViewProjection", matrix4x4_t);
 		EcsWorldTransform = component("WorldTransform", matrix4x4_t);
 		EcsArgs = component("Args", arg_values_t);
 		EcsModelInstance = component("ModelInstance", model_descriptor_t);
 		EcsModelScene = component("ModelScene", model_descriptor_t);
+	}
 
-#ifndef NDEBUG
-
-		reflect(EcsInit,
-			(ecs_member_t){.name = "flags", .type = ecs_id(ecs_u32_t)},
-		);
-
-		reflect(EcsTimeStats,
-			(ecs_member_t){.name = "last_update", .type = ecs_id(ecs_u64_t)},
-			(ecs_member_t){.name = "fps", .type = ecs_id(ecs_u16_t)},
-			(ecs_member_t){.name = "count", .type = ecs_id(ecs_u16_t)},
-			(ecs_member_t){.name = "duration", .type = ecs_id(ecs_f32_t)},
-			(ecs_member_t){.name = "dt", .type = ecs_id(ecs_f32_t)},
-		);
-
-		reflect(EcsWindowConfig,
-			(ecs_member_t){.name = "title", .type = ecs_id(ecs_string_t)},
-			(ecs_member_t){.name = "size", .type = ecs_id(ecs_i32_t), .count = 2},
-			(ecs_member_t){.name = "fullscreen", .type = ecs_id(ecs_bool_t)},
-		);
-
-		reflect(EcsCamera,
-			(ecs_member_t){.name = "position", .type = ecs_id(ecs_f32_t), .count = 3},
-			(ecs_member_t){.name = "target", .type = ecs_id(ecs_f32_t), .count = 3},
-			(ecs_member_t){.name = "up", .type = ecs_id(ecs_f32_t), .count = 3},
-			(ecs_member_t){.name = "fov_y", .type = ecs_id(ecs_f32_t)},
-			(ecs_member_t){.name = "near_plane", .type = ecs_id(ecs_f32_t)},
-			(ecs_member_t){.name = "far_plane", .type = ecs_id(ecs_f32_t)},
-		);
-
-		reflect(EcsPhysicsConfig,
-			(ecs_member_t){.name = "move_speed", .type = ecs_id(ecs_f32_t)},
-			(ecs_member_t){.name = "max_move_speed", .type = ecs_id(ecs_f32_t)},
-			(ecs_member_t){.name = "gravity_y", .type = ecs_id(ecs_f32_t)},
-			(ecs_member_t){.name = "jump_speed", .type = ecs_id(ecs_f32_t)},
-		);
-
-		reflect(EcsRotation,
-			(ecs_member_t){.name = "x", .type = ecs_id(ecs_f32_t)},
-			(ecs_member_t){.name = "y", .type = ecs_id(ecs_f32_t)},
-			(ecs_member_t){.name = "z", .type = ecs_id(ecs_f32_t)},
-		);
-
-		reflect(EcsPosition,
-			(ecs_member_t){.name = "x", .type = ecs_id(ecs_f32_t)},
-			(ecs_member_t){.name = "y", .type = ecs_id(ecs_f32_t)},
-			(ecs_member_t){.name = "z", .type = ecs_id(ecs_f32_t)},
-		);
-
-		reflect(EcsScale,
-			(ecs_member_t){.name = "x", .type = ecs_id(ecs_f32_t)},
-			(ecs_member_t){.name = "y", .type = ecs_id(ecs_f32_t)},
-			(ecs_member_t){.name = "z", .type = ecs_id(ecs_f32_t)},
-		);
-
-		reflect(EcsProjection,
-			(ecs_member_t){.name = "rebuild", .type = ecs_id(ecs_bool_t)},
-			(ecs_member_t){.name = "value", .type = ecs_id(ecs_f32_t), .count = 16},
-		);
-
-		reflect(EcsWorldTransform,
-			(ecs_member_t){.name = "value", .type = ecs_id(ecs_f32_t), .count = 16},
-		);
-
-		reflect(EcsError,
-			(ecs_member_t){.name = "title", .type = ecs_id(ecs_string_t)},
-			(ecs_member_t){.name = "message", .type = ecs_id(ecs_string_t)},
-		);
-
-		reflect(EcsArgs,
-			(ecs_member_t){.name = "prefer_low_power", .type = ecs_id(ecs_bool_t)},
-		);
-
-		reflect(EcsModelInstance,
-			(ecs_member_t){.name = "name", .type = ecs_id(ecs_string_t)},
-		);
-
-		reflect(EcsModelScene,
-			(ecs_member_t){.name = "name", .type = ecs_id(ecs_string_t)},
-		);
-
-#endif
+	ecs_scope(ecs_world(), EcsChirpRendering)
+	{
+		EcsGpuDevice = component("GpuDevice", SDL_GPUDevice*);
+		EcsGpuGraphicsPipeline = component("GpuGraphicsPipeline", SDL_GPUGraphicsPipeline*);
+		EcsDepthTexture = component("DepthTexture", SDL_GPUTexture*);
+		EcsGpuCommandBuffer = component("GpuCommandBuffer", SDL_GPUCommandBuffer*);
+		EcsGpuRenderPass = component("GpuRenderPass", SDL_GPURenderPass*);
+		EcsSwapchainTexture = component("SwapchainTexture", SDL_GPUTexture*);
+		EcsSwapchainTextureSize = component("SwapchainTextureSize", vector2f_t);
+		EcsVertexShader = component("VertexShader", SDL_GPUShader*);
+		EcsFragmentShader = component("FragmentShader", SDL_GPUShader*);
+		EcsClearColor = component("ClearColor", SDL_FColor);
 	}
 
 	ecs_scope(ecs_world(), EcsChirpPipeline)
@@ -238,6 +160,88 @@ static void add_modules()
 	{
 		add_events();
 	}
+
+#ifndef NDEBUG
+
+	reflect(EcsInit,
+		(ecs_member_t){.name = "flags", .type = ecs_id(ecs_u32_t)},
+	);
+
+	reflect(EcsTimeStats,
+		(ecs_member_t){.name = "last_update", .type = ecs_id(ecs_u64_t)},
+		(ecs_member_t){.name = "fps", .type = ecs_id(ecs_u16_t)},
+		(ecs_member_t){.name = "count", .type = ecs_id(ecs_u16_t)},
+		(ecs_member_t){.name = "duration", .type = ecs_id(ecs_f32_t)},
+		(ecs_member_t){.name = "dt", .type = ecs_id(ecs_f32_t)},
+	);
+
+	reflect(EcsWindowConfig,
+		(ecs_member_t){.name = "title", .type = ecs_id(ecs_string_t)},
+		(ecs_member_t){.name = "size", .type = ecs_id(ecs_i32_t), .count = 2},
+		(ecs_member_t){.name = "fullscreen", .type = ecs_id(ecs_bool_t)},
+	);
+
+	reflect(EcsCamera,
+		(ecs_member_t){.name = "position", .type = ecs_id(ecs_f32_t), .count = 3},
+		(ecs_member_t){.name = "target", .type = ecs_id(ecs_f32_t), .count = 3},
+		(ecs_member_t){.name = "up", .type = ecs_id(ecs_f32_t), .count = 3},
+		(ecs_member_t){.name = "fov_y", .type = ecs_id(ecs_f32_t)},
+		(ecs_member_t){.name = "near_plane", .type = ecs_id(ecs_f32_t)},
+		(ecs_member_t){.name = "far_plane", .type = ecs_id(ecs_f32_t)},
+	);
+
+	reflect(EcsPhysicsConfig,
+		(ecs_member_t){.name = "move_speed", .type = ecs_id(ecs_f32_t)},
+		(ecs_member_t){.name = "max_move_speed", .type = ecs_id(ecs_f32_t)},
+		(ecs_member_t){.name = "gravity_y", .type = ecs_id(ecs_f32_t)},
+		(ecs_member_t){.name = "jump_speed", .type = ecs_id(ecs_f32_t)},
+	);
+
+	reflect(EcsRotation,
+		(ecs_member_t){.name = "x", .type = ecs_id(ecs_f32_t)},
+		(ecs_member_t){.name = "y", .type = ecs_id(ecs_f32_t)},
+		(ecs_member_t){.name = "z", .type = ecs_id(ecs_f32_t)},
+	);
+
+	reflect(EcsPosition,
+		(ecs_member_t){.name = "x", .type = ecs_id(ecs_f32_t)},
+		(ecs_member_t){.name = "y", .type = ecs_id(ecs_f32_t)},
+		(ecs_member_t){.name = "z", .type = ecs_id(ecs_f32_t)},
+	);
+
+	reflect(EcsScale,
+		(ecs_member_t){.name = "x", .type = ecs_id(ecs_f32_t)},
+		(ecs_member_t){.name = "y", .type = ecs_id(ecs_f32_t)},
+		(ecs_member_t){.name = "z", .type = ecs_id(ecs_f32_t)},
+	);
+
+	reflect(EcsProjection,
+		(ecs_member_t){.name = "rebuild", .type = ecs_id(ecs_bool_t)},
+		(ecs_member_t){.name = "value", .type = ecs_id(ecs_f32_t), .count = 16},
+	);
+
+	reflect(EcsWorldTransform,
+		(ecs_member_t){.name = "value", .type = ecs_id(ecs_f32_t), .count = 16},
+	);
+
+	reflect(EcsError,
+		(ecs_member_t){.name = "title", .type = ecs_id(ecs_string_t)},
+		(ecs_member_t){.name = "message", .type = ecs_id(ecs_string_t)},
+	);
+
+	reflect(EcsArgs,
+		(ecs_member_t){.name = "prefer_low_power", .type = ecs_id(ecs_bool_t)},
+	);
+
+	reflect(EcsModelInstance,
+		(ecs_member_t){.name = "name", .type = ecs_id(ecs_string_t)},
+	);
+
+	reflect(EcsModelScene,
+		(ecs_member_t){.name = "name", .type = ecs_id(ecs_string_t)},
+	);
+
+#endif
 }
 
 static void on_init_set([[maybe_unused]] ecs_iter_t *iter)

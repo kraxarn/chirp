@@ -169,6 +169,7 @@ void ecs_create_default()
 	EcsChirpEvent = module("ChirpEvent");
 	EcsChirpInput = module("ChirpInput");
 	EcsChirpPipeline = module("ChirpPipeline");
+	EcsChirpRendering = module("ChirpRendering");
 
 	add_modules();
 }
