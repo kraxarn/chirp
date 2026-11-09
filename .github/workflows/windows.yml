@@ -28,6 +28,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
+      # x86 and x86_64 doesn't support winget (for some reason)
       - name: Set up compiler
         if: ${{ matrix.arch == 'x86_64' || matrix.arch == 'x86' }}
         uses: egor-tensin/setup-clang@v2
