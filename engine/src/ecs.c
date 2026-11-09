@@ -130,13 +130,9 @@ static void add_modules()
 		EcsAssets = component("Assets", assets_t);
 		EcsError = component("Error", error_t);
 		EcsInit = component("Init", SDL_InitFlags);
+		EcsInput = component("Input", input_t);
 		EcsPhysicsBody = component("PhysicsBody", b3BodyId);
 		EcsPhysicsWorld = component("PhysicsWorld", b3WorldId);
-	}
-
-	ecs_scope(ecs_world(), EcsChirpInput)
-	{
-		EcsInput = component("Input", input_t);
 	}
 
 #ifndef NDEBUG
@@ -172,7 +168,6 @@ void ecs_create_default()
 
 	EcsChirp = module("Chirp");
 	EcsChirpEvent = module("ChirpEvent");
-	EcsChirpInput = module("ChirpInput");
 	EcsChirpPipeline = module("ChirpPipeline");
 	EcsChirpRendering = module("ChirpRendering");
 	EcsChirpUi = module("ChirpUi");
