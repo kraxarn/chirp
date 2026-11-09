@@ -15,12 +15,13 @@ Currently very early in development and not very usable quite yet.
 
 # features
 
-* No AI slop, all bugs were proudly created by me.
+* Lightweight, without any unnecessary bloat.
+* Directly native for each supported platform.
+* No generative-AI.
 
 # goals (non-final)
 
-* The entire engine should be lightweight, and without any unnecessary bloat.
-* The engine should be directly native for each supported platform.
+* There should only be one way to do something.
 
 # why c?
 
