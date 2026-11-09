@@ -140,7 +140,13 @@ static void add_modules()
 	}
 
 #ifndef NDEBUG
-
+	reflect(EcsInit,
+		(ecs_member_t){.name = "flags", .type = ecs_id(ecs_u32_t)},
+	);
+	reflect(EcsError,
+		(ecs_member_t){.name = "title", .type = ecs_id(ecs_string_t)},
+		(ecs_member_t){.name = "message", .type = ecs_id(ecs_string_t)},
+	);
 	reflect(EcsPhysicsWorld,
 		(ecs_member_t){.name = "index", .type = ecs_id(ecs_u16_t)},
 		(ecs_member_t){.name = "generation", .type = ecs_id(ecs_u16_t)},
@@ -151,7 +157,6 @@ static void add_modules()
 		(ecs_member_t){.name = "world", .type = ecs_id(ecs_u16_t)},
 		(ecs_member_t){.name = "generation", .type = ecs_id(ecs_u16_t)},
 	);
-
 #endif
 }
 

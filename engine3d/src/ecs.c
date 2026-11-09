@@ -119,13 +119,14 @@ static void add_modules()
 
 		EcsScene = tag("Scene");
 
+		EcsRotation = component("Rotation", vector3f_t);
+		EcsPosition = component("Position", vector3f_t);
+		EcsScale = component("Scale", vector3f_t);
+
 		EcsWindow = component("Window", SDL_Window*);
 		EcsCamera = component("Camera", camera_t);
 		EcsPhysicsConfig = component("PhysicsConfig", physics_config_t);
 		EcsModel = component("Model", model_t);
-		EcsRotation = component("Rotation", vector3f_t);
-		EcsPosition = component("Position", vector3f_t);
-		EcsScale = component("Scale", vector3f_t);
 		EcsProjection = component("Projection", projection_t);
 		EcsViewProjection = component("ViewProjection", matrix4x4_t);
 		EcsWorldTransform = component("WorldTransform", matrix4x4_t);
@@ -170,11 +171,54 @@ static void add_modules()
 	}
 
 #ifndef NDEBUG
-
-	reflect(EcsInit,
-		(ecs_member_t){.name = "flags", .type = ecs_id(ecs_u32_t)},
+	// chirp
+	reflect(EcsRotation,
+		(ecs_member_t){.name = "x", .type = ecs_id(ecs_f32_t)},
+		(ecs_member_t){.name = "y", .type = ecs_id(ecs_f32_t)},
+		(ecs_member_t){.name = "z", .type = ecs_id(ecs_f32_t)},
+	);
+	reflect(EcsPosition,
+		(ecs_member_t){.name = "x", .type = ecs_id(ecs_f32_t)},
+		(ecs_member_t){.name = "y", .type = ecs_id(ecs_f32_t)},
+		(ecs_member_t){.name = "z", .type = ecs_id(ecs_f32_t)},
+	);
+	reflect(EcsScale,
+		(ecs_member_t){.name = "x", .type = ecs_id(ecs_f32_t)},
+		(ecs_member_t){.name = "y", .type = ecs_id(ecs_f32_t)},
+		(ecs_member_t){.name = "z", .type = ecs_id(ecs_f32_t)},
+	);
+	reflect(EcsCamera,
+		(ecs_member_t){.name = "position", .type = EcsPosition},
+		(ecs_member_t){.name = "target", .type = EcsPosition},
+		(ecs_member_t){.name = "up", .type = EcsPosition},
+		(ecs_member_t){.name = "fov_y", .type = ecs_id(ecs_f32_t)},
+		(ecs_member_t){.name = "near_plane", .type = ecs_id(ecs_f32_t)},
+		(ecs_member_t){.name = "far_plane", .type = ecs_id(ecs_f32_t)},
+	);
+	reflect(EcsPhysicsConfig,
+		(ecs_member_t){.name = "move_speed", .type = ecs_id(ecs_f32_t)},
+		(ecs_member_t){.name = "max_move_speed", .type = ecs_id(ecs_f32_t)},
+		(ecs_member_t){.name = "gravity_y", .type = ecs_id(ecs_f32_t)},
+		(ecs_member_t){.name = "jump_speed", .type = ecs_id(ecs_f32_t)},
+	);
+	reflect(EcsProjection,
+		(ecs_member_t){.name = "rebuild", .type = ecs_id(ecs_bool_t)},
+		(ecs_member_t){.name = "value", .type = ecs_id(ecs_f32_t), .count = 16},
+	);
+	reflect(EcsViewProjection,
+		(ecs_member_t){.name = "value", .type = ecs_id(ecs_f32_t), .count = 16},
+	);
+	reflect(EcsWorldTransform,
+		(ecs_member_t){.name = "value", .type = ecs_id(ecs_f32_t), .count = 16},
+	);
+	reflect(EcsModelInstance,
+		(ecs_member_t){.name = "name", .type = ecs_id(ecs_string_t)},
+	);
+	reflect(EcsModelScene,
+		(ecs_member_t){.name = "name", .type = ecs_id(ecs_string_t)},
 	);
 
+	// chirp.config
 	reflect(EcsTimeStats,
 		(ecs_member_t){.name = "last_update", .type = ecs_id(ecs_u64_t)},
 		(ecs_member_t){.name = "fps", .type = ecs_id(ecs_u16_t)},
@@ -182,73 +226,37 @@ static void add_modules()
 		(ecs_member_t){.name = "duration", .type = ecs_id(ecs_f32_t)},
 		(ecs_member_t){.name = "dt", .type = ecs_id(ecs_f32_t)},
 	);
-
 	reflect(EcsWindowConfig,
 		(ecs_member_t){.name = "title", .type = ecs_id(ecs_string_t)},
 		(ecs_member_t){.name = "size", .type = ecs_id(ecs_i32_t), .count = 2},
 		(ecs_member_t){.name = "fullscreen", .type = ecs_id(ecs_bool_t)},
 	);
-
-	reflect(EcsCamera,
-		(ecs_member_t){.name = "position", .type = ecs_id(ecs_f32_t), .count = 3},
-		(ecs_member_t){.name = "target", .type = ecs_id(ecs_f32_t), .count = 3},
-		(ecs_member_t){.name = "up", .type = ecs_id(ecs_f32_t), .count = 3},
-		(ecs_member_t){.name = "fov_y", .type = ecs_id(ecs_f32_t)},
-		(ecs_member_t){.name = "near_plane", .type = ecs_id(ecs_f32_t)},
-		(ecs_member_t){.name = "far_plane", .type = ecs_id(ecs_f32_t)},
-	);
-
-	reflect(EcsPhysicsConfig,
-		(ecs_member_t){.name = "move_speed", .type = ecs_id(ecs_f32_t)},
-		(ecs_member_t){.name = "max_move_speed", .type = ecs_id(ecs_f32_t)},
-		(ecs_member_t){.name = "gravity_y", .type = ecs_id(ecs_f32_t)},
-		(ecs_member_t){.name = "jump_speed", .type = ecs_id(ecs_f32_t)},
-	);
-
-	reflect(EcsRotation,
-		(ecs_member_t){.name = "x", .type = ecs_id(ecs_f32_t)},
-		(ecs_member_t){.name = "y", .type = ecs_id(ecs_f32_t)},
-		(ecs_member_t){.name = "z", .type = ecs_id(ecs_f32_t)},
-	);
-
-	reflect(EcsPosition,
-		(ecs_member_t){.name = "x", .type = ecs_id(ecs_f32_t)},
-		(ecs_member_t){.name = "y", .type = ecs_id(ecs_f32_t)},
-		(ecs_member_t){.name = "z", .type = ecs_id(ecs_f32_t)},
-	);
-
-	reflect(EcsScale,
-		(ecs_member_t){.name = "x", .type = ecs_id(ecs_f32_t)},
-		(ecs_member_t){.name = "y", .type = ecs_id(ecs_f32_t)},
-		(ecs_member_t){.name = "z", .type = ecs_id(ecs_f32_t)},
-	);
-
-	reflect(EcsProjection,
-		(ecs_member_t){.name = "rebuild", .type = ecs_id(ecs_bool_t)},
-		(ecs_member_t){.name = "value", .type = ecs_id(ecs_f32_t), .count = 16},
-	);
-
-	reflect(EcsWorldTransform,
-		(ecs_member_t){.name = "value", .type = ecs_id(ecs_f32_t), .count = 16},
-	);
-
-	reflect(EcsError,
-		(ecs_member_t){.name = "title", .type = ecs_id(ecs_string_t)},
-		(ecs_member_t){.name = "message", .type = ecs_id(ecs_string_t)},
-	);
-
 	reflect(EcsArgs,
 		(ecs_member_t){.name = "prefer_low_power", .type = ecs_id(ecs_bool_t)},
+		(ecs_member_t){.name = "gpu_debug_mode", .type = ecs_id(ecs_bool_t)},
+		(ecs_member_t){.name = "log_priorities", .type = ecs_id(ecs_string_t)},
+		(ecs_member_t){.name = "video_driver", .type = ecs_id(ecs_string_t)},
+		(ecs_member_t){.name = "audio_driver", .type = ecs_id(ecs_string_t)},
+		(ecs_member_t){.name = "gpu_driver", .type = ecs_id(ecs_string_t)},
+		(ecs_member_t){.name = "allow_screensaver", .type = ecs_id(ecs_bool_t)},
+		(ecs_member_t){.name = "fatal_error_message_box", .type = ecs_id(ecs_bool_t)},
+		(ecs_member_t){.name = "ecs_threading", .type = ecs_id(ecs_string_t)},
+		(ecs_member_t){.name = "ecs_threads", .type = ecs_id(ecs_i64_t)},
+		(ecs_member_t){.name = "physics_threads", .type = ecs_id(ecs_i64_t)},
+		(ecs_member_t){.name = "physics_sub_step_count", .type = ecs_id(ecs_i64_t)},
 	);
 
-	reflect(EcsModelInstance,
-		(ecs_member_t){.name = "name", .type = ecs_id(ecs_string_t)},
+	// chirp.rendering
+	reflect(EcsSwapchainTextureSize,
+		(ecs_member_t){.name = "width", .type = ecs_id(ecs_f32_t)},
+		(ecs_member_t){.name = "height", .type = ecs_id(ecs_f32_t)},
 	);
-
-	reflect(EcsModelScene,
-		(ecs_member_t){.name = "name", .type = ecs_id(ecs_string_t)},
+	reflect(EcsClearColor,
+		(ecs_member_t){.name = "red", .type = ecs_id(ecs_f32_t)},
+		(ecs_member_t){.name = "green", .type = ecs_id(ecs_f32_t)},
+		(ecs_member_t){.name = "blue", .type = ecs_id(ecs_f32_t)},
+		(ecs_member_t){.name = "alpha", .type = ecs_id(ecs_f32_t)},
 	);
-
 #endif
 }
 
