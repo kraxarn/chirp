@@ -260,7 +260,7 @@ static void add_modules()
 #endif
 }
 
-static void on_init_set([[maybe_unused]] ecs_iter_t *iter)
+static void init_ecs([[maybe_unused]] ecs_iter_t *iter)
 {
 	ecs_os_api_t os_api = ecs_os_api_create();
 	ecs_os_set_api(&os_api);
@@ -305,15 +305,21 @@ void ecs_create()
 	ecs_create_default();
 	add_modules();
 
-	// SDL has to initialise before we set up OS-specific stuff
-	ecs_observer_init(ecs_world(), &(ecs_observer_desc_t){
-		.query.terms = {
-			(ecs_term_t){.id = ecs_singleton_id(EcsInit), .inout = EcsInOutNone},
-			(ecs_term_t){.id = ecs_singleton_id(EcsArgs), .inout = EcsIn},
-		},
-		.events = {EcsOnSet},
-		.callback = on_init_set,
-	});
+	ecs_scope(ecs_world(), EcsChirpObserver)
+	{
+		// SDL has to initialise before we set up OS-specific stuff
+		ecs_observer_init(ecs_world(), &(ecs_observer_desc_t){
+			.entity = ecs_entity_init(ecs_world(), &(ecs_entity_desc_t){
+				.name = "InitEcs"
+			}),
+			.query.terms = {
+				(ecs_term_t){.id = ecs_singleton_id(EcsInit), .inout = EcsInOutNone},
+				(ecs_term_t){.id = ecs_singleton_id(EcsArgs), .inout = EcsIn},
+			},
+			.events = {EcsOnSet},
+			.callback = init_ecs,
+		});
+	}
 }
 
 void ecs_destroy()
