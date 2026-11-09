@@ -19,6 +19,7 @@
 
 #include <SDL3/SDL_log.h>
 #include <SDL3/SDL_mouse.h>
+#include <SDL3/SDL_stdinc.h>
 #include <SDL3/SDL_video.h>
 
 // TODO: Temporary, shouldn't be in engine logic
@@ -331,6 +332,31 @@ static void update_camera_position(ecs_iter_t *iter)
 	camera->target = vector3f_add(camera->position, camera_dir);
 }
 
+static void update_weapon_projection(ecs_iter_t *iter)
+{
+	const camera_t *camera = ecs_field(iter, camera_t, 0);
+	vector3f_t *position = ecs_field(iter, vector3f_t, 1);
+	vector3f_t *rotation = ecs_field(iter, vector3f_t, 2);
+	projection_t *projection = ecs_field(iter, projection_t, 6);
+
+	const vector3f_t forward_n = vector3f_normalize(vector3f_sub(camera->target, camera->position));
+	const vector3f_t right_n = vector3f_normalize(vector3f_cross(forward_n, camera->up));
+	const vector3f_t up_n = vector3f_normalize(camera->up);
+
+	vector3f_t weapon_position = camera->position;
+	weapon_position = vector3f_add(weapon_position, vector3f_scale(forward_n, 0.2F));
+	weapon_position = vector3f_add(weapon_position, vector3f_scale(right_n, 0.25F));
+	weapon_position = vector3f_add(weapon_position, vector3f_scale(up_n, -0.2F));
+
+	*position = weapon_position;
+	*rotation = (vector3f_t){
+		.x = SDL_asinf(forward_n.y),
+		.y = SDL_atan2f(-forward_n.z, forward_n.x) - (SDL_PI_F * 0.5F),
+		.z = 0.0F,
+	};
+	projection->rebuild = true; // TODO: Maybe do this in an observer or something
+}
+
 static void init_player_input(ecs_world_t *stage)
 {
 	const ecs_entity_t entity_update_camera_rotation = ecs_entity_init(stage, &(ecs_entity_desc_t){
@@ -412,6 +438,37 @@ static void init_player_input(ecs_world_t *stage)
 			(ecs_term_t){.id = ecs_singleton_id(EcsCamera), .inout = EcsInOut},
 		},
 		.callback = update_camera_position,
+	});
+
+	const ecs_entity_t entity_update_weapon_projection = ecs_entity_init(stage, &(ecs_entity_desc_t){
+		.name = "UpdateWeaponProjection",
+	});
+	ecs_add_id(stage, entity_update_weapon_projection, ecs_phase(Update));
+
+	ecs_system_init(ecs_world(), &(ecs_system_desc_t){
+		.entity = entity_update_weapon_projection,
+		.query.terms = {
+			(ecs_term_t){.id = ecs_singleton_id(EcsCamera), .inout = EcsIn},
+			(ecs_term_t){.id = EcsPosition, .inout = EcsInOut},
+			(ecs_term_t){.id = EcsRotation, .inout = EcsInOut},
+			(ecs_term_t){
+				.first.id = EcsPredEq,
+				.second = (ecs_term_ref_t){.id = EcsIsName, .name = "Blaster"},
+				.inout = EcsInOutNone,
+			},
+			(ecs_term_t){
+				.src.name = "$model",
+				.first.id = EcsChildOf,
+				.second.name = "$this",
+			},
+			(ecs_term_t){
+				.src.name = "$node",
+				.first.id = EcsChildOf,
+				.second.name = "$model",
+			},
+			(ecs_term_t){.id = EcsProjection, .src.name = "$node"},
+		},
+		.callback = update_weapon_projection,
 	});
 }
 

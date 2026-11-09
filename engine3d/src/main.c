@@ -307,60 +307,6 @@ SDL_AppResult SDL_AppIterate(void *appstate)
 	}
 
 	SDL_Window *window = *(SDL_Window**) ecs_get_mut_id(ecs_world(), ecs_singleton(EcsWindow));
-	camera_t *camera = ecs_get_mut_id(ecs_world(), ecs_singleton(EcsCamera));
-
-	const vector3f_t forward_n = vector3f_normalize(vector3f_sub(camera->target, camera->position));
-	const vector3f_t right_n = vector3f_normalize(vector3f_cross(forward_n, camera->up));
-	const vector3f_t up_n = vector3f_normalize(camera->up);
-
-	vector3f_t weapon_position = camera->position;
-	weapon_position = vector3f_add(weapon_position, vector3f_scale(forward_n, 0.2F));
-	weapon_position = vector3f_add(weapon_position, vector3f_scale(right_n, 0.25F));
-	weapon_position = vector3f_add(weapon_position, vector3f_scale(up_n, -0.2F));
-
-	static ecs_query_t *weapon_query = nullptr;
-	if (weapon_query == nullptr)
-	{
-		weapon_query = ecs_query_init(ecs_world(), &(ecs_query_desc_t){
-			.terms = {
-				(ecs_term_t){.id = EcsPosition, .inout = EcsInOut},
-				(ecs_term_t){.id = EcsRotation, .inout = EcsInOut},
-				(ecs_term_t){
-					.first.id = EcsPredEq,
-					.second = (ecs_term_ref_t){.id = EcsIsName, .name = "Blaster"},
-					.inout = EcsInOutNone,
-				},
-				(ecs_term_t){
-					.src.name = "$model",
-					.first.id = EcsChildOf,
-					.second.name = "$this",
-				},
-				(ecs_term_t){
-					.src.name = "$node",
-					.first.id = EcsChildOf,
-					.second.name = "$model",
-				},
-				(ecs_term_t){.id = EcsProjection, .src.name = "$node"},
-			},
-		});
-	}
-
-	ecs_iter_t iter = ecs_query_iter(ecs_world(), weapon_query);
-	while (ecs_query_next(&iter))
-	{
-		vector3f_t *positions = ecs_field(&iter, vector3f_t, 0);
-		vector3f_t *rotations = ecs_field(&iter, vector3f_t, 1);
-		projection_t *projections = ecs_field(&iter, projection_t, 5);
-
-		positions[0] = weapon_position;
-		rotations[0] = (vector3f_t){
-			.x = SDL_asinf(forward_n.y),
-			.y = SDL_atan2f(-forward_n.z, forward_n.x) - (SDL_PI_F * 0.5F),
-			.z = 0.0F,
-		};
-		projections[0].rebuild = true; // TODO: Maybe do this in an observer or something
-	}
-
 	return check_error(state, window);
 }
 
