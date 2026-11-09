@@ -177,6 +177,8 @@ void ecs_create_default()
 	EcsChirpRendering = module("ChirpRendering");
 	EcsChirpUi = module("ChirpUi");
 	EcsChirpConfig = module("ChirpConfig");
+	EcsChirpSystem = module("ChirpSystem");
+	EcsChirpObserver = module("ChirpObserver");
 
 	add_modules();
 }
