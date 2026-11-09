@@ -21,7 +21,6 @@
 #include "chirp/physics.h"
 #include "chirp/systeminfo.h"
 #include "chirp/termcolors.h"
-#include "chirp/vector.h"
 #include "chirp/ecs/components.h"
 #include "chirp/ecs/modules.h"
 #include "flecs/addons/flecs_c.h"
