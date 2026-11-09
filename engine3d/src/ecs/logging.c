@@ -8,6 +8,7 @@
 #include "chirp/ecs.h"
 #include "chirp/logcategory.h"
 #include "chirp/systeminfo.h"
+#include "chirp/ecs/modules.h"
 #include "flecs/addons/flecs_c.h"
 
 #include <SDL3/SDL_audio.h>
@@ -44,12 +45,18 @@ static void log_info(ecs_iter_t *iter)
 
 void ecs_add_logging()
 {
-	ecs_observer_init(ecs_world(), &(ecs_observer_desc_t){
-		.query.terms = {
-			(ecs_term_t){.id = ecs_singleton_id(EcsGpuDevice), .inout = EcsInOut}
-		},
-		.events = {EcsOnSet},
-		.callback = log_info,
-		.yield_existing = true,
-	});
+	ecs_scope(ecs_world(), EcsChirpObserver)
+	{
+		ecs_observer_init(ecs_world(), &(ecs_observer_desc_t){
+			.entity = ecs_entity_init(ecs_world(), &(ecs_entity_desc_t){
+				.name = "LogInfo"
+			}),
+			.query.terms = {
+				(ecs_term_t){.id = ecs_singleton_id(EcsGpuDevice), .inout = EcsInOut}
+			},
+			.events = {EcsOnSet},
+			.yield_existing = true,
+			.callback = log_info,
+		});
+	}
 }
