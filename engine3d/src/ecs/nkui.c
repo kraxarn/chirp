@@ -6,6 +6,7 @@
 #include "flecs.h"
 #include "chirp/ecs.h"
 #include "chirp/logcategory.h"
+#include "chirp/ecs/modules.h"
 
 #include <SDL3/SDL_error.h>
 #include <SDL3/SDL_gpu.h>
@@ -43,38 +44,47 @@ static void begin_input(ecs_iter_t *iter)
 
 void ecs_add_nkui()
 {
-	ecs_observer_init(ecs_world(), &(ecs_observer_desc_t){
-		.query.terms = {
-			(ecs_term_t){.id = ecs_singleton_id(EcsWindow), .inout = EcsIn},
-			(ecs_term_t){.id = ecs_singleton_id(EcsGpuDevice), .inout = EcsIn},
-		},
-		.events = {EcsOnSet},
-		.callback = init_nkui,
-	});
+	ecs_scope(ecs_world(), EcsChirpObserver)
+	{
+		ecs_observer_init(ecs_world(), &(ecs_observer_desc_t){
+			.entity = ecs_entity_init(ecs_world(), &(ecs_entity_desc_t){
+				.name = "InitNkUi"
+			}),
+			.query.terms = {
+				(ecs_term_t){.id = ecs_singleton_id(EcsWindow), .inout = EcsIn},
+				(ecs_term_t){.id = ecs_singleton_id(EcsGpuDevice), .inout = EcsIn},
+			},
+			.events = {EcsOnSet},
+			.callback = init_nkui,
+		});
+	}
 
-	const ecs_entity_t entity_end_input = ecs_entity_init(ecs_world(), &(ecs_entity_desc_t){
-		.name = "NkEndInput",
-	});
-	ecs_add_id(ecs_world(), entity_end_input,ecs_phase(UpdateBegin));
+	ecs_scope(ecs_world(), EcsChirpSystem)
+	{
+		const ecs_entity_t entity_end_input = ecs_entity_init(ecs_world(), &(ecs_entity_desc_t){
+			.name = "NkEndInput",
+		});
+		ecs_add_id(ecs_world(), entity_end_input,ecs_phase(UpdateBegin));
 
-	ecs_system_init(ecs_world(), &(ecs_system_desc_t){
-		.entity = entity_end_input,
-		.query.terms = {
-			(ecs_term_t){.id = ecs_singleton_id(EcsNkContext), .inout = EcsInOut},
-		},
-		.callback = end_input,
-	});
+		ecs_system_init(ecs_world(), &(ecs_system_desc_t){
+			.entity = entity_end_input,
+			.query.terms = {
+				(ecs_term_t){.id = ecs_singleton_id(EcsNkContext), .inout = EcsInOut},
+			},
+			.callback = end_input,
+		});
 
-	const ecs_entity_t entity_begin_input = ecs_entity_init(ecs_world(), &(ecs_entity_desc_t){
-		.name = "NkBeginInput",
-	});
-	ecs_add_id(ecs_world(), entity_begin_input,ecs_phase(UpdateEnd));
+		const ecs_entity_t entity_begin_input = ecs_entity_init(ecs_world(), &(ecs_entity_desc_t){
+			.name = "NkBeginInput",
+		});
+		ecs_add_id(ecs_world(), entity_begin_input,ecs_phase(UpdateEnd));
 
-	ecs_system_init(ecs_world(), &(ecs_system_desc_t){
-		.entity = entity_begin_input,
-		.query.terms = {
-			(ecs_term_t){.id = ecs_singleton_id(EcsNkContext), .inout = EcsInOut},
-		},
-		.callback = begin_input,
-	});
+		ecs_system_init(ecs_world(), &(ecs_system_desc_t){
+			.entity = entity_begin_input,
+			.query.terms = {
+				(ecs_term_t){.id = ecs_singleton_id(EcsNkContext), .inout = EcsInOut},
+			},
+			.callback = begin_input,
+		});
+	}
 }
