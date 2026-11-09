@@ -9,3 +9,4 @@ extern ecs_entity_t EcsChirpEvent;
 extern ecs_entity_t EcsChirpInput;
 extern ecs_entity_t EcsChirpPipeline;
 extern ecs_entity_t EcsChirpRendering;
+extern ecs_entity_t EcsChirpUi;

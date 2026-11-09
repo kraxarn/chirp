@@ -129,7 +129,6 @@ static void add_modules()
 		EcsPosition = component("Position", vector3f_t);
 		EcsScale = component("Scale", vector3f_t);
 		EcsProjection = component("Projection", projection_t);
-		EcsNkContext = component("NkContext", nkui_context_t);
 		EcsViewProjection = component("ViewProjection", matrix4x4_t);
 		EcsWorldTransform = component("WorldTransform", matrix4x4_t);
 		EcsArgs = component("Args", arg_values_t);
@@ -149,6 +148,11 @@ static void add_modules()
 		EcsVertexShader = component("VertexShader", SDL_GPUShader*);
 		EcsFragmentShader = component("FragmentShader", SDL_GPUShader*);
 		EcsClearColor = component("ClearColor", SDL_FColor);
+	}
+
+	ecs_scope(ecs_world(), EcsChirpUi)
+	{
+		EcsNkContext = component("NkContext", nkui_context_t);
 	}
 
 	ecs_scope(ecs_world(), EcsChirpPipeline)
