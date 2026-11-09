@@ -281,7 +281,7 @@ static SDL_AppResult check_error(const app_state_t *state)
 
 SDL_AppResult SDL_AppIterate(void *appstate)
 {
-	app_state_t *state = appstate;
+	const app_state_t *state = appstate;
 
 	time_stats_t *time_stats = ecs_get_mut_id(ecs_world(),
 		ecs_singleton(EcsTimeStats));
