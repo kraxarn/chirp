@@ -125,7 +125,7 @@ static ecs_entity_t module(const char *name)
 
 static void add_modules()
 {
-	ecs_scope(ecs_world(), EcsChirpModule)
+	ecs_scope(ecs_world(), EcsChirp)
 	{
 		EcsAssets = component("Assets", assets_t);
 		EcsError = component("Error", error_t);
@@ -168,7 +168,6 @@ void ecs_create_default()
 	EcsChirp = module("Chirp");
 	EcsChirpEvent = module("ChirpEvent");
 	EcsChirpInput = module("ChirpInput");
-	EcsChirpModule = module("ChirpModule");
 
 	add_modules();
 }

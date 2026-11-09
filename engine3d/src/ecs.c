@@ -113,7 +113,7 @@ static void add_events()
 
 static void add_modules()
 {
-	ecs_scope(ecs_world(), EcsChirpModule)
+	ecs_scope(ecs_world(), EcsChirp)
 	{
 		EcsInstanceOf = entity("InstanceOf");
 

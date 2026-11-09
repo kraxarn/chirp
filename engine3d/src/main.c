@@ -195,7 +195,7 @@ SDL_AppResult SDL_AppInit(void **appstate, const int argc, char **argv)
 
 	ecs_create();
 
-	ecs_scope(ecs_world(), EcsChirpModule)
+	ecs_scope(ecs_world(), EcsChirp)
 	{
 		ecs_add_gpu();
 		ecs_add_window();
