@@ -13,6 +13,7 @@
 #include "chirp/modelinfo.h"
 #include "chirp/vector.h"
 #include "chirp/ecs/components.h"
+#include "chirp/ecs/modules.h"
 #include "flecs/addons/system.h"
 
 #include <SDL3/SDL_assert.h>
@@ -177,19 +178,22 @@ static void instance_model(ecs_iter_t *iter)
 
 void ecs_add_models()
 {
-	const ecs_entity_t entity_load_models = ecs_entity_init(ecs_world(), &(ecs_entity_desc_t){
-		.name = "LoadModels",
-	});
-	ecs_add_id(ecs_world(), entity_load_models,ecs_phase(RenderBegin));
+	ecs_scope(ecs_world(), EcsChirpSystem)
+	{
+		const ecs_entity_t entity_load_models = ecs_entity_init(ecs_world(), &(ecs_entity_desc_t){
+			.name = "LoadModels",
+		});
+		ecs_add_id(ecs_world(), entity_load_models,ecs_phase(RenderBegin));
 
-	ecs_system_init(ecs_world(), &(ecs_system_desc_t){
-		.entity = entity_load_models,
-		.query.terms = {
-			(ecs_term_t){.id = EcsModelInstance, .oper = EcsOr, .inout = EcsInOut},
-			(ecs_term_t){.id = EcsModelScene, .inout = EcsInOut},
-			(ecs_term_t){.id = ecs_singleton_id(EcsGpuDevice), .inout = EcsInOut},
-			(ecs_term_t){.id = ecs_singleton_id(EcsAssets), .inout = EcsIn},
-		},
-		.callback = instance_model,
-	});
+		ecs_system_init(ecs_world(), &(ecs_system_desc_t){
+			.entity = entity_load_models,
+			.query.terms = {
+				(ecs_term_t){.id = EcsModelInstance, .oper = EcsOr, .inout = EcsInOut},
+				(ecs_term_t){.id = EcsModelScene, .inout = EcsInOut},
+				(ecs_term_t){.id = ecs_singleton_id(EcsGpuDevice), .inout = EcsInOut},
+				(ecs_term_t){.id = ecs_singleton_id(EcsAssets), .inout = EcsIn},
+			},
+			.callback = instance_model,
+		});
+	}
 }
