@@ -227,7 +227,10 @@ static void add_modules()
 		);
 
 #endif
+	}
 
+	ecs_scope(ecs_world(), EcsChirpPipeline)
+	{
 		create_pipeline();
 	}
 
