@@ -1,6 +1,7 @@
 #include "chirp/input.h"
 #include "chirp/ecs.h"
 #include "chirp/ecs/components.h"
+#include "chirp/ecs/modules.h"
 
 #include "flecs.h"
 
@@ -21,11 +22,17 @@ static void create_input([[maybe_unused]] ecs_iter_t *iter)
 
 void ecs_add_input()
 {
-	ecs_observer_init(ecs_world(), &(ecs_observer_desc_t){
-		.query.terms = {
-			(ecs_term_t){.id = ecs_singleton_id(EcsInit), .inout = EcsInOutNone},
-		},
-		.events = {EcsOnSet},
-		.callback = create_input,
-	});
+	ecs_scope(ecs_world(), EcsChirpObserver)
+	{
+		ecs_observer_init(ecs_world(), &(ecs_observer_desc_t){
+			.entity = ecs_entity_init(ecs_world(), &(ecs_entity_desc_t){
+				.name = "CreateInput"
+			}),
+			.query.terms = {
+				(ecs_term_t){.id = ecs_singleton_id(EcsInit), .inout = EcsInOutNone},
+			},
+			.events = {EcsOnSet},
+			.callback = create_input,
+		});
+	}
 }
