@@ -320,6 +320,17 @@ static void update_player_shoot(ecs_iter_t *iter)
 		sizeof(b3BodyId), &body);
 }
 
+static void update_camera_position(ecs_iter_t *iter)
+{
+	const b3BodyId body_id = *ecs_field(iter, b3BodyId, 0);
+	camera_t *camera = ecs_field(iter, camera_t, 2);
+
+	const b3Vec3 player_position = b3Body_GetPosition(body_id);
+	const vector3f_t camera_dir = vector3f_sub(camera->target, camera->position);
+	camera->position = vector3f_from_b3vec3(player_position);
+	camera->target = vector3f_add(camera->position, camera_dir);
+}
+
 static void init_player_input(ecs_world_t *stage)
 {
 	const ecs_entity_t entity_update_camera_rotation = ecs_entity_init(stage, &(ecs_entity_desc_t){
@@ -381,6 +392,26 @@ static void init_player_input(ecs_world_t *stage)
 			(ecs_term_t){.id = ecs_singleton_id(EcsCamera), .inout = EcsIn},
 		},
 		.callback = update_player_shoot,
+	});
+
+	const ecs_entity_t entity_update_camera_position = ecs_entity_init(stage, &(ecs_entity_desc_t){
+		.name = "UpdatePlayerCamera",
+	});
+	ecs_add_id(stage, entity_update_camera_position, ecs_phase(Update));
+
+	ecs_system_init(ecs_world(), &(ecs_system_desc_t){
+		.entity = entity_update_camera_position,
+		.query.terms = {
+			(ecs_term_t){.id = EcsPhysicsBody, .src.name = "$player", .inout = EcsIn},
+			(ecs_term_t){
+				.src.name = "$player",
+				.first.id = EcsPredEq,
+				.second = (ecs_term_ref_t){.id = EcsIsName, .name = "Player"},
+				.inout = EcsInOutNone,
+			},
+			(ecs_term_t){.id = ecs_singleton_id(EcsCamera), .inout = EcsInOut},
+		},
+		.callback = update_camera_position,
 	});
 }
 

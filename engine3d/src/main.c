@@ -13,7 +13,6 @@
 #include "flecs.h"
 #include "box3d/box3d.h"
 #include "box3d/id.h"
-#include "box3d/math_functions.h"
 #include "chirp/assets.h"
 #include "chirp/ecs.h"
 #include "chirp/input.h"
@@ -25,6 +24,8 @@
 #include "chirp/vector.h"
 #include "chirp/ecs/components.h"
 #include "chirp/ecs/modules.h"
+#include "flecs/addons/flecs_c.h"
+#include "flecs/addons/pipeline.h"
 
 #define SDL_MAIN_USE_CALLBACKS
 #include <SDL3/SDL_main.h>
@@ -305,21 +306,8 @@ SDL_AppResult SDL_AppIterate(void *appstate)
 		return check_error(state, nullptr);
 	}
 
-	const ecs_entity_t player_entity = ecs_lookup(ecs_world(), "Player");
-	const b3BodyId *player_body_id = player_entity != 0
-		? ecs_get_id(ecs_world(), player_entity, EcsPhysicsBody)
-		: nullptr;
-
 	SDL_Window *window = *(SDL_Window**) ecs_get_mut_id(ecs_world(), ecs_singleton(EcsWindow));
 	camera_t *camera = ecs_get_mut_id(ecs_world(), ecs_singleton(EcsCamera));
-
-	if (player_body_id != nullptr)
-	{
-		const b3Vec3 player_position = b3Body_GetPosition(*player_body_id);
-		const vector3f_t camera_dir = vector3f_sub(camera->target, camera->position);
-		camera->position = vector3f_from_b3vec3(player_position);
-		camera->target = vector3f_add(camera->position, camera_dir);
-	}
 
 	const vector3f_t forward_n = vector3f_normalize(vector3f_sub(camera->target, camera->position));
 	const vector3f_t right_n = vector3f_normalize(vector3f_cross(forward_n, camera->up));
