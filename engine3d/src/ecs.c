@@ -119,8 +119,6 @@ static void add_modules()
 
 		EcsScene = tag("Scene");
 
-		EcsTimeStats = component("TimeStats", time_stats_t);
-		EcsWindowConfig = component("WindowConfig", window_config_t);
 		EcsWindow = component("Window", SDL_Window*);
 		EcsCamera = component("Camera", camera_t);
 		EcsPhysicsConfig = component("PhysicsConfig", physics_config_t);
@@ -131,9 +129,15 @@ static void add_modules()
 		EcsProjection = component("Projection", projection_t);
 		EcsViewProjection = component("ViewProjection", matrix4x4_t);
 		EcsWorldTransform = component("WorldTransform", matrix4x4_t);
-		EcsArgs = component("Args", arg_values_t);
 		EcsModelInstance = component("ModelInstance", model_descriptor_t);
 		EcsModelScene = component("ModelScene", model_descriptor_t);
+	}
+
+	ecs_scope(ecs_world(), EcsChirpConfig)
+	{
+		EcsTimeStats = component("TimeStats", time_stats_t);
+		EcsWindowConfig = component("WindowConfig", window_config_t);
+		EcsArgs = component("Args", arg_values_t);
 	}
 
 	ecs_scope(ecs_world(), EcsChirpRendering)
