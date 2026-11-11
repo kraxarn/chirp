@@ -27,6 +27,7 @@ void ecs_destroy();
 		ecs_observer_init(ecs_world(), o + i);
 
 void ecs_add_nkui();
+void ecs_add_ui();
 void ecs_add_window();
 void ecs_add_gpu();
 void ecs_add_physics();

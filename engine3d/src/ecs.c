@@ -158,6 +158,17 @@ static void add_modules()
 	ecs_scope(ecs_world(), EcsChirpUi)
 	{
 		EcsNkContext = component("NkContext", nkui_context_t);
+		EcsUiTitle = component("Title", const char*);
+		EcsUiBounds = component("Bounds", nk_rect_t);
+
+		EcsUiWindow = tag("Window");
+		EcsUiBorder = tag("Border");
+		EcsUiMovable = tag("Movable");
+		EcsUiScalable = tag("Scalable");
+		EcsUiClosable = tag("Closable");
+		EcsUiMinimizable = tag("Minimizable");
+		EcsUiNoScrollbar = tag("NoScrollbar");
+		EcsUiScrollAutoHide = tag("ScrollAutoHide");
 	}
 
 	ecs_scope(ecs_world(), EcsChirpPipeline)
@@ -255,6 +266,17 @@ static void add_modules()
 		(ecs_member_t){.name = "green", .type = ecs_id(ecs_f32_t)},
 		(ecs_member_t){.name = "blue", .type = ecs_id(ecs_f32_t)},
 		(ecs_member_t){.name = "alpha", .type = ecs_id(ecs_f32_t)},
+	);
+
+	// chirp.ui
+	reflect(EcsUiTitle,
+		(ecs_member_t){.name = "title", .type = ecs_id(ecs_string_t)},
+	);
+	reflect(EcsUiBounds,
+		(ecs_member_t){.name = "x", .type = ecs_id(ecs_f32_t)},
+		(ecs_member_t){.name = "y", .type = ecs_id(ecs_f32_t)},
+		(ecs_member_t){.name = "w", .type = ecs_id(ecs_f32_t)},
+		(ecs_member_t){.name = "h", .type = ecs_id(ecs_f32_t)},
 	);
 #endif
 }

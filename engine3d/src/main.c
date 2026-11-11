@@ -204,6 +204,7 @@ SDL_AppResult SDL_AppInit(void **appstate, const int argc, char **argv)
 		ecs_add_render();
 		ecs_add_models();
 		ecs_add_nkui();
+		ecs_add_ui();
 		ecs_add_input();
 		ecs_add_logging();
 	}

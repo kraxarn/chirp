@@ -26,3 +26,6 @@ ecs_id_t EcsWorldTransform = 0;
 ecs_id_t EcsArgs = 0;
 ecs_id_t EcsModelInstance = 0;
 ecs_id_t EcsModelScene = 0;
+
+ecs_id_t EcsUiTitle = 0;
+ecs_id_t EcsUiBounds = 0;

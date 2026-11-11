@@ -28,3 +28,6 @@ extern ecs_id_t EcsWorldTransform;
 extern ecs_id_t EcsArgs;
 extern ecs_id_t EcsModelInstance;
 extern ecs_id_t EcsModelScene;
+
+extern ecs_id_t EcsUiTitle;
+extern ecs_id_t EcsUiBounds;
