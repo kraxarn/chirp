@@ -89,13 +89,6 @@ typedef struct
 	 * Set number of physics threads/workers
 	 */
 	Sint64 physics_threads;
-
-	/**
-	 * --physics-sub-step-count 0-...
-	 *
-	 * Set number of physics sub-steps
-	 */
-	Sint64 physics_sub_step_count;
 } arg_values_t;
 
 [[nodiscard]]

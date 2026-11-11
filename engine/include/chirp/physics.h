@@ -7,3 +7,5 @@
 bool physics_create(Uint32 workers, b3WorldId *world);
 
 void physics_destroy(b3WorldId world);
+
+int physics_sub_step_count(Uint16 fps);

@@ -123,3 +123,24 @@ void physics_destroy(const b3WorldId world)
 {
 	b3DestroyWorld(world);
 }
+
+int physics_sub_step_count(const Uint16 fps)
+{
+	// TODO: Do we want to use dt instead?
+	// TODO: Test sub-step count with different frame-rates
+
+	if (fps == 0)
+	{
+		return 1;
+	}
+
+	/*
+	 * 30  FPS = 8 sub-steps
+	 * 60  FPS = 4 sub-steps
+	 * 120 FPS = 2 sub-steps
+	 * 240 FPS = 1 sub-step
+	 */
+
+	constexpr float base_sub_step = 240.F;
+	return (int) ((base_sub_step / (float) fps) + 1);
+}

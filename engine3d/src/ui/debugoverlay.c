@@ -15,6 +15,7 @@
 #include "chirp/logcategory.h"
 #include "chirp/map.h"
 #include "chirp/mousebutton.h"
+#include "chirp/physics.h"
 #include "chirp/vector.h"
 #include "chirp/ecs/components.h"
 
@@ -240,9 +241,13 @@ void draw_debug_overlay(ecs_iter_t *iter)
 
 		nk_layout_row(ctx, NK_DYNAMIC, row_height, 2, (float[]){0.3F, 0.7F});
 
+		const int sub_steps = physics_sub_step_count(time_stats->fps);
+
 		nk_label(ctx, "FPS", NK_TEXT_LEFT);
-		nk_labelf(ctx, NK_TEXT_LEFT, "%u (%5.2f ms)",
-			time_stats->fps, iter->delta_time * ms_s);
+		nk_labelf(ctx, NK_TEXT_LEFT, "%-3u (%-5.2f ms, %-1d %-5s)",
+			time_stats->fps, iter->delta_time * ms_s,
+			sub_steps, sub_steps == 1 ? "step" : "steps"
+		);
 
 		draw_camera_info(ctx, camera);
 		draw_physics_info(ctx, player_body_id);

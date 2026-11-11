@@ -243,7 +243,6 @@ static void add_modules()
 		(ecs_member_t){.name = "ecs_threading", .type = ecs_id(ecs_string_t)},
 		(ecs_member_t){.name = "ecs_threads", .type = ecs_id(ecs_i64_t)},
 		(ecs_member_t){.name = "physics_threads", .type = ecs_id(ecs_i64_t)},
-		(ecs_member_t){.name = "physics_sub_step_count", .type = ecs_id(ecs_i64_t)},
 	);
 
 	// chirp.rendering

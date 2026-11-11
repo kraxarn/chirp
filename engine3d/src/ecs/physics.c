@@ -1,5 +1,6 @@
 #include "args.h"
 #include "ecs.h"
+#include "timestats.h"
 #include "ecs/components.h"
 
 #include "chirp/physics.h"
@@ -43,10 +44,9 @@ static void init_physics([[maybe_unused]] ecs_iter_t *iter)
 static void update_physics(ecs_iter_t *iter)
 {
 	const b3WorldId world = *ecs_field(iter, b3WorldId, 0);
-	const arg_values_t *args = ecs_field(iter, arg_values_t, 1);
+	const time_stats_t *time_stats = ecs_field(iter, time_stats_t, 1);
 
-	// TODO: Test sub-step count with different frame-rates
-	b3World_Step(world, iter->delta_time, (int) args->physics_sub_step_count);
+	b3World_Step(world, iter->delta_time, physics_sub_step_count(time_stats->fps));
 }
 
 static void sync_physics(ecs_iter_t *iter)
@@ -93,7 +93,7 @@ void ecs_add_physics()
 			.entity = entity_update_physics,
 			.query.terms = {
 				(ecs_term_t){.id = ecs_singleton_id(EcsPhysicsWorld), .inout = EcsIn},
-				(ecs_term_t){.id = ecs_singleton_id(EcsArgs), .inout = EcsIn},
+				(ecs_term_t){.id = ecs_singleton_id(EcsTimeStats), .inout = EcsIn},
 			},
 			.callback = update_physics,
 		});
