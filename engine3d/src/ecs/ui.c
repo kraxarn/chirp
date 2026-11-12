@@ -13,6 +13,28 @@
 #include <SDL3/SDL_assert.h>
 #include <SDL3/SDL_stdinc.h>
 
+static bool window_begin(nk_context_t *ctx, const ecs_world_t *stage,
+	const ecs_entity_t entity, const char *title, const nk_rect_t bounds)
+{
+#define flag(component, flag) (ecs_has_id(stage, entity, (component)) ? (nk_flags) (flag) : 0)
+	const nk_flags flags = (title != nullptr ? (nk_flags) NK_WINDOW_TITLE : 0)
+		| flag(EcsUiBorder, NK_WINDOW_BORDER)
+		| flag(EcsUiMovable, NK_WINDOW_MOVABLE)
+		| flag(EcsUiScalable, NK_WINDOW_SCALABLE)
+		| flag(EcsUiClosable, NK_WINDOW_CLOSABLE)
+		| flag(EcsUiMinimizable, NK_WINDOW_MINIMIZABLE)
+		| flag(EcsUiNoScrollbar, NK_WINDOW_NO_SCROLLBAR)
+		| flag(EcsUiScrollAutoHide, NK_WINDOW_SCROLL_AUTO_HIDE);
+#undef flag
+
+	return nk_begin(ctx, title, bounds, flags);
+}
+
+static void window_end(nk_context_t *ctx)
+{
+	nk_end(ctx);
+}
+
 static void draw_ui(ecs_iter_t *iter)
 {
 	nk_context_t *ctx = &ecs_field(iter, nkui_context_t, 0)->nk;
@@ -29,21 +51,10 @@ static void draw_ui(ecs_iter_t *iter)
 		SDL_assert(w_bounds != nullptr);
 		const nk_rect_t bounds = w_bounds[i];
 
-#define flag(component, flag) (ecs_has_id(iter->stage, window, (component)) ? (nk_flags) (flag) : 0)
-		const nk_flags flags = (title != nullptr ? (nk_flags) NK_WINDOW_TITLE : 0)
-			| flag(EcsUiBorder, NK_WINDOW_BORDER)
-			| flag(EcsUiMovable, NK_WINDOW_MOVABLE)
-			| flag(EcsUiScalable, NK_WINDOW_SCALABLE)
-			| flag(EcsUiClosable, NK_WINDOW_CLOSABLE)
-			| flag(EcsUiMinimizable, NK_WINDOW_MINIMIZABLE)
-			| flag(EcsUiNoScrollbar, NK_WINDOW_NO_SCROLLBAR)
-			| flag(EcsUiScrollAutoHide, NK_WINDOW_SCROLL_AUTO_HIDE);
-#undef flag
-
-		if (nk_begin(ctx, title, bounds, flags))
+		if (window_begin(ctx, iter->stage, window, title, bounds))
 		{
 		}
-		nk_end(ctx);
+		window_end(ctx);
 	}
 }
 
