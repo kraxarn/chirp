@@ -4,7 +4,6 @@
 
 ecs_id_t EcsScene = 0;
 
-ecs_id_t EcsUiWindow = 0;
 ecs_id_t EcsUiBorder = 0;
 ecs_id_t EcsUiMovable = 0;
 ecs_id_t EcsUiScalable = 0;

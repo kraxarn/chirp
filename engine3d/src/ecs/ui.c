@@ -10,20 +10,24 @@
 #include "flecs/addons/flecs_c.h"
 #include "flecs/addons/system.h"
 
+#include <SDL3/SDL_assert.h>
 #include <SDL3/SDL_stdinc.h>
 
 static void draw_ui(ecs_iter_t *iter)
 {
 	nk_context_t *ctx = &ecs_field(iter, nkui_context_t, 0)->nk;
+	const nk_rect_t *w_bounds = ecs_field(iter, nk_rect_t, 1);
 	const char **w_titles = ecs_field(iter, const char*, 2);
-	const nk_rect_t *w_bounds = ecs_field(iter, nk_rect_t, 3);
 
 	for (Sint32 i = 0; i < iter->count; i++)
 	{
 		const ecs_entity_t window = iter->entities[i];
 
+		// TODO: Default to title with entity ID
 		const char *title = w_titles != nullptr ? w_titles[i] : "";
-		const nk_rect_t bounds = w_bounds != nullptr ? w_bounds[i] : (nk_rect_t){0};
+
+		SDL_assert(w_bounds != nullptr);
+		const nk_rect_t bounds = w_bounds[i];
 
 #define flag(component, flag) (ecs_has_id(iter->stage, window, (component)) ? (nk_flags) (flag) : 0)
 		const nk_flags flags = (title != nullptr ? (nk_flags) NK_WINDOW_TITLE : 0)
@@ -59,7 +63,6 @@ void ecs_add_ui()
 				(ecs_term_t){.id = ecs_singleton_id(EcsNkContext), .inout = EcsIn},
 				(ecs_term_t){.id = EcsUiWindow, .inout = EcsIn},
 				(ecs_term_t){.id = EcsUiTitle, .oper = EcsOptional, .inout = EcsIn},
-				(ecs_term_t){.id = EcsUiBounds, .oper = EcsOptional, .inout = EcsIn},
 			},
 			.callback = draw_ui,
 		});

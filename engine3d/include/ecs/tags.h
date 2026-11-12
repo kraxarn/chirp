@@ -4,7 +4,6 @@
 
 extern ecs_id_t EcsScene;
 
-extern ecs_id_t EcsUiWindow;
 extern ecs_id_t EcsUiBorder;
 extern ecs_id_t EcsUiMovable;
 extern ecs_id_t EcsUiScalable;

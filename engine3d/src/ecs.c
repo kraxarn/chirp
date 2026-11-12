@@ -159,9 +159,8 @@ static void add_modules()
 	{
 		EcsNkContext = component("NkContext", nkui_context_t);
 		EcsUiTitle = component("Title", const char*);
-		EcsUiBounds = component("Bounds", nk_rect_t);
+		EcsUiWindow = component("Window", nk_rect_t);
 
-		EcsUiWindow = tag("Window");
 		EcsUiBorder = tag("Border");
 		EcsUiMovable = tag("Movable");
 		EcsUiScalable = tag("Scalable");
@@ -272,7 +271,7 @@ static void add_modules()
 	reflect(EcsUiTitle,
 		(ecs_member_t){.name = "title", .type = ecs_id(ecs_string_t)},
 	);
-	reflect(EcsUiBounds,
+	reflect(EcsUiWindow,
 		(ecs_member_t){.name = "x", .type = ecs_id(ecs_f32_t)},
 		(ecs_member_t){.name = "y", .type = ecs_id(ecs_f32_t)},
 		(ecs_member_t){.name = "w", .type = ecs_id(ecs_f32_t)},
