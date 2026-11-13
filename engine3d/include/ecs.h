@@ -15,6 +15,14 @@ typedef struct
 	char *name;
 } model_descriptor_t;
 
+typedef struct
+{
+	float height;        // Fixed row height for all items
+	int columns;         // Number of columns
+	const float *ratio;  // Enable dynamic mode and set ratio for each column(0-1)
+	const float *widths; // Enable fixed mode and set width for each column
+} ui_row_def_t;
+
 void ecs_create();
 
 void ecs_destroy();

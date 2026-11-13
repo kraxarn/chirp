@@ -6,11 +6,13 @@
 
 #include "flecs.h"
 #include "chirp/ecs.h"
+#include "chirp/logcategory.h"
 #include "chirp/ecs/modules.h"
 #include "flecs/addons/flecs_c.h"
 #include "flecs/addons/system.h"
 
 #include <SDL3/SDL_assert.h>
+#include <SDL3/SDL_log.h>
 #include <SDL3/SDL_stdinc.h>
 
 static bool window_begin(nk_context_t *ctx, const ecs_world_t *stage,
@@ -35,6 +37,24 @@ static void window_end(nk_context_t *ctx)
 	nk_end(ctx);
 }
 
+static void layout_row(nk_context_t *ctx, const ui_row_def_t def)
+{
+	SDL_assert(def.ratio == nullptr || def.widths == nullptr);
+
+	if (def.ratio != nullptr)
+	{
+		nk_layout_row(ctx, NK_DYNAMIC, def.height, def.columns, def.ratio);
+	}
+	else if (def.widths != nullptr)
+	{
+		nk_layout_row(ctx, NK_STATIC, def.height, def.columns, def.widths);
+	}
+	else
+	{
+		nk_layout_row_dynamic(ctx, def.height, def.columns);
+	}
+}
+
 static void draw_ui(ecs_iter_t *iter)
 {
 	nk_context_t *ctx = &ecs_field(iter, nkui_context_t, 0)->nk;
@@ -53,9 +73,37 @@ static void draw_ui(ecs_iter_t *iter)
 
 		if (window_begin(ctx, iter->stage, window, title, bounds))
 		{
+			ecs_iter_t children = ecs_children(iter->stage, window);
+			while (ecs_children_next(&children))
+			{
+				for (Sint32 j = 0; j < children.count; j++)
+				{
+					ecs_entity_t child = children.entities[j];
+
+					const ui_row_def_t *row_def = ecs_get_id(children.stage, child, EcsUiRow);
+					if (row_def != nullptr)
+					{
+						layout_row(ctx, *row_def);
+					}
+				}
+			}
+			ecs_iter_fini(&children);
 		}
 		window_end(ctx);
 	}
+}
+
+static void validate_row(ecs_iter_t *iter)
+{
+	const ui_row_def_t def = *ecs_field(iter, ui_row_def_t, 0);
+	if (def.ratio == nullptr || def.widths == nullptr)
+	{
+		return;
+	}
+
+	SDL_LogWarn(LOG_CATEGORY_UI,
+		"Can't set both dynamic ratio and fixed widths at the same time"
+	);
 }
 
 void ecs_add_ui()
@@ -76,6 +124,20 @@ void ecs_add_ui()
 				(ecs_term_t){.id = EcsUiTitle, .oper = EcsOptional, .inout = EcsIn},
 			},
 			.callback = draw_ui,
+		});
+	}
+
+	ecs_scope(ecs_world(), EcsChirpObserver)
+	{
+		ecs_observer_init(ecs_world(), &(ecs_observer_desc_t){
+			.entity = ecs_entity_init(ecs_world(), &(ecs_entity_desc_t){
+				.name = "ValidateUiRowDef",
+			}),
+			.query.terms = {
+				(ecs_term_t){.id = EcsUiRow, .inout = EcsIn},
+			},
+			.events = {EcsOnSet},
+			.callback = validate_row,
 		});
 	}
 }
