@@ -55,7 +55,7 @@ static void layout_row(nk_context_t *ctx, const ui_row_def_t def)
 	}
 }
 
-static void draw_ui(ecs_iter_t *iter)
+static void prepare_ui(ecs_iter_t *iter)
 {
 	nk_context_t *ctx = &ecs_field(iter, nkui_context_t, 0)->nk;
 	const nk_rect_t *w_bounds = ecs_field(iter, nk_rect_t, 1);
@@ -110,20 +110,20 @@ void ecs_add_ui()
 {
 	ecs_scope(ecs_world(), EcsChirpSystem)
 	{
-		const ecs_entity_t entity_draw_ui = ecs_entity_init(ecs_world(), &(ecs_entity_desc_t){
-			.name = "DrawUi",
+		const ecs_entity_t entity_prepare_ui = ecs_entity_init(ecs_world(), &(ecs_entity_desc_t){
+			.name = "PrepareUi",
 		});
-		ecs_add_id(ecs_world(), entity_draw_ui, ecs_phase(UpdateEnd));
+		ecs_add_id(ecs_world(), entity_prepare_ui, ecs_phase(UpdateEnd));
 
 		ecs_system_init(ecs_world(), &(ecs_system_desc_t){
-			.entity = entity_draw_ui,
+			.entity = entity_prepare_ui,
 			.query.terms = {
 				// TODO: Maybe bake all window tags into the query?
 				(ecs_term_t){.id = ecs_singleton_id(EcsNkContext), .inout = EcsIn},
 				(ecs_term_t){.id = EcsUiWindow, .inout = EcsIn},
 				(ecs_term_t){.id = EcsUiTitle, .oper = EcsOptional, .inout = EcsIn},
 			},
-			.callback = draw_ui,
+			.callback = prepare_ui,
 		});
 	}
 
