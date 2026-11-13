@@ -30,10 +30,6 @@ void ecs_destroy();
 #define ecs_phase(phase)	\
 	ecs_dependson(EcsPhase##phase) // NOLINT(bugprone-signed-bitwise)
 
-#define ecs_observer_init_all(o)					\
-	for (size_t i = 0; i < SDL_arraysize(o); i++)	\
-		ecs_observer_init(ecs_world(), o + i);
-
 void ecs_add_nkui();
 void ecs_add_ui();
 void ecs_add_window();
