@@ -113,7 +113,7 @@ void ecs_add_ui()
 		const ecs_entity_t entity_draw_ui = ecs_entity_init(ecs_world(), &(ecs_entity_desc_t){
 			.name = "DrawUi",
 		});
-		ecs_add_id(ecs_world(), entity_draw_ui, ecs_phase(Update));
+		ecs_add_id(ecs_world(), entity_draw_ui, ecs_phase(UpdateEnd));
 
 		ecs_system_init(ecs_world(), &(ecs_system_desc_t){
 			.entity = entity_draw_ui,
