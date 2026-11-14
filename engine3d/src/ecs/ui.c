@@ -21,7 +21,7 @@ static bool window_begin(nk_context_t *ctx, const ecs_world_t *stage,
 	const ecs_entity_t entity, const char *title, const nk_rect_t bounds)
 {
 #define flag(component, flag) (ecs_has_id(stage, entity, (component)) ? (nk_flags) (flag) : 0)
-	const nk_flags flags = (title != nullptr ? (nk_flags) NK_WINDOW_TITLE : 0)
+	const nk_flags flags = (title != nullptr && title[0] != '\0' ? (nk_flags) NK_WINDOW_TITLE : 0)
 		| flag(EcsUiBorder, NK_WINDOW_BORDER)
 		| flag(EcsUiMovable, NK_WINDOW_MOVABLE)
 		| flag(EcsUiScalable, NK_WINDOW_SCALABLE)
