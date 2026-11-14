@@ -30,3 +30,4 @@ ecs_id_t EcsModelScene = 0;
 ecs_id_t EcsUiTitle = 0;
 ecs_id_t EcsUiWindow = 0;
 ecs_id_t EcsUiRow = 0;
+ecs_id_t EcsUiLabel = 0;

@@ -15,6 +15,8 @@
 #include <SDL3/SDL_log.h>
 #include <SDL3/SDL_stdinc.h>
 
+#include <stddef.h>
+
 static bool window_begin(nk_context_t *ctx, const ecs_world_t *stage,
 	const ecs_entity_t entity, const char *title, const nk_rect_t bounds)
 {
@@ -73,21 +75,45 @@ static void prepare_ui(ecs_iter_t *iter)
 
 		if (window_begin(ctx, iter->stage, window, title, bounds))
 		{
-			ecs_iter_t children = ecs_children(iter->stage, window);
-			while (ecs_children_next(&children))
-			{
-				for (Sint32 j = 0; j < children.count; j++)
-				{
-					ecs_entity_t child = children.entities[j];
+			constexpr size_t queue_size = 32;
+			ecs_entity_t queue[queue_size];
+			size_t queue_current = 0;
+			size_t queue_next = 1;
 
-					const ui_row_def_t *row_def = ecs_get_id(children.stage, child, EcsUiRow);
-					if (row_def != nullptr)
+			SDL_zeroa(queue);
+			queue[queue_current] = window;
+
+			while (queue[queue_current] != 0)
+			{
+				const ecs_entity_t entity = queue[queue_current];
+				queue[queue_current] = 0;
+
+				const ui_row_def_t *row_def = ecs_get_id(iter->stage, entity, EcsUiRow);
+				if (row_def != nullptr)
+				{
+					layout_row(ctx, *row_def);
+				}
+
+				const ui_label_t *label = ecs_get_id(iter->stage, entity, EcsUiLabel);
+				if (label != nullptr)
+				{
+					nk_label(ctx, label->text, label->align);
+				}
+
+				ecs_iter_t children = ecs_children(iter->stage, entity);
+				while (ecs_children_next(&children))
+				{
+					for (Sint32 cc = 0; cc < children.count; cc++)
 					{
-						layout_row(ctx, *row_def);
+						SDL_assert(queue[queue_next] == 0);
+						queue[queue_next] = children.entities[cc];
+						queue_next = (queue_next + 1) % queue_size;
 					}
 				}
+				ecs_iter_fini(&children);
+
+				queue_current = (queue_current + 1) % queue_size;
 			}
-			ecs_iter_fini(&children);
 		}
 		window_end(ctx);
 	}
