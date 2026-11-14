@@ -281,6 +281,24 @@ static void add_modules()
 		(ecs_member_t){.name = "w", .type = ecs_id(ecs_f32_t)},
 		(ecs_member_t){.name = "h", .type = ecs_id(ecs_f32_t)},
 	);
+	reflect(EcsUiRow,
+		(ecs_member_t){.name = "height", .type = ecs_id(ecs_f32_t)},
+		(ecs_member_t){.name = "columns", .type = ecs_id(ecs_i32_t)},
+	);
+	reflect(EcsUiLabel,
+		(ecs_member_t){.name = "text", .type = ecs_id(ecs_char_t), .count = ui_label_max_length},
+		(ecs_member_t){.name = "align", .type = ecs_id(ecs_u32_t)},
+	);
+	reflect(EcsUiCombo,
+		(ecs_member_t){.name = "count", .type = ecs_id(ecs_i32_t)},
+		(ecs_member_t){.name = "selected", .type = ecs_id(ecs_i32_t)},
+		(ecs_member_t){.name = "item_height", .type = ecs_id(ecs_i32_t)},
+		(ecs_member_t){.name = "size", .type = ecs_id(ecs_f32_t), .count = 2},
+	);
+	reflect(EcsUiEditString,
+		(ecs_member_t){.name = "buffer", .type = ecs_id(ecs_char_t), .count = ui_edit_string_max_length},
+		(ecs_member_t){.name = "length", .type = ecs_id(ecs_i32_t)},
+	);
 #endif
 }
 

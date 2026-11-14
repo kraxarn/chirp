@@ -24,7 +24,7 @@ typedef struct
 typedef struct
 {
 	float height;        // Fixed row height for all items
-	int columns;         // Number of columns
+	Sint32 columns;      // Number of columns
 	const float *ratio;  // Enable dynamic mode and set ratio for each column(0-1)
 	const float *widths; // Enable fixed mode and set width for each column
 } ui_row_def_t;
@@ -51,17 +51,17 @@ typedef struct
 
 typedef struct
 {
-	const char **items;
-	int count;
-	int selected;
-	int item_height;
+	Sint32 count;
+	Sint32 selected;
+	Sint32 item_height;
 	vector2f_t size;
+	const char **items;
 } ui_combo_t;
 
 typedef struct
 {
 	char buffer[ui_edit_string_max_length];
-	int length;
+	Sint32 length;
 } ui_edit_string_t;
 
 void ecs_create();
