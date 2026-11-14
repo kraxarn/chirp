@@ -31,7 +31,10 @@ static bool window_begin(nk_context_t *ctx, const ecs_world_t *stage,
 		| flag(EcsUiScrollAutoHide, NK_WINDOW_SCROLL_AUTO_HIDE);
 #undef flag
 
-	return nk_begin(ctx, title, bounds, flags);
+	// TODO: Fallback to entity ID
+	const char *name = ecs_get_name(stage, entity);
+
+	return nk_begin_titled(ctx, name, title, bounds, flags);
 }
 
 static void window_end(nk_context_t *ctx)
