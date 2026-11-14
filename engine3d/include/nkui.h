@@ -35,6 +35,7 @@ typedef struct nk_style_item nk_style_item_t;
 
 typedef enum nk_convert_result nk_convert_result_t;
 typedef enum nk_panel_flags nk_panel_flags_t;
+typedef enum nk_edit_events nk_edit_events_t;
 
 typedef struct
 {

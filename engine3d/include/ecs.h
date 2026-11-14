@@ -8,6 +8,7 @@
 #include <stddef.h>
 
 constexpr size_t ui_label_max_length = 256;
+constexpr size_t ui_edit_string_max_length = 64;
 
 typedef struct
 {
@@ -56,6 +57,12 @@ typedef struct
 	int item_height;
 	vector2f_t size;
 } ui_combo_t;
+
+typedef struct
+{
+	char buffer[ui_edit_string_max_length];
+	int length;
+} ui_edit_string_t;
 
 void ecs_create();
 

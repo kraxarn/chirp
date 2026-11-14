@@ -32,3 +32,4 @@ ecs_id_t EcsUiWindow = 0;
 ecs_id_t EcsUiRow = 0;
 ecs_id_t EcsUiLabel = 0;
 ecs_id_t EcsUiCombo = 0;
+ecs_id_t EcsUiEditString = 0;

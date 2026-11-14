@@ -163,6 +163,7 @@ static void add_modules()
 		EcsUiRow = component("Row", ui_row_def_t);
 		EcsUiLabel = component("Label", ui_label_t);
 		EcsUiCombo = component("Combo", ui_combo_t);
+		EcsUiEditString = component("EditString", ui_edit_string_t);
 
 		EcsUiBorder = tag("Border");
 		EcsUiMovable = tag("Movable");

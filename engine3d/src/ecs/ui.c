@@ -12,8 +12,11 @@
 #include "flecs/addons/system.h"
 
 #include <SDL3/SDL_assert.h>
+#include <SDL3/SDL_error.h>
+#include <SDL3/SDL_keyboard.h>
 #include <SDL3/SDL_log.h>
 #include <SDL3/SDL_stdinc.h>
+#include <SDL3/SDL_video.h>
 
 #include <stddef.h>
 
@@ -66,15 +69,36 @@ static void ui_combo(nk_context_t *ctx, ui_combo_t *combo)
 		combo->item_height, nk_vec2(combo->size.x, combo->size.y));
 }
 
+static void ui_edit_string(nk_context_t *ctx, SDL_Window *window, ui_edit_string_t *edit)
+{
+	const nk_edit_events_t events = nk_edit_string(ctx, NK_EDIT_FIELD, edit->buffer,
+		&edit->length, ui_edit_string_max_length, nk_filter_default);
+
+	if ((events & (nk_flags) NK_EDIT_ACTIVATED) > 0
+		&& !SDL_StartTextInput(window))
+	{
+		SDL_LogError(LOG_CATEGORY_UI, "Failed to start text input: %s",
+			SDL_GetError());
+	}
+
+	if ((events & (nk_flags) NK_EDIT_DEACTIVATED) > 0
+		&& !SDL_StopTextInput(window))
+	{
+		SDL_LogError(LOG_CATEGORY_UI, "Failed to stop text input: %s",
+			SDL_GetError());
+	}
+}
+
 static void prepare_ui(ecs_iter_t *iter)
 {
 	nk_context_t *ctx = &ecs_field(iter, nkui_context_t, 0)->nk;
-	const nk_rect_t *w_bounds = ecs_field(iter, nk_rect_t, 1);
-	const char **w_titles = ecs_field(iter, const char*, 2);
+	SDL_Window *window = *ecs_field(iter, SDL_Window*, 1);
+	const nk_rect_t *w_bounds = ecs_field(iter, nk_rect_t, 2);
+	const char **w_titles = ecs_field(iter, const char*, 3);
 
 	for (Sint32 i = 0; i < iter->count; i++)
 	{
-		const ecs_entity_t window = iter->entities[i];
+		const ecs_entity_t parent = iter->entities[i];
 
 		// TODO: Default to title with entity ID
 		const char *title = w_titles != nullptr ? w_titles[i] : "";
@@ -82,7 +106,7 @@ static void prepare_ui(ecs_iter_t *iter)
 		SDL_assert(w_bounds != nullptr);
 		const nk_rect_t bounds = w_bounds[i];
 
-		if (window_begin(ctx, iter->stage, window, title, bounds))
+		if (window_begin(ctx, iter->stage, parent, title, bounds))
 		{
 			constexpr size_t queue_size = 32;
 			ecs_entity_t queue[queue_size];
@@ -90,7 +114,7 @@ static void prepare_ui(ecs_iter_t *iter)
 			size_t queue_next = 1;
 
 			SDL_zeroa(queue);
-			queue[queue_current] = window;
+			queue[queue_current] = parent;
 
 			while (queue[queue_current] != 0)
 			{
@@ -113,6 +137,12 @@ static void prepare_ui(ecs_iter_t *iter)
 				if (combo != nullptr)
 				{
 					ui_combo(ctx, combo);
+				}
+
+				ui_edit_string_t *edit_string = ecs_get_mut_id(iter->stage, entity, EcsUiEditString);
+				if (edit_string != nullptr)
+				{
+					ui_edit_string(ctx, window, edit_string);
 				}
 
 				ecs_iter_t children = ecs_children(iter->stage, entity);
@@ -160,7 +190,8 @@ void ecs_add_ui()
 			.entity = entity_prepare_ui,
 			.query.terms = {
 				// TODO: Maybe bake all window tags into the query?
-				(ecs_term_t){.id = ecs_singleton_id(EcsNkContext), .inout = EcsIn},
+				(ecs_term_t){.id = ecs_singleton_id(EcsNkContext), .inout = EcsInOut},
+				(ecs_term_t){.id = ecs_singleton_id(EcsWindow), .inout = EcsInOut},
 				(ecs_term_t){.id = EcsUiWindow, .inout = EcsIn},
 				(ecs_term_t){.id = EcsUiTitle, .oper = EcsOptional, .inout = EcsIn},
 			},
