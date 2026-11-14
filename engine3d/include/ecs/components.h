@@ -33,3 +33,4 @@ extern ecs_id_t EcsUiTitle;
 extern ecs_id_t EcsUiWindow;
 extern ecs_id_t EcsUiRow;
 extern ecs_id_t EcsUiLabel;
+extern ecs_id_t EcsUiCombo;

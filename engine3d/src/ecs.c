@@ -162,6 +162,7 @@ static void add_modules()
 		EcsUiWindow = component("Window", nk_rect_t);
 		EcsUiRow = component("Row", ui_row_def_t);
 		EcsUiLabel = component("Label", ui_label_t);
+		EcsUiCombo = component("Combo", ui_combo_t);
 
 		EcsUiBorder = tag("Border");
 		EcsUiMovable = tag("Movable");

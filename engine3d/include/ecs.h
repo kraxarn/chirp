@@ -1,6 +1,7 @@
 #pragma once
 
 #include "chirp/matrix.h"
+#include "chirp/vector.h"
 
 #include <SDL3/SDL_stdinc.h>
 
@@ -46,6 +47,15 @@ typedef struct
 	char text[ui_label_max_length];
 	ui_text_align_t align;
 } ui_label_t;
+
+typedef struct
+{
+	const char **items;
+	int count;
+	int selected;
+	int item_height;
+	vector2f_t size;
+} ui_combo_t;
 
 void ecs_create();
 

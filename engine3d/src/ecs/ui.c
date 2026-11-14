@@ -57,6 +57,12 @@ static void layout_row(nk_context_t *ctx, const ui_row_def_t def)
 	}
 }
 
+static void ui_combo(nk_context_t *ctx, ui_combo_t *combo)
+{
+	combo->selected = nk_combo(ctx, combo->items, combo->count, combo->selected,
+		combo->item_height, nk_vec2(combo->size.x, combo->size.y));
+}
+
 static void prepare_ui(ecs_iter_t *iter)
 {
 	nk_context_t *ctx = &ecs_field(iter, nkui_context_t, 0)->nk;
@@ -98,6 +104,12 @@ static void prepare_ui(ecs_iter_t *iter)
 				if (label != nullptr)
 				{
 					nk_label(ctx, label->text, label->align);
+				}
+
+				ui_combo_t *combo = ecs_get_mut_id(iter->stage, entity, EcsUiCombo);
+				if (combo != nullptr)
+				{
+					ui_combo(ctx, combo);
 				}
 
 				ecs_iter_t children = ecs_children(iter->stage, entity);
