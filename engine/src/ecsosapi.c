@@ -1,11 +1,16 @@
 #include "chirp/ecsosapi.h"
+#include "chirp/assets.h"
+#include "chirp/ecs.h"
 #include "chirp/logcategory.h"
+#include "chirp/ecs/components.h"
 
+#include "flecs.h"
 #include "flecs/os_api.h"
 #include "flecs/private/api_defines.h"
 
 #include <SDL3/SDL_atomic.h>
 #include <SDL3/SDL_error.h>
+#include <SDL3/SDL_iostream.h>
 #include <SDL3/SDL_log.h>
 #include <SDL3/SDL_mutex.h>
 #include <SDL3/SDL_stdinc.h>
@@ -202,6 +207,83 @@ static void sleep(const Sint32 sec, const Sint32 nano_sec)
 	SDL_DelayNS((sec * SDL_NS_PER_SECOND) + nano_sec);
 }
 
+static FILE *fopen_(const char *file, const char *mode)
+{
+	if (SDL_strcasecmp(mode, "r") != 0)
+	{
+		SDL_LogError(LOG_CATEGORY_ECS, "Unsupported mode: '%s'", mode);
+		return nullptr;
+	}
+
+	const assets_t *assets = ecs_get_id(ecs_world(),
+		EcsAssets, EcsAssets);
+
+	if (assets == nullptr)
+	{
+		SDL_LogError(LOG_CATEGORY_ECS, "Assets not loaded");
+		return nullptr;
+	}
+
+	const char *ext = SDL_strrchr(file, '.');
+	if (ext == nullptr)
+	{
+		SDL_LogError(LOG_CATEGORY_ECS, "Unsupported file: '%s'", file);
+		return nullptr;
+	}
+
+	const char *prefix = nullptr;
+	if (SDL_strcasecmp(ext, ".flecs") == 0)
+	{
+		prefix = "scripts";
+	}
+
+	if (prefix == nullptr)
+	{
+		SDL_LogError(LOG_CATEGORY_ECS, "Unsupported file: '%s'", file);
+		return nullptr;
+	}
+
+	char *path = nullptr;
+	SDL_asprintf(&path, "%s/%.*s", prefix, (int) (ext - file), file);
+
+	SDL_IOStream *stream = assets_load(assets, path);
+	SDL_free(path);
+
+	if (stream == nullptr)
+	{
+		SDL_LogError(LOG_CATEGORY_ECS, "I/O error: %s", SDL_GetError());
+		return nullptr;
+	}
+
+	return (FILE*) stream;
+}
+
+static void fclose_(FILE *file)
+{
+	if (!SDL_CloseIO((SDL_IOStream*) file))
+	{
+		SDL_LogError(LOG_CATEGORY_ECS, "Failed to close stream: %s", SDL_GetError());
+	}
+}
+
+static size_t fread_(void *ptr, const size_t size, const size_t count, FILE *file)
+{
+	return SDL_ReadIO((SDL_IOStream*) file, ptr, size * count);
+}
+
+static size_t fwrite_([[maybe_unused]] const void *ptr, [[maybe_unused]] size_t size,
+	[[maybe_unused]] size_t count, [[maybe_unused]] FILE *file)
+{
+	SDL_LogError(LOG_CATEGORY_ECS, "Writing is not supported");
+	return 0;
+}
+
+static int write([[maybe_unused]] const char *path)
+{
+	SDL_LogError(LOG_CATEGORY_ECS, "Writing is not supported");
+	return 1;
+}
+
 ecs_os_api_t ecs_os_api_create()
 {
 	return (ecs_os_api_t){
@@ -267,13 +349,13 @@ ecs_os_api_t ecs_os_api_create()
 		.module_to_etc_ = nullptr,
 
 		// File I/O
-		.fopen_ = nullptr,
-		.fclose_ = nullptr,
-		.fread_ = nullptr,
-		.fwrite_ = nullptr,
-		.mkdir_ = nullptr,
-		.rmdir_ = nullptr,
-		.remove_ = nullptr,
+		.fopen_ = fopen_,
+		.fclose_ = fclose_,
+		.fread_ = fread_,
+		.fwrite_ = fwrite_,
+		.mkdir_ = write,
+		.rmdir_ = write,
+		.remove_ = write,
 
 		// Performance tracing
 		.perf_trace_push_ = nullptr,
