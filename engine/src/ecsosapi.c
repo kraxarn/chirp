@@ -55,7 +55,7 @@ static void log_(const Sint32 level, [[maybe_unused]] const char *file,
 	switch (level)
 	{
 		case 0:
-			priority = SDL_LOG_PRIORITY_DEBUG;
+			priority = SDL_LOG_PRIORITY_INFO;
 			break;
 
 		case -2:
@@ -71,7 +71,7 @@ static void log_(const Sint32 level, [[maybe_unused]] const char *file,
 			break;
 
 		default:
-			priority = SDL_LOG_PRIORITY_INFO;
+			priority = SDL_LOG_PRIORITY_DEBUG;
 			break;
 	}
 
