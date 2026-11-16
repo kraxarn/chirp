@@ -204,42 +204,79 @@ static void sleep(const Sint32 sec, const Sint32 nano_sec)
 
 ecs_os_api_t ecs_os_api_create()
 {
-	ecs_os_api_t api = {0};
+	return (ecs_os_api_t){
+		// API init
+		.init_ = nullptr,
+		.fini_ = nullptr,
 
-	api.malloc_ = malloc_;
-	api.free_ = SDL_free;
-	api.realloc_ = realloc_;
-	api.calloc_ = calloc_;
-	api.strdup_ = strdup_;
-	api.get_time_ = get_time;
-	api.log_ = log_;
-	api.abort_ = abort;
+		// Memory management
+		.malloc_ = malloc_,
+		.realloc_ = realloc_,
+		.calloc_ = calloc_,
+		.free_ = SDL_free,
 
-	api.thread_new_ = thread_new;
-	api.thread_join_ = thread_join;
-	api.thread_self_ = thread_self;
+		// Strings
+		.strdup_ = strdup_,
 
-	api.task_new_ = thread_new;
-	api.task_join_ = thread_join;
+		// Threads
+		.thread_new_ = thread_new,
+		.thread_join_ = thread_join,
+		.thread_self_ = thread_self,
 
-	api.ainc_ = ainc;
-	api.adec_ = adec;
-	api.lainc_ = lainc;
-	api.ladec_ = ladec;
+		// Tasks
+		.task_new_ = thread_new,
+		.task_join_ = thread_join,
 
-	api.mutex_new_ = mutex_new;
-	api.mutex_free_ = mutex_free;
-	api.mutex_lock_ = mutex_lock;
-	api.mutex_unlock_ = mutex_unlock;
+		// Atomic increment/decrement
+		.ainc_ = ainc,
+		.adec_ = adec,
+		.lainc_ = lainc,
+		.ladec_ = ladec,
 
-	api.cond_new_ = cond_new;
-	api.cond_free_ = cond_free;
-	api.cond_signal_ = cond_signal;
-	api.cond_broadcast_ = cond_broadcast;
-	api.cond_wait_ = cond_wait;
+		// Mutex
+		.mutex_new_ = mutex_new,
+		.mutex_free_ = mutex_free,
+		.mutex_lock_ = mutex_lock,
+		.mutex_unlock_ = mutex_unlock,
 
-	api.sleep_ = sleep;
-	api.now_ = SDL_GetTicksNS;
+		// Condition variable
+		.cond_new_ = cond_new,
+		.cond_free_ = cond_free,
+		.cond_signal_ = cond_signal,
+		.cond_broadcast_ = cond_broadcast,
+		.cond_wait_ = cond_wait,
 
-	return api;
+		// Time
+		.sleep_ = sleep,
+		.now_ = SDL_GetTicksNS,
+		.get_time_ = get_time,
+
+		// Logging
+		.log_ = log_,
+
+		// Application termination
+		.abort_ = abort,
+
+		// Dynamic library loading
+		.dlopen_ = nullptr,
+		.dlproc_ = nullptr,
+		.dlclose_ = nullptr,
+
+		// Module translation
+		.module_to_dl_ = nullptr,
+		.module_to_etc_ = nullptr,
+
+		// File I/O
+		.fopen_ = nullptr,
+		.fclose_ = nullptr,
+		.fread_ = nullptr,
+		.fwrite_ = nullptr,
+		.mkdir_ = nullptr,
+		.rmdir_ = nullptr,
+		.remove_ = nullptr,
+
+		// Performance tracing
+		.perf_trace_push_ = nullptr,
+		.perf_trace_pop_ = nullptr,
+	};
 }
