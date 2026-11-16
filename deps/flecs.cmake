@@ -26,6 +26,9 @@ target_compile_definitions(flecs_static PUBLIC
 	FLECS_CACHED_QUERIES
 	FLECS_CONSTRAINT_TRAITS
 	FLECS_FRAME
+	# TODO: Until we have proper scripting support
+	FLECS_META
+	FLECS_SCRIPT
 )
 
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
