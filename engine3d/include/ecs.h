@@ -7,7 +7,7 @@
 
 #include <stddef.h>
 
-constexpr size_t ui_label_max_length = 256;
+constexpr size_t ui_combo_max_items = 16;
 constexpr size_t ui_edit_string_max_length = 64;
 
 typedef struct
@@ -45,17 +45,17 @@ typedef enum : Uint32 // To match nk_flags
 
 typedef struct
 {
-	char text[ui_label_max_length];
+	char *text;
 	ui_text_align_t align;
 } ui_label_t;
 
 typedef struct
 {
+	const char *items[ui_combo_max_items];
 	Sint32 count;
 	Sint32 selected;
 	Sint32 item_height;
 	vector2f_t size;
-	const char **items;
 } ui_combo_t;
 
 typedef struct

@@ -35,3 +35,4 @@ extern ecs_id_t EcsUiRow;
 extern ecs_id_t EcsUiLabel;
 extern ecs_id_t EcsUiCombo;
 extern ecs_id_t EcsUiEditString;
+extern ecs_id_t EcsUiTextAlign;

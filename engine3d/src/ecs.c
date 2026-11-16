@@ -20,6 +20,7 @@
 #include "chirp/windowconfig.h"
 #include "chirp/ecs/components.h"
 #include "chirp/ecs/modules.h"
+#include "flecs/addons/meta.h"
 
 #include <SDL3/SDL_assert.h>
 #include <SDL3/SDL_cpuinfo.h>
@@ -113,11 +114,19 @@ static void add_events()
 
 static void add_modules()
 {
+	ecs_entity_t vec2i = 0;
+	ecs_entity_t vec2f = 0;
+	ecs_entity_t vec3f = 0;
+
 	ecs_scope(ecs_world(), EcsChirp)
 	{
 		EcsInstanceOf = entity("InstanceOf");
 
 		EcsScene = tag("Scene");
+
+		vec2i = component("Vector2i", vector2i_t);
+		vec2f = component("Vector2f", vector2f_t);
+		vec3f = component("Vector3f", vector3f_t);
 
 		EcsRotation = component("Rotation", vector3f_t);
 		EcsPosition = component("Position", vector3f_t);
@@ -161,6 +170,7 @@ static void add_modules()
 		EcsUiTitle = component("Title", const char*);
 		EcsUiWindow = component("Window", nk_rect_t);
 		EcsUiRow = component("Row", ui_row_def_t);
+		EcsUiTextAlign = component("TextAlign", ui_text_align_t);
 		EcsUiLabel = component("Label", ui_label_t);
 		EcsUiCombo = component("Combo", ui_combo_t);
 		EcsUiEditString = component("EditString", ui_edit_string_t);
@@ -186,6 +196,19 @@ static void add_modules()
 
 #ifndef NDEBUG
 	// chirp
+	reflect(vec2i,
+		(ecs_member_t){.name = "x", .type = ecs_id(ecs_i32_t)},
+		(ecs_member_t){.name = "y", .type = ecs_id(ecs_i32_t)},
+	);
+	reflect(vec2f,
+		(ecs_member_t){.name = "x", .type = ecs_id(ecs_f32_t)},
+		(ecs_member_t){.name = "y", .type = ecs_id(ecs_f32_t)},
+	);
+	reflect(vec3f,
+		(ecs_member_t){.name = "x", .type = ecs_id(ecs_f32_t)},
+		(ecs_member_t){.name = "y", .type = ecs_id(ecs_f32_t)},
+		(ecs_member_t){.name = "z", .type = ecs_id(ecs_f32_t)},
+	);
 	reflect(EcsRotation,
 		(ecs_member_t){.name = "x", .type = ecs_id(ecs_f32_t)},
 		(ecs_member_t){.name = "y", .type = ecs_id(ecs_f32_t)},
@@ -202,9 +225,9 @@ static void add_modules()
 		(ecs_member_t){.name = "z", .type = ecs_id(ecs_f32_t)},
 	);
 	reflect(EcsCamera,
-		(ecs_member_t){.name = "position", .type = EcsPosition},
-		(ecs_member_t){.name = "target", .type = EcsPosition},
-		(ecs_member_t){.name = "up", .type = EcsPosition},
+		(ecs_member_t){.name = "position", .type = vec3f},
+		(ecs_member_t){.name = "target", .type = vec3f},
+		(ecs_member_t){.name = "up", .type = vec3f},
 		(ecs_member_t){.name = "fov_y", .type = ecs_id(ecs_f32_t)},
 		(ecs_member_t){.name = "near_plane", .type = ecs_id(ecs_f32_t)},
 		(ecs_member_t){.name = "far_plane", .type = ecs_id(ecs_f32_t)},
@@ -242,7 +265,7 @@ static void add_modules()
 	);
 	reflect(EcsWindowConfig,
 		(ecs_member_t){.name = "title", .type = ecs_id(ecs_string_t)},
-		(ecs_member_t){.name = "size", .type = ecs_id(ecs_i32_t), .count = 2},
+		(ecs_member_t){.name = "size", .type = vec2i},
 		(ecs_member_t){.name = "fullscreen", .type = ecs_id(ecs_bool_t)},
 	);
 	reflect(EcsArgs,
@@ -285,15 +308,24 @@ static void add_modules()
 		(ecs_member_t){.name = "height", .type = ecs_id(ecs_f32_t)},
 		(ecs_member_t){.name = "columns", .type = ecs_id(ecs_i32_t)},
 	);
+	reflect_bitmask(EcsUiTextAlign,
+		(ecs_bitmask_constant_t){.name = "Left", .value = UI_TEXT_ALIGN_LEFT},
+		(ecs_bitmask_constant_t){.name = "Centered", .value = UI_TEXT_ALIGN_CENTERED},
+		(ecs_bitmask_constant_t){.name = "Right", .value = UI_TEXT_ALIGN_RIGHT},
+		(ecs_bitmask_constant_t){.name = "Top", .value = UI_TEXT_ALIGN_TOP},
+		(ecs_bitmask_constant_t){.name = "Middle", .value = UI_TEXT_ALIGN_MIDDLE},
+		(ecs_bitmask_constant_t){.name = "Bottom", .value = UI_TEXT_ALIGN_BOTTOM},
+	);
 	reflect(EcsUiLabel,
-		(ecs_member_t){.name = "text", .type = ecs_id(ecs_char_t), .count = ui_label_max_length},
-		(ecs_member_t){.name = "align", .type = ecs_id(ecs_u32_t)},
+		(ecs_member_t){.name = "text", .type = ecs_id(ecs_string_t)},
+		(ecs_member_t){.name = "align", .type = EcsUiTextAlign},
 	);
 	reflect(EcsUiCombo,
+		(ecs_member_t){.name = "items", .type = ecs_id(ecs_string_t), .count = ui_combo_max_items},
 		(ecs_member_t){.name = "count", .type = ecs_id(ecs_i32_t)},
 		(ecs_member_t){.name = "selected", .type = ecs_id(ecs_i32_t)},
 		(ecs_member_t){.name = "item_height", .type = ecs_id(ecs_i32_t)},
-		(ecs_member_t){.name = "size", .type = ecs_id(ecs_f32_t), .count = 2},
+		(ecs_member_t){.name = "size", .type = vec2f},
 	);
 	reflect(EcsUiEditString,
 		(ecs_member_t){.name = "buffer", .type = ecs_id(ecs_char_t), .count = ui_edit_string_max_length},
