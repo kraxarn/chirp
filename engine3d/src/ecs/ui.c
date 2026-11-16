@@ -89,6 +89,38 @@ static void ui_edit_string(nk_context_t *ctx, SDL_Window *window, ui_edit_string
 	}
 }
 
+static void draw_element(nk_context_t *ctx, const ecs_world_t *stage,
+	SDL_Window *window, const ecs_entity_t entity)
+{
+	const ui_row_def_t *row_def = ecs_get_id(stage, entity, EcsUiRow);
+	if (row_def != nullptr)
+	{
+		layout_row(ctx, *row_def);
+		return;
+	}
+
+	const ui_label_t *label = ecs_get_id(stage, entity, EcsUiLabel);
+	if (label != nullptr)
+	{
+		nk_label(ctx, label->text, label->align);
+		return;
+	}
+
+	ui_combo_t *combo = ecs_get_mut_id(stage, entity, EcsUiCombo);
+	if (combo != nullptr)
+	{
+		ui_combo(ctx, combo);
+		return;
+	}
+
+	ui_edit_string_t *edit_string = ecs_get_mut_id(stage, entity, EcsUiEditString);
+	if (edit_string != nullptr)
+	{
+		ui_edit_string(ctx, window, edit_string);
+		return;
+	}
+}
+
 static void prepare_ui(ecs_iter_t *iter)
 {
 	nk_context_t *ctx = &ecs_field(iter, nkui_context_t, 0)->nk;
@@ -121,29 +153,7 @@ static void prepare_ui(ecs_iter_t *iter)
 				const ecs_entity_t entity = queue[queue_current];
 				queue[queue_current] = 0;
 
-				const ui_row_def_t *row_def = ecs_get_id(iter->stage, entity, EcsUiRow);
-				if (row_def != nullptr)
-				{
-					layout_row(ctx, *row_def);
-				}
-
-				const ui_label_t *label = ecs_get_id(iter->stage, entity, EcsUiLabel);
-				if (label != nullptr)
-				{
-					nk_label(ctx, label->text, label->align);
-				}
-
-				ui_combo_t *combo = ecs_get_mut_id(iter->stage, entity, EcsUiCombo);
-				if (combo != nullptr)
-				{
-					ui_combo(ctx, combo);
-				}
-
-				ui_edit_string_t *edit_string = ecs_get_mut_id(iter->stage, entity, EcsUiEditString);
-				if (edit_string != nullptr)
-				{
-					ui_edit_string(ctx, window, edit_string);
-				}
+				draw_element(ctx, iter->stage, window, entity);
 
 				ecs_iter_t children = ecs_children(iter->stage, entity);
 				while (ecs_children_next(&children))
