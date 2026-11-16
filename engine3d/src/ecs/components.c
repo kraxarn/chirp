@@ -2,6 +2,7 @@
 
 ecs_id_t EcsTimeStats = 0;
 ecs_id_t EcsWindowConfig = 0;
+ecs_id_t EcsEngineConfig = 0;
 ecs_id_t EcsWindow = 0;
 ecs_id_t EcsGpuDevice = 0;
 ecs_id_t EcsGpuGraphicsPipeline = 0;

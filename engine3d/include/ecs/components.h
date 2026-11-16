@@ -4,6 +4,7 @@
 
 extern ecs_id_t EcsTimeStats;
 extern ecs_id_t EcsWindowConfig;
+extern ecs_id_t EcsEngineConfig;
 extern ecs_id_t EcsWindow;
 extern ecs_id_t EcsGpuDevice;
 extern ecs_id_t EcsGpuGraphicsPipeline;

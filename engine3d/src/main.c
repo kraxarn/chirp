@@ -2,6 +2,7 @@
 #include "args.h"
 #include "camera.h"
 #include "ecs.h"
+#include "engineconfig.h"
 #include "game.h"
 #include "model.h"
 #include "nkui.h"
@@ -230,6 +231,10 @@ SDL_AppResult SDL_AppInit(void **appstate, const int argc, char **argv)
 
 	ecs_set_id(ecs_world(), ecs_singleton(EcsTimeStats),
 		sizeof(time_stats_t), &time_stats);
+
+	const engine_config_t engine_config = engine_config_get();
+	ecs_set_id(ecs_world(), ecs_singleton(EcsEngineConfig),
+		sizeof(engine_config_t), &engine_config);
 
 	const camera_t camera = camera_create_default();
 	ecs_set_id(ecs_world(), ecs_singleton(EcsCamera),

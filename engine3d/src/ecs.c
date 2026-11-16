@@ -1,6 +1,7 @@
 #include "ecs.h"
 #include "args.h"
 #include "camera.h"
+#include "engineconfig.h"
 #include "model.h"
 #include "nkui.h"
 #include "physicsconfig.h"
@@ -147,6 +148,7 @@ static void add_modules()
 	{
 		EcsTimeStats = component("TimeStats", time_stats_t);
 		EcsWindowConfig = component("WindowConfig", window_config_t);
+		EcsEngineConfig = component("EngineConfig", engine_config_t);
 		EcsArgs = component("Args", arg_values_t);
 	}
 
@@ -267,6 +269,14 @@ static void add_modules()
 		(ecs_member_t){.name = "title", .type = ecs_id(ecs_string_t)},
 		(ecs_member_t){.name = "size", .type = vec2i},
 		(ecs_member_t){.name = "fullscreen", .type = ecs_id(ecs_bool_t)},
+	);
+	reflect(EcsEngineConfig,
+		(ecs_member_t){.name = "name", .type = ecs_id(ecs_string_t)},
+		(ecs_member_t){.name = "version", .type = ecs_id(ecs_string_t)},
+		(ecs_member_t){.name = "identifier", .type = ecs_id(ecs_string_t)},
+		(ecs_member_t){.name = "build_type", .type = ecs_id(ecs_string_t)},
+		(ecs_member_t){.name = "compiler", .type = ecs_id(ecs_string_t)},
+		(ecs_member_t){.name = "debug", .type = ecs_id(ecs_bool_t)},
 	);
 	reflect(EcsArgs,
 		(ecs_member_t){.name = "prefer_low_power", .type = ecs_id(ecs_bool_t)},
