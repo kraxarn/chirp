@@ -8,7 +8,7 @@
 #define component(name, symbol)	\
 	component_impl(name, ECS_SIZEOF(symbol), ECS_ALIGNOF(symbol), ctor_zero, nullptr)
 
-#ifndef NDEBUG
+#ifdef FLECS_META
 
 #define reflect(e, ...)									\
 	ecs_struct_init(ecs_world(), &(ecs_struct_desc_t) {	\
