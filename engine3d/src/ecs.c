@@ -116,9 +116,9 @@ static void add_events()
 
 static void add_modules()
 {
-	[[maybe_unused]] ecs_entity_t vec2i = 0;
-	[[maybe_unused]] ecs_entity_t vec2f = 0;
-	[[maybe_unused]] ecs_entity_t vec3f = 0;
+	ecs_entity_t vec2i = 0;
+	ecs_entity_t vec2f = 0;
+	ecs_entity_t vec3f = 0;
 
 	ecs_scope(ecs_world(), EcsChirp)
 	{
@@ -197,7 +197,7 @@ static void add_modules()
 		add_events();
 	}
 
-#ifndef NDEBUG
+#ifdef FLECS_META
 	// chirp
 	reflect(vec2i,
 		(ecs_member_t){.name = "x", .type = ecs_id(ecs_i32_t)},
