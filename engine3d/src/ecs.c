@@ -10,6 +10,7 @@
 #include "ecs/entities.h"
 #include "ecs/events.h"
 #include "ecs/tags.h"
+#include "ecs/ui.h"
 
 #include "chirp/ecs.h"
 #include "flecs.h"
@@ -171,7 +172,7 @@ static void add_modules()
 		EcsNkContext = component("NkContext", nkui_context_t);
 		EcsUiTitle = component("Title", const char*);
 		EcsUiWindow = component("Window", nk_rect_t);
-		EcsUiRow = component("Row", ui_row_def_t);
+		EcsUiRow = component("Row", ui_row_t);
 		EcsUiTextAlign = component("TextAlign", ui_text_align_t);
 		EcsUiLabel = component("Label", ui_label_t);
 		EcsUiCombo = component("Combo", ui_combo_t);

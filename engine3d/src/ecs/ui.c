@@ -1,3 +1,4 @@
+#include "ecs/ui.h"
 #include "ecs.h"
 #include "nkui.h"
 #include "ecs/components.h"
@@ -45,21 +46,21 @@ static void window_end(nk_context_t *ctx)
 	nk_end(ctx);
 }
 
-static void layout_row(nk_context_t *ctx, const ui_row_def_t def)
+static void layout_row(nk_context_t *ctx, const ui_row_t *row)
 {
-	SDL_assert(def.ratio == nullptr || def.widths == nullptr);
+	SDL_assert(row->ratio == nullptr || row->widths == nullptr);
 
-	if (def.ratio != nullptr)
+	if (row->ratio != nullptr)
 	{
-		nk_layout_row(ctx, NK_DYNAMIC, def.height, def.columns, def.ratio);
+		nk_layout_row(ctx, NK_DYNAMIC, row->height, row->columns, row->ratio);
 	}
-	else if (def.widths != nullptr)
+	else if (row->widths != nullptr)
 	{
-		nk_layout_row(ctx, NK_STATIC, def.height, def.columns, def.widths);
+		nk_layout_row(ctx, NK_STATIC, row->height, row->columns, row->widths);
 	}
 	else
 	{
-		nk_layout_row_dynamic(ctx, def.height, def.columns);
+		nk_layout_row_dynamic(ctx, row->height, row->columns);
 	}
 }
 
@@ -92,10 +93,10 @@ static void ui_edit_string(nk_context_t *ctx, SDL_Window *window, ui_edit_string
 static void draw_element(nk_context_t *ctx, const ecs_world_t *stage,
 	SDL_Window *window, const ecs_entity_t entity)
 {
-	const ui_row_def_t *row_def = ecs_get_id(stage, entity, EcsUiRow);
-	if (row_def != nullptr)
+	const ui_row_t *row = ecs_get_id(stage, entity, EcsUiRow);
+	if (row != nullptr)
 	{
-		layout_row(ctx, *row_def);
+		layout_row(ctx, row);
 		return;
 	}
 
@@ -176,8 +177,8 @@ static void prepare_ui(ecs_iter_t *iter)
 
 static void validate_row(ecs_iter_t *iter)
 {
-	const ui_row_def_t def = *ecs_field(iter, ui_row_def_t, 0);
-	if (def.ratio == nullptr || def.widths == nullptr)
+	const ui_row_t *row = ecs_field(iter, ui_row_t, 0);
+	if (row->ratio == nullptr || row->widths == nullptr)
 	{
 		return;
 	}
