@@ -116,9 +116,9 @@ static void add_events()
 
 static void add_modules()
 {
-	ecs_entity_t vec2i = 0;
-	ecs_entity_t vec2f = 0;
-	ecs_entity_t vec3f = 0;
+	[[maybe_unused]] ecs_entity_t vec2i = 0;
+	[[maybe_unused]] ecs_entity_t vec2f = 0;
+	[[maybe_unused]] ecs_entity_t vec3f = 0;
 
 	ecs_scope(ecs_world(), EcsChirp)
 	{
