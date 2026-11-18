@@ -188,6 +188,18 @@ static void validate_row(ecs_iter_t *iter)
 	);
 }
 
+static void validate_combo(ecs_iter_t *iter)
+{
+	ui_combo_t *combo = ecs_field(iter, ui_combo_t, 0);
+
+	combo->count = 0;
+	while (combo->count < (Sint32) ui_combo_max_items
+		&& combo->items[combo->count] != nullptr)
+	{
+		combo->count++;
+	}
+}
+
 void ecs_add_ui()
 {
 	ecs_scope(ecs_world(), EcsChirpSystem)
@@ -221,6 +233,17 @@ void ecs_add_ui()
 			},
 			.events = {EcsOnSet},
 			.callback = validate_row,
+		});
+
+		ecs_observer_init(ecs_world(), &(ecs_observer_desc_t){
+			.entity = ecs_entity_init(ecs_world(), &(ecs_entity_desc_t){
+				.name = "ValidateUiCombo",
+			}),
+			.query.terms = {
+				(ecs_term_t){.id = EcsUiCombo, .inout = EcsInOut},
+			},
+			.events = {EcsOnSet},
+			.callback = validate_combo,
 		});
 	}
 }
