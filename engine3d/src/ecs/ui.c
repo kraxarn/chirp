@@ -48,13 +48,13 @@ static void window_end(nk_context_t *ctx)
 
 static void layout_row(nk_context_t *ctx, const ui_row_t *row)
 {
-	SDL_assert(row->ratio == nullptr || row->widths == nullptr);
+	SDL_assert(row->ratio[0] == 0.F || row->widths[0] == 0.F);
 
-	if (row->ratio != nullptr)
+	if (row->ratio[0] != 0.F)
 	{
 		nk_layout_row(ctx, NK_DYNAMIC, row->height, row->columns, row->ratio);
 	}
-	else if (row->widths != nullptr)
+	else if (row->widths[0] != 0.F)
 	{
 		nk_layout_row(ctx, NK_STATIC, row->height, row->columns, row->widths);
 	}
@@ -178,7 +178,7 @@ static void prepare_ui(ecs_iter_t *iter)
 static void validate_row(ecs_iter_t *iter)
 {
 	const ui_row_t *row = ecs_field(iter, ui_row_t, 0);
-	if (row->ratio == nullptr || row->widths == nullptr)
+	if (row->ratio[0] == 0.F || row->widths[0] == 0.F)
 	{
 		return;
 	}
@@ -214,7 +214,7 @@ void ecs_add_ui()
 	{
 		ecs_observer_init(ecs_world(), &(ecs_observer_desc_t){
 			.entity = ecs_entity_init(ecs_world(), &(ecs_entity_desc_t){
-				.name = "ValidateUiRowDef",
+				.name = "ValidateUiRow",
 			}),
 			.query.terms = {
 				(ecs_term_t){.id = EcsUiRow, .inout = EcsIn},

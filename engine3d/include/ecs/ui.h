@@ -6,15 +6,16 @@
 
 #include <stddef.h>
 
+constexpr size_t ui_row_max_columns = 8;
 constexpr size_t ui_combo_max_items = 16;
 constexpr size_t ui_edit_string_max_length = 64;
 
 typedef struct
 {
-	float height;        // Fixed row height for all items
-	Sint32 columns;      // Number of columns
-	const float *ratio;  // Enable dynamic mode and set ratio for each column(0-1)
-	const float *widths; // Enable fixed mode and set width for each column
+	float height;                     // Fixed row height for all items
+	Sint32 columns;                   // Number of columns
+	float ratio[ui_row_max_columns];  // Enable dynamic mode and set ratio for each column(0-1)
+	float widths[ui_row_max_columns]; // Enable fixed mode and set width for each column
 } ui_row_t;
 
 typedef enum : Uint32 // To match nk_flags

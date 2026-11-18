@@ -318,6 +318,8 @@ static void add_modules()
 	reflect(EcsUiRow,
 		(ecs_member_t){.name = "height", .type = ecs_id(ecs_f32_t)},
 		(ecs_member_t){.name = "columns", .type = ecs_id(ecs_i32_t)},
+		(ecs_member_t){.name = "ratio", .type = ecs_id(ecs_f32_t), .count = ui_row_max_columns},
+		(ecs_member_t){.name = "widths", .type = ecs_id(ecs_f32_t), .count = ui_row_max_columns},
 	);
 	reflect_bitmask(EcsUiTextAlign,
 		(ecs_bitmask_constant_t){.name = "Left", .value = UI_TEXT_ALIGN_LEFT},
