@@ -116,19 +116,15 @@ static void add_events()
 
 static void add_modules()
 {
-	ecs_entity_t vec2i = 0;
-	ecs_entity_t vec2f = 0;
-	ecs_entity_t vec3f = 0;
-
 	ecs_scope(ecs_world(), EcsChirp)
 	{
 		EcsInstanceOf = entity("InstanceOf");
 
 		EcsScene = tag("Scene");
 
-		vec2i = component("Vector2i", vector2i_t);
-		vec2f = component("Vector2f", vector2f_t);
-		vec3f = component("Vector3f", vector3f_t);
+		EcsVector2i = component("Vector2i", vector2i_t);
+		EcsVector2f = component("Vector2f", vector2f_t);
+		EcsVector3f = component("Vector3f", vector3f_t);
 
 		EcsRotation = component("Rotation", vector3f_t);
 		EcsPosition = component("Position", vector3f_t);
@@ -199,15 +195,15 @@ static void add_modules()
 
 #ifdef FLECS_META
 	// chirp
-	reflect(vec2i,
+	reflect(EcsVector2i,
 		(ecs_member_t){.name = "x", .type = ecs_id(ecs_i32_t)},
 		(ecs_member_t){.name = "y", .type = ecs_id(ecs_i32_t)},
 	);
-	reflect(vec2f,
+	reflect(EcsVector2f,
 		(ecs_member_t){.name = "x", .type = ecs_id(ecs_f32_t)},
 		(ecs_member_t){.name = "y", .type = ecs_id(ecs_f32_t)},
 	);
-	reflect(vec3f,
+	reflect(EcsVector3f,
 		(ecs_member_t){.name = "x", .type = ecs_id(ecs_f32_t)},
 		(ecs_member_t){.name = "y", .type = ecs_id(ecs_f32_t)},
 		(ecs_member_t){.name = "z", .type = ecs_id(ecs_f32_t)},
@@ -228,9 +224,9 @@ static void add_modules()
 		(ecs_member_t){.name = "z", .type = ecs_id(ecs_f32_t)},
 	);
 	reflect(EcsCamera,
-		(ecs_member_t){.name = "position", .type = vec3f},
-		(ecs_member_t){.name = "target", .type = vec3f},
-		(ecs_member_t){.name = "up", .type = vec3f},
+		(ecs_member_t){.name = "position", .type = EcsVector3f},
+		(ecs_member_t){.name = "target", .type = EcsVector3f},
+		(ecs_member_t){.name = "up", .type = EcsVector3f},
 		(ecs_member_t){.name = "fov_y", .type = ecs_id(ecs_f32_t)},
 		(ecs_member_t){.name = "near_plane", .type = ecs_id(ecs_f32_t)},
 		(ecs_member_t){.name = "far_plane", .type = ecs_id(ecs_f32_t)},
@@ -268,7 +264,7 @@ static void add_modules()
 	);
 	reflect(EcsWindowConfig,
 		(ecs_member_t){.name = "title", .type = ecs_id(ecs_string_t)},
-		(ecs_member_t){.name = "size", .type = vec2i},
+		(ecs_member_t){.name = "size", .type = EcsVector2i},
 		(ecs_member_t){.name = "fullscreen", .type = ecs_id(ecs_bool_t)},
 	);
 	reflect(EcsEngineConfig,
@@ -338,7 +334,7 @@ static void add_modules()
 		(ecs_member_t){.name = "count", .type = ecs_id(ecs_i32_t)},
 		(ecs_member_t){.name = "selected", .type = ecs_id(ecs_i32_t)},
 		(ecs_member_t){.name = "item_height", .type = ecs_id(ecs_i32_t)},
-		(ecs_member_t){.name = "size", .type = vec2f},
+		(ecs_member_t){.name = "size", .type = EcsVector2f},
 	);
 	reflect(EcsUiEditString,
 		(ecs_member_t){.name = "buffer", .type = ecs_id(ecs_char_t), .count = ui_edit_string_max_length},

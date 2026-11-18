@@ -2,6 +2,10 @@
 
 #include "flecs.h"
 
+extern ecs_id_t EcsVector2i;
+extern ecs_id_t EcsVector2f;
+extern ecs_id_t EcsVector3f;
+
 extern ecs_id_t EcsTimeStats;
 extern ecs_id_t EcsWindowConfig;
 extern ecs_id_t EcsEngineConfig;

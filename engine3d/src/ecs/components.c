@@ -1,5 +1,9 @@
 #include "ecs/components.h"
 
+ecs_id_t EcsVector2i = 0;
+ecs_id_t EcsVector2f = 0;
+ecs_id_t EcsVector3f = 0;
+
 ecs_id_t EcsTimeStats = 0;
 ecs_id_t EcsWindowConfig = 0;
 ecs_id_t EcsEngineConfig = 0;
