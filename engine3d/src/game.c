@@ -3,9 +3,11 @@
 #include "ecs.h"
 #include "physicsconfig.h"
 #include "prefabs.h"
+#include "timestats.h"
 #include "ecs/components.h"
 #include "ecs/entities.h"
 #include "ecs/events.h"
+#include "ecs/ui.h"
 #include "ui/debugoverlay.h"
 
 #include "flecs.h"
@@ -14,9 +16,12 @@
 #include "box3d/types.h"
 #include "chirp/ecs.h"
 #include "chirp/input.h"
+#include "chirp/physics.h"
 #include "chirp/vector.h"
 #include "chirp/ecs/components.h"
+#include "flecs/addons/script.h"
 
+#include <SDL3/SDL_assert.h>
 #include <SDL3/SDL_log.h>
 #include <SDL3/SDL_mouse.h>
 #include <SDL3/SDL_stdinc.h>
@@ -153,6 +158,45 @@ static void init_scene()
 	});
 }
 
+static void update_ui(ecs_iter_t *iter)
+{
+	const time_stats_t *time_stats = ecs_field(iter, time_stats_t, 0);
+	const camera_t *camera = ecs_field(iter, camera_t, 1);
+	const EcsWorldSummary *world_summary = ecs_field(iter, EcsWorldSummary, 2);
+	const ui_combo_t *combo = ecs_field(iter, ui_combo_t, 3);
+
+	const EcsScriptMutVar *time_stats_var = ecs_field(iter, EcsScriptMutVar, 4);
+	const EcsScriptMutVar *sub_steps_var = ecs_field(iter, EcsScriptMutVar, 5);
+	const EcsScriptMutVar *camera_var = ecs_field(iter, EcsScriptMutVar, 6);
+	const EcsScriptMutVar *world_summary_var = ecs_field(iter, EcsScriptMutVar, 7);
+	const EcsScriptMutVar *input_selected_var = ecs_field(iter, EcsScriptMutVar, 8);
+
+	// TODO: This is very slow (~600us)
+
+	SDL_assert(time_stats_var->value.type == EcsTimeStats);
+	*(time_stats_t*) time_stats_var->value.ptr = *time_stats;
+	ecs_mut_var_modified(iter->stage, ecs_field_src(iter, 4));
+
+	SDL_assert(sub_steps_var->value.type == ecs_id(ecs_i32_t));
+	*(Sint32*) sub_steps_var->value.ptr = physics_sub_step_count(time_stats->fps);
+	ecs_mut_var_modified(iter->stage, ecs_field_src(iter, 5));
+
+	SDL_assert(camera_var->value.type == EcsCamera);
+	*(camera_t*) camera_var->value.ptr = *camera;
+	ecs_mut_var_modified(iter->stage, ecs_field_src(iter, 6));
+
+	if (world_summary != nullptr)
+	{
+		SDL_assert(world_summary_var->value.type == ecs_id(EcsWorldSummary));
+		*(EcsWorldSummary*) world_summary_var->value.ptr = *world_summary;
+		ecs_mut_var_modified(iter->stage, ecs_field_src(iter, 7));
+	}
+
+	SDL_assert(input_selected_var->value.type == ecs_id(ecs_i32_t));
+	*(Sint32*) input_selected_var->value.ptr = combo->selected;
+	ecs_mut_var_modified(iter->stage, ecs_field_src(iter, 8));
+}
+
 static void init_debug_overlay(ecs_world_t *stage)
 {
 	const ecs_entity_t entity_draw_ui = ecs_entity_init(stage, &(ecs_entity_desc_t){
@@ -177,6 +221,26 @@ static void init_debug_overlay(ecs_world_t *stage)
 			},
 		},
 		.callback = draw_debug_overlay,
+	});
+
+	const ecs_entity_t entity_update_ui = ecs_entity_init(stage, &(ecs_entity_desc_t){
+		.name = "UpdateUi",
+	});
+	ecs_add_id(stage, entity_update_ui, ecs_phase(Update));
+
+	ecs_system_init(ecs_world(), &(ecs_system_desc_t){
+		.entity = entity_update_ui,
+		.query.expr =
+		"[in]   chirp.config.TimeStats(chirp.config.TimeStats),"
+		"[in]   chirp.Camera(chirp.Camera),"
+		"[in]  ?flecs.stats.WorldSummary($world_summary),"
+		"[in]   chirp.ui.Combo(ui.InputWindow.Content.Sources),"
+		"[out]  flecs.script.MutVar(ui.time),"
+		"[out]  flecs.script.MutVar(ui.sub_steps),"
+		"[out]  flecs.script.MutVar(ui.camera),"
+		"[out]  flecs.script.MutVar(ui.world_summary),"
+		"[out]  flecs.script.MutVar(ui.InputWindow.selected),",
+		.callback = update_ui,
 	});
 }
 
