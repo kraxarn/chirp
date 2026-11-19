@@ -16,13 +16,6 @@
 		.members = {__VA_ARGS__},						\
 	});
 
-#define reflect_enum(e, t, ...)						\
-	ecs_enum_init(ecs_world(), &(ecs_enum_desc_t){	\
-		.entity = e,								\
-		.constants = {__VA_ARGS__},					\
-		.underlying_type = t,						\
-	});
-
 #endif
 
 void ctor_zero(void *ptr, Sint32 count, const ecs_type_info_t *type_info);
