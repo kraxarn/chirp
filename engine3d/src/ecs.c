@@ -196,134 +196,203 @@ static void add_modules()
 
 #ifdef FLECS_META
 	// chirp
-	reflect(EcsVector2i,
-		(ecs_member_t){.name = "x", .type = ecs_id(ecs_i32_t)},
-		(ecs_member_t){.name = "y", .type = ecs_id(ecs_i32_t)},
-	);
-	reflect(EcsVector2f,
-		(ecs_member_t){.name = "x", .type = ecs_id(ecs_f32_t)},
-		(ecs_member_t){.name = "y", .type = ecs_id(ecs_f32_t)},
-	);
-	reflect(EcsVector3f,
-		(ecs_member_t){.name = "x", .type = ecs_id(ecs_f32_t)},
-		(ecs_member_t){.name = "y", .type = ecs_id(ecs_f32_t)},
-		(ecs_member_t){.name = "z", .type = ecs_id(ecs_f32_t)},
-	);
-	reflect(EcsVector4f,
-		(ecs_member_t){.name = "x", .type = ecs_id(ecs_f32_t)},
-		(ecs_member_t){.name = "y", .type = ecs_id(ecs_f32_t)},
-		(ecs_member_t){.name = "z", .type = ecs_id(ecs_f32_t)},
-		(ecs_member_t){.name = "w", .type = ecs_id(ecs_f32_t)},
-	);
-	reflect(EcsRotation,
-		(ecs_member_t){.name = "x", .type = ecs_id(ecs_f32_t)},
-		(ecs_member_t){.name = "y", .type = ecs_id(ecs_f32_t)},
-		(ecs_member_t){.name = "z", .type = ecs_id(ecs_f32_t)},
-	);
-	reflect(EcsPosition,
-		(ecs_member_t){.name = "x", .type = ecs_id(ecs_f32_t)},
-		(ecs_member_t){.name = "y", .type = ecs_id(ecs_f32_t)},
-		(ecs_member_t){.name = "z", .type = ecs_id(ecs_f32_t)},
-	);
-	reflect(EcsScale,
-		(ecs_member_t){.name = "x", .type = ecs_id(ecs_f32_t)},
-		(ecs_member_t){.name = "y", .type = ecs_id(ecs_f32_t)},
-		(ecs_member_t){.name = "z", .type = ecs_id(ecs_f32_t)},
-	);
-	reflect(EcsCamera,
-		(ecs_member_t){.name = "position", .type = EcsVector3f},
-		(ecs_member_t){.name = "target", .type = EcsVector3f},
-		(ecs_member_t){.name = "up", .type = EcsVector3f},
-		(ecs_member_t){.name = "fov_y", .type = ecs_id(ecs_f32_t)},
-		(ecs_member_t){.name = "near_plane", .type = ecs_id(ecs_f32_t)},
-		(ecs_member_t){.name = "far_plane", .type = ecs_id(ecs_f32_t)},
-	);
-	reflect(EcsPhysicsConfig,
-		(ecs_member_t){.name = "move_speed", .type = ecs_id(ecs_f32_t)},
-		(ecs_member_t){.name = "max_move_speed", .type = ecs_id(ecs_f32_t)},
-		(ecs_member_t){.name = "gravity_y", .type = ecs_id(ecs_f32_t)},
-		(ecs_member_t){.name = "jump_speed", .type = ecs_id(ecs_f32_t)},
-	);
-	reflect(EcsProjection,
-		(ecs_member_t){.name = "rebuild", .type = ecs_id(ecs_bool_t)},
-		(ecs_member_t){.name = "value", .type = ecs_id(ecs_f32_t), .count = 16},
-	);
-	reflect(EcsViewProjection,
-		(ecs_member_t){.name = "value", .type = ecs_id(ecs_f32_t), .count = 16},
-	);
-	reflect(EcsWorldTransform,
-		(ecs_member_t){.name = "value", .type = ecs_id(ecs_f32_t), .count = 16},
-	);
-	reflect(EcsModelInstance,
-		(ecs_member_t){.name = "name", .type = ecs_id(ecs_string_t)},
-	);
-	reflect(EcsModelScene,
-		(ecs_member_t){.name = "name", .type = ecs_id(ecs_string_t)},
-	);
+	ecs_struct_init(ecs_world(), &(ecs_struct_desc_t){
+		.entity = EcsVector2i,
+		.members = {
+			(ecs_member_t){.name = "x", .type = ecs_id(ecs_i32_t)},
+			(ecs_member_t){.name = "y", .type = ecs_id(ecs_i32_t)},
+		},
+	});
+	ecs_struct_init(ecs_world(), &(ecs_struct_desc_t){
+		.entity = EcsVector2f,
+		.members = {
+			(ecs_member_t){.name = "x", .type = ecs_id(ecs_f32_t)},
+			(ecs_member_t){.name = "y", .type = ecs_id(ecs_f32_t)},
+		},
+	});
+	ecs_struct_init(ecs_world(), &(ecs_struct_desc_t){
+		.entity = EcsVector3f,
+		.members = {
+			(ecs_member_t){.name = "x", .type = ecs_id(ecs_f32_t)},
+			(ecs_member_t){.name = "y", .type = ecs_id(ecs_f32_t)},
+			(ecs_member_t){.name = "z", .type = ecs_id(ecs_f32_t)},
+		},
+	});
+	ecs_struct_init(ecs_world(), &(ecs_struct_desc_t){
+		.entity = EcsVector4f,
+		.members = {
+			(ecs_member_t){.name = "x", .type = ecs_id(ecs_f32_t)},
+			(ecs_member_t){.name = "y", .type = ecs_id(ecs_f32_t)},
+			(ecs_member_t){.name = "z", .type = ecs_id(ecs_f32_t)},
+			(ecs_member_t){.name = "w", .type = ecs_id(ecs_f32_t)},
+		},
+	});
+	ecs_struct_init(ecs_world(), &(ecs_struct_desc_t){
+		.entity = EcsRotation,
+		.members = {
+			(ecs_member_t){.name = "x", .type = ecs_id(ecs_f32_t)},
+			(ecs_member_t){.name = "y", .type = ecs_id(ecs_f32_t)},
+			(ecs_member_t){.name = "z", .type = ecs_id(ecs_f32_t)},
+		},
+	});
+	ecs_struct_init(ecs_world(), &(ecs_struct_desc_t){
+		.entity = EcsPosition,
+		.members = {
+			(ecs_member_t){.name = "x", .type = ecs_id(ecs_f32_t)},
+			(ecs_member_t){.name = "y", .type = ecs_id(ecs_f32_t)},
+			(ecs_member_t){.name = "z", .type = ecs_id(ecs_f32_t)},
+		},
+	});
+	ecs_struct_init(ecs_world(), &(ecs_struct_desc_t){
+		.entity = EcsScale,
+		.members = {
+			(ecs_member_t){.name = "x", .type = ecs_id(ecs_f32_t)},
+			(ecs_member_t){.name = "y", .type = ecs_id(ecs_f32_t)},
+			(ecs_member_t){.name = "z", .type = ecs_id(ecs_f32_t)},
+		},
+	});
+	ecs_struct_init(ecs_world(), &(ecs_struct_desc_t){
+		.entity = EcsCamera,
+		.members = {
+			(ecs_member_t){.name = "position", .type = EcsVector3f},
+			(ecs_member_t){.name = "target", .type = EcsVector3f},
+			(ecs_member_t){.name = "up", .type = EcsVector3f},
+			(ecs_member_t){.name = "fov_y", .type = ecs_id(ecs_f32_t)},
+			(ecs_member_t){.name = "near_plane", .type = ecs_id(ecs_f32_t)},
+			(ecs_member_t){.name = "far_plane", .type = ecs_id(ecs_f32_t)},
+		},
+	});
+	ecs_struct_init(ecs_world(), &(ecs_struct_desc_t){
+		.entity = EcsPhysicsConfig,
+		.members = {
+			(ecs_member_t){.name = "move_speed", .type = ecs_id(ecs_f32_t)},
+			(ecs_member_t){.name = "max_move_speed", .type = ecs_id(ecs_f32_t)},
+			(ecs_member_t){.name = "gravity_y", .type = ecs_id(ecs_f32_t)},
+			(ecs_member_t){.name = "jump_speed", .type = ecs_id(ecs_f32_t)},
+		},
+	});
+	ecs_struct_init(ecs_world(), &(ecs_struct_desc_t){
+		.entity = EcsProjection,
+		.members = {
+			(ecs_member_t){.name = "rebuild", .type = ecs_id(ecs_bool_t)},
+			(ecs_member_t){.name = "value", .type = ecs_id(ecs_f32_t), .count = 16},
+		},
+	});
+	ecs_struct_init(ecs_world(), &(ecs_struct_desc_t){
+		.entity = EcsViewProjection,
+		.members = {
+			(ecs_member_t){.name = "value", .type = ecs_id(ecs_f32_t), .count = 16},
+		},
+	});
+	ecs_struct_init(ecs_world(), &(ecs_struct_desc_t){
+		.entity = EcsWorldTransform,
+		.members = {
+			(ecs_member_t){.name = "value", .type = ecs_id(ecs_f32_t), .count = 16},
+		},
+	});
+	ecs_struct_init(ecs_world(), &(ecs_struct_desc_t){
+		.entity = EcsModelInstance,
+		.members = {
+			(ecs_member_t){.name = "name", .type = ecs_id(ecs_string_t)},
+		},
+	});
+	ecs_struct_init(ecs_world(), &(ecs_struct_desc_t){
+		.entity = EcsModelScene,
+		.members = {
+			(ecs_member_t){.name = "name", .type = ecs_id(ecs_string_t)},
+		},
+	});
 
 	// chirp.config
-	reflect(EcsTimeStats,
-		(ecs_member_t){.name = "last_update", .type = ecs_id(ecs_u64_t)},
-		(ecs_member_t){.name = "fps", .type = ecs_id(ecs_u16_t)},
-		(ecs_member_t){.name = "count", .type = ecs_id(ecs_u16_t)},
-		(ecs_member_t){.name = "duration", .type = ecs_id(ecs_f32_t)},
-		(ecs_member_t){.name = "dt", .type = ecs_id(ecs_f32_t)},
-	);
-	reflect(EcsWindowConfig,
-		(ecs_member_t){.name = "title", .type = ecs_id(ecs_string_t)},
-		(ecs_member_t){.name = "size", .type = EcsVector2i},
-		(ecs_member_t){.name = "fullscreen", .type = ecs_id(ecs_bool_t)},
-	);
-	reflect(EcsEngineConfig,
-		(ecs_member_t){.name = "name", .type = ecs_id(ecs_string_t)},
-		(ecs_member_t){.name = "version", .type = ecs_id(ecs_string_t)},
-		(ecs_member_t){.name = "identifier", .type = ecs_id(ecs_string_t)},
-		(ecs_member_t){.name = "build_type", .type = ecs_id(ecs_string_t)},
-		(ecs_member_t){.name = "compiler", .type = ecs_id(ecs_string_t)},
-		(ecs_member_t){.name = "debug", .type = ecs_id(ecs_bool_t)},
-	);
-	reflect(EcsArgs,
-		(ecs_member_t){.name = "prefer_low_power", .type = ecs_id(ecs_bool_t)},
-		(ecs_member_t){.name = "gpu_debug_mode", .type = ecs_id(ecs_bool_t)},
-		(ecs_member_t){.name = "log_priorities", .type = ecs_id(ecs_string_t)},
-		(ecs_member_t){.name = "video_driver", .type = ecs_id(ecs_string_t)},
-		(ecs_member_t){.name = "audio_driver", .type = ecs_id(ecs_string_t)},
-		(ecs_member_t){.name = "gpu_driver", .type = ecs_id(ecs_string_t)},
-		(ecs_member_t){.name = "allow_screensaver", .type = ecs_id(ecs_bool_t)},
-		(ecs_member_t){.name = "fatal_error_message_box", .type = ecs_id(ecs_bool_t)},
-		(ecs_member_t){.name = "ecs_threading", .type = ecs_id(ecs_string_t)},
-		(ecs_member_t){.name = "ecs_threads", .type = ecs_id(ecs_i64_t)},
-		(ecs_member_t){.name = "physics_threads", .type = ecs_id(ecs_i64_t)},
-	);
+	ecs_struct_init(ecs_world(), &(ecs_struct_desc_t){
+		.entity = EcsTimeStats,
+		.members = {
+			(ecs_member_t){.name = "last_update", .type = ecs_id(ecs_u64_t)},
+			(ecs_member_t){.name = "fps", .type = ecs_id(ecs_u16_t)},
+			(ecs_member_t){.name = "count", .type = ecs_id(ecs_u16_t)},
+			(ecs_member_t){.name = "duration", .type = ecs_id(ecs_f32_t)},
+			(ecs_member_t){.name = "dt", .type = ecs_id(ecs_f32_t)},
+		},
+	});
+	ecs_struct_init(ecs_world(), &(ecs_struct_desc_t){
+		.entity = EcsWindowConfig,
+		.members = {
+			(ecs_member_t){.name = "title", .type = ecs_id(ecs_string_t)},
+			(ecs_member_t){.name = "size", .type = EcsVector2i},
+			(ecs_member_t){.name = "fullscreen", .type = ecs_id(ecs_bool_t)},
+		},
+	});
+	ecs_struct_init(ecs_world(), &(ecs_struct_desc_t){
+		.entity = EcsEngineConfig,
+		.members = {
+			(ecs_member_t){.name = "name", .type = ecs_id(ecs_string_t)},
+			(ecs_member_t){.name = "version", .type = ecs_id(ecs_string_t)},
+			(ecs_member_t){.name = "identifier", .type = ecs_id(ecs_string_t)},
+			(ecs_member_t){.name = "build_type", .type = ecs_id(ecs_string_t)},
+			(ecs_member_t){.name = "compiler", .type = ecs_id(ecs_string_t)},
+			(ecs_member_t){.name = "debug", .type = ecs_id(ecs_bool_t)},
+		},
+	});
+	ecs_struct_init(ecs_world(), &(ecs_struct_desc_t){
+		.entity = EcsArgs,
+		.members = {
+			(ecs_member_t){.name = "prefer_low_power", .type = ecs_id(ecs_bool_t)},
+			(ecs_member_t){.name = "gpu_debug_mode", .type = ecs_id(ecs_bool_t)},
+			(ecs_member_t){.name = "log_priorities", .type = ecs_id(ecs_string_t)},
+			(ecs_member_t){.name = "video_driver", .type = ecs_id(ecs_string_t)},
+			(ecs_member_t){.name = "audio_driver", .type = ecs_id(ecs_string_t)},
+			(ecs_member_t){.name = "gpu_driver", .type = ecs_id(ecs_string_t)},
+			(ecs_member_t){.name = "allow_screensaver", .type = ecs_id(ecs_bool_t)},
+			(ecs_member_t){.name = "fatal_error_message_box", .type = ecs_id(ecs_bool_t)},
+			(ecs_member_t){.name = "ecs_threading", .type = ecs_id(ecs_string_t)},
+			(ecs_member_t){.name = "ecs_threads", .type = ecs_id(ecs_i64_t)},
+			(ecs_member_t){.name = "physics_threads", .type = ecs_id(ecs_i64_t)},
+		},
+	});
 
 	// chirp.rendering
-	reflect(EcsSwapchainTextureSize,
-		(ecs_member_t){.name = "width", .type = ecs_id(ecs_f32_t)},
-		(ecs_member_t){.name = "height", .type = ecs_id(ecs_f32_t)},
-	);
-	reflect(EcsClearColor,
-		(ecs_member_t){.name = "red", .type = ecs_id(ecs_f32_t)},
-		(ecs_member_t){.name = "green", .type = ecs_id(ecs_f32_t)},
-		(ecs_member_t){.name = "blue", .type = ecs_id(ecs_f32_t)},
-		(ecs_member_t){.name = "alpha", .type = ecs_id(ecs_f32_t)},
-	);
+	ecs_struct_init(ecs_world(), &(ecs_struct_desc_t){
+		.entity = EcsSwapchainTextureSize,
+		.members = {
+			(ecs_member_t){.name = "width", .type = ecs_id(ecs_f32_t)},
+			(ecs_member_t){.name = "height", .type = ecs_id(ecs_f32_t)},
+		},
+	});
+	ecs_struct_init(ecs_world(), &(ecs_struct_desc_t){
+		.entity = EcsClearColor,
+		.members = {
+			(ecs_member_t){.name = "red", .type = ecs_id(ecs_f32_t)},
+			(ecs_member_t){.name = "green", .type = ecs_id(ecs_f32_t)},
+			(ecs_member_t){.name = "blue", .type = ecs_id(ecs_f32_t)},
+			(ecs_member_t){.name = "alpha", .type = ecs_id(ecs_f32_t)},
+		},
+	});
 
 	// chirp.ui
-	reflect(EcsUiTitle,
-		(ecs_member_t){.name = "title", .type = ecs_id(ecs_string_t)},
-	);
-	reflect(EcsUiWindow,
-		(ecs_member_t){.name = "x", .type = ecs_id(ecs_f32_t)},
-		(ecs_member_t){.name = "y", .type = ecs_id(ecs_f32_t)},
-		(ecs_member_t){.name = "w", .type = ecs_id(ecs_f32_t)},
-		(ecs_member_t){.name = "h", .type = ecs_id(ecs_f32_t)},
-	);
-	reflect(EcsUiRow,
-		(ecs_member_t){.name = "height", .type = ecs_id(ecs_f32_t)},
-		(ecs_member_t){.name = "columns", .type = ecs_id(ecs_i32_t)},
-		(ecs_member_t){.name = "ratio", .type = ecs_id(ecs_f32_t), .count = ui_row_max_columns},
-		(ecs_member_t){.name = "widths", .type = ecs_id(ecs_f32_t), .count = ui_row_max_columns},
-	);
+	ecs_struct_init(ecs_world(), &(ecs_struct_desc_t){
+		.entity = EcsUiTitle,
+		.members = {
+			(ecs_member_t){.name = "title", .type = ecs_id(ecs_string_t)},
+		},
+	});
+	ecs_struct_init(ecs_world(), &(ecs_struct_desc_t){
+		.entity = EcsUiWindow,
+		.members = {
+			(ecs_member_t){.name = "x", .type = ecs_id(ecs_f32_t)},
+			(ecs_member_t){.name = "y", .type = ecs_id(ecs_f32_t)},
+			(ecs_member_t){.name = "w", .type = ecs_id(ecs_f32_t)},
+			(ecs_member_t){.name = "h", .type = ecs_id(ecs_f32_t)},
+		},
+	});
+	ecs_struct_init(ecs_world(), &(ecs_struct_desc_t){
+		.entity = EcsUiRow,
+		.members = {
+			(ecs_member_t){.name = "height", .type = ecs_id(ecs_f32_t)},
+			(ecs_member_t){.name = "columns", .type = ecs_id(ecs_i32_t)},
+			(ecs_member_t){.name = "ratio", .type = ecs_id(ecs_f32_t), .count = ui_row_max_columns},
+			(ecs_member_t){.name = "widths", .type = ecs_id(ecs_f32_t), .count = ui_row_max_columns},
+		},
+	});
 	ecs_bitmask_init(ecs_world(), &(ecs_bitmask_desc_t){
 		.entity = EcsUiTextAlign,
 		.constants = {
@@ -335,21 +404,30 @@ static void add_modules()
 			(ecs_bitmask_constant_t){.name = "Bottom", .value = UI_TEXT_ALIGN_BOTTOM},
 		},
 	});
-	reflect(EcsUiLabel,
-		(ecs_member_t){.name = "text", .type = ecs_id(ecs_string_t)},
-		(ecs_member_t){.name = "align", .type = EcsUiTextAlign},
-	);
-	reflect(EcsUiCombo,
-		(ecs_member_t){.name = "items", .type = ecs_id(ecs_string_t), .count = ui_combo_max_items},
-		(ecs_member_t){.name = "count", .type = ecs_id(ecs_i32_t)},
-		(ecs_member_t){.name = "selected", .type = ecs_id(ecs_i32_t)},
-		(ecs_member_t){.name = "item_height", .type = ecs_id(ecs_i32_t)},
-		(ecs_member_t){.name = "size", .type = EcsVector2f},
-	);
-	reflect(EcsUiEditString,
-		(ecs_member_t){.name = "buffer", .type = ecs_id(ecs_char_t), .count = ui_edit_string_max_length},
-		(ecs_member_t){.name = "length", .type = ecs_id(ecs_i32_t)},
-	);
+	ecs_struct_init(ecs_world(), &(ecs_struct_desc_t){
+		.entity = EcsUiLabel,
+		.members = {
+			(ecs_member_t){.name = "text", .type = FLECS_IDecs_string_tID_},
+			(ecs_member_t){.name = "align", .type = EcsUiTextAlign},
+		},
+	});
+	ecs_struct_init(ecs_world(), &(ecs_struct_desc_t){
+		.entity = EcsUiCombo,
+		.members = {
+			(ecs_member_t){.name = "items", .type = ecs_id(ecs_string_t), .count = ui_combo_max_items},
+			(ecs_member_t){.name = "count", .type = ecs_id(ecs_i32_t)},
+			(ecs_member_t){.name = "selected", .type = ecs_id(ecs_i32_t)},
+			(ecs_member_t){.name = "item_height", .type = ecs_id(ecs_i32_t)},
+			(ecs_member_t){.name = "size", .type = EcsVector2f},
+		},
+	});
+	ecs_struct_init(ecs_world(), &(ecs_struct_desc_t){
+		.entity = EcsUiEditString,
+		.members = {
+			(ecs_member_t){.name = "buffer", .type = ecs_id(ecs_char_t), .count = ui_edit_string_max_length},
+			(ecs_member_t){.name = "length", .type = ecs_id(ecs_i32_t)},
+		},
+	});
 #endif
 }
 
