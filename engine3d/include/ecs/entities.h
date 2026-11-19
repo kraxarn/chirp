@@ -11,4 +11,4 @@ extern ecs_entity_t EcsPhaseRenderBegin;   // Begin rendering
 extern ecs_entity_t EcsPhaseRender;        // Render all renderable entities
 extern ecs_entity_t EcsPhaseRenderEnd;     // End rendering and submit to GPU
 
-extern ecs_id_t EcsInstanceOf;
+extern ecs_entity_t EcsInstanceOf;
