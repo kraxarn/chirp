@@ -125,6 +125,7 @@ static void add_modules()
 		EcsVector2i = component("Vector2i", vector2i_t);
 		EcsVector2f = component("Vector2f", vector2f_t);
 		EcsVector3f = component("Vector3f", vector3f_t);
+		EcsVector4f = component("Vector4f", vector4f_t);
 
 		EcsRotation = component("Rotation", vector3f_t);
 		EcsPosition = component("Position", vector3f_t);
@@ -207,6 +208,12 @@ static void add_modules()
 		(ecs_member_t){.name = "x", .type = ecs_id(ecs_f32_t)},
 		(ecs_member_t){.name = "y", .type = ecs_id(ecs_f32_t)},
 		(ecs_member_t){.name = "z", .type = ecs_id(ecs_f32_t)},
+	);
+	reflect(EcsVector4f,
+		(ecs_member_t){.name = "x", .type = ecs_id(ecs_f32_t)},
+		(ecs_member_t){.name = "y", .type = ecs_id(ecs_f32_t)},
+		(ecs_member_t){.name = "z", .type = ecs_id(ecs_f32_t)},
+		(ecs_member_t){.name = "w", .type = ecs_id(ecs_f32_t)},
 	);
 	reflect(EcsRotation,
 		(ecs_member_t){.name = "x", .type = ecs_id(ecs_f32_t)},
