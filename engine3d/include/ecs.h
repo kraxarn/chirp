@@ -28,3 +28,4 @@ void ecs_add_physics();
 void ecs_add_render();
 void ecs_add_models();
 void ecs_add_logging();
+void ecs_add_script_engine();

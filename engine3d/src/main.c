@@ -208,6 +208,7 @@ SDL_AppResult SDL_AppInit(void **appstate, const int argc, char **argv)
 		ecs_add_ui();
 		ecs_add_input();
 		ecs_add_logging();
+		ecs_add_script_engine();
 	}
 
 	ecs_set_id(ecs_world(), ecs_singleton(EcsArgs),
