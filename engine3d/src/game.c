@@ -158,6 +158,7 @@ static void init_scene()
 	});
 }
 
+/*
 static void update_ui(ecs_iter_t *iter)
 {
 	const time_stats_t *time_stats = ecs_field(iter, time_stats_t, 0);
@@ -170,8 +171,6 @@ static void update_ui(ecs_iter_t *iter)
 	const EcsScriptMutVar *camera_var = ecs_field(iter, EcsScriptMutVar, 6);
 	const EcsScriptMutVar *world_summary_var = ecs_field(iter, EcsScriptMutVar, 7);
 	const EcsScriptMutVar *input_selected_var = ecs_field(iter, EcsScriptMutVar, 8);
-
-	// TODO: This is very slow (~600us)
 
 	SDL_assert(time_stats_var->value.type == EcsTimeStats);
 	*(time_stats_t*) time_stats_var->value.ptr = *time_stats;
@@ -196,6 +195,7 @@ static void update_ui(ecs_iter_t *iter)
 	*(Sint32*) input_selected_var->value.ptr = combo->selected;
 	ecs_mut_var_modified(iter->stage, ecs_field_src(iter, 8));
 }
+*/
 
 static void init_debug_overlay(ecs_world_t *stage)
 {
@@ -223,6 +223,8 @@ static void init_debug_overlay(ecs_world_t *stage)
 		.callback = draw_debug_overlay,
 	});
 
+	// TODO: This is way too slow (~600us)
+	/*
 	const ecs_entity_t entity_update_ui = ecs_entity_init(stage, &(ecs_entity_desc_t){
 		.name = "UpdateUi",
 	});
@@ -242,6 +244,7 @@ static void init_debug_overlay(ecs_world_t *stage)
 		"[out]  flecs.script.MutVar(ui.InputWindow.selected),",
 		.callback = update_ui,
 	});
+	*/
 }
 
 static void update_camera_rotation(ecs_iter_t *iter)
