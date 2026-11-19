@@ -324,14 +324,17 @@ static void add_modules()
 		(ecs_member_t){.name = "ratio", .type = ecs_id(ecs_f32_t), .count = ui_row_max_columns},
 		(ecs_member_t){.name = "widths", .type = ecs_id(ecs_f32_t), .count = ui_row_max_columns},
 	);
-	reflect_bitmask(EcsUiTextAlign,
-		(ecs_bitmask_constant_t){.name = "Left", .value = UI_TEXT_ALIGN_LEFT},
-		(ecs_bitmask_constant_t){.name = "Centered", .value = UI_TEXT_ALIGN_CENTERED},
-		(ecs_bitmask_constant_t){.name = "Right", .value = UI_TEXT_ALIGN_RIGHT},
-		(ecs_bitmask_constant_t){.name = "Top", .value = UI_TEXT_ALIGN_TOP},
-		(ecs_bitmask_constant_t){.name = "Middle", .value = UI_TEXT_ALIGN_MIDDLE},
-		(ecs_bitmask_constant_t){.name = "Bottom", .value = UI_TEXT_ALIGN_BOTTOM},
-	);
+	ecs_bitmask_init(ecs_world(), &(ecs_bitmask_desc_t){
+		.entity = EcsUiTextAlign,
+		.constants = {
+			(ecs_bitmask_constant_t){.name = "Left", .value = UI_TEXT_ALIGN_LEFT},
+			(ecs_bitmask_constant_t){.name = "Centered", .value = UI_TEXT_ALIGN_CENTERED},
+			(ecs_bitmask_constant_t){.name = "Right", .value = UI_TEXT_ALIGN_RIGHT},
+			(ecs_bitmask_constant_t){.name = "Top", .value = UI_TEXT_ALIGN_TOP},
+			(ecs_bitmask_constant_t){.name = "Middle", .value = UI_TEXT_ALIGN_MIDDLE},
+			(ecs_bitmask_constant_t){.name = "Bottom", .value = UI_TEXT_ALIGN_BOTTOM},
+		},
+	});
 	reflect(EcsUiLabel,
 		(ecs_member_t){.name = "text", .type = ecs_id(ecs_string_t)},
 		(ecs_member_t){.name = "align", .type = EcsUiTextAlign},

@@ -23,12 +23,6 @@
 		.underlying_type = t,						\
 	});
 
-#define reflect_bitmask(e, ...)								\
-	ecs_bitmask_init(ecs_world(), &(ecs_bitmask_desc_t){	\
-		.entity = e,										\
-		.constants = {__VA_ARGS__},							\
-	});
-
 #endif
 
 void ctor_zero(void *ptr, Sint32 count, const ecs_type_info_t *type_info);
