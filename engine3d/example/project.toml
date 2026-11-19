@@ -20,9 +20,8 @@ clear_color = "#1f1f1fff"
 scene = "test"
 
 [assets]
-textures = []
-models = ["scene", "blaster", "bullet"]
-scripts = []
+models  = ["scene", "blaster", "bullet"]
+scripts = ["main", "ui"]
 
 [input]
 move_forward  = { keycode = ["w", "up"   ], axis = "lefty-", deadzone = 0.2 }
