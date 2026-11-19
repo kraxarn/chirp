@@ -388,6 +388,10 @@ static void init_ecs([[maybe_unused]] ecs_iter_t *iter)
 #ifdef FLECS_STATS
 	ECS_IMPORT(ecs_world(), FlecsStats);
 #endif
+
+#ifdef FLECS_SCRIPT_SHELL
+	ECS_IMPORT(ecs_world(), FlecsScriptShell);
+#endif
 }
 
 void ecs_create()
